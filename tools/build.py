@@ -16,7 +16,7 @@ for name in MODULES: imap['imports'][f'snowpump/{name}'] = 'data:text/javascript
 h = h.replace(m.group(0), '<script type="importmap">' + json.dumps(imap, separators=(',', ':')) + '</script>')
 cfg = dict(json.loads((SITE / 'config.json').read_text(encoding='utf8')), live=False)   # ca, x, discord, pumpfun links
 args = sys.argv[1:]
-if '--first-in' in args: i = args.index('--first-in'); at = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=float(args[i + 1]) + 1)).replace(second=0, microsecond=0);   # rounded to a whole minute cfg['firstRound'] = at.isoformat().replace('+00:00', 'Z'); del args[i:i + 2]; print('FIRST ROUND at', cfg['firstRound'], '(UTC)')
+if '--first-in' in args: i = args.index('--first-in'); at = (datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=float(args[i + 1]) + 1)).replace(second=0, microsecond=0); cfg['firstRound'] = at.isoformat().replace('+00:00', 'Z'); del args[i:i + 2]; print('FIRST ROUND at', cfg['firstRound'], '(UTC)')
 if args: cfg['ca'] = args[0]
 app = local((SITE / 'app.js').read_text(encoding='utf8'))
 h = h.replace('<script type="module" src="app.js"></script>', f'<script>window.SNOWPUMP={json.dumps(cfg)}</script>\n<script type="module">\n{app}\n</script>')
