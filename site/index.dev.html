@@ -4,7 +4,7 @@
 <meta property="og:title" content="Snowfight"><meta property="og:description" content="Push. Grow. Cash out."><meta property="og:image" content="og.png"><meta name="twitter:card" content="summary_large_image">
 <link rel="icon" href="__ICON__">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&family=Titan+One&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <style>
 :root{--ink:#0d2b45;--ink2:#3d5a75;--sky:#b9dcff;--ice:#eaf5ff;--red:#ff4d5e;--mint:#2fd3a0;--sun:#ffc233;--blue:#3d6bff;--card:#ffffff}
@@ -63,11 +63,15 @@ section.s{padding:110px 0 30px}
 .coin img{width:64px;height:64px;border-radius:50%}.coin h3{font:700 28px Fredoka}.coin code{font:600 15px Fredoka;background:#eef6ff;padding:10px 14px;border-radius:14px;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis}
 footer{text-align:center;color:var(--ink2);font-weight:500;padding:70px 20px 50px;font-size:15px}
 
-/* bubbly display type: white fill, thick navy outline, chunky drop */
-.hc h1,.sh h2,.st h3,.mc h3,.pot b,.meter b,.hv b,.pc h3,.pc big,.coin h3,.lg{font-family:Fredoka;font-weight:700;color:#fff;text-shadow:0.065em 0.000em 0 var(--ink),0.060em 0.025em 0 var(--ink),0.046em 0.046em 0 var(--ink),0.025em 0.060em 0 var(--ink),0.000em 0.065em 0 var(--ink),-0.025em 0.060em 0 var(--ink),-0.046em 0.046em 0 var(--ink),-0.060em 0.025em 0 var(--ink),-0.065em 0.000em 0 var(--ink),-0.060em -0.025em 0 var(--ink),-0.046em -0.046em 0 var(--ink),-0.025em -0.060em 0 var(--ink),-0.000em -0.065em 0 var(--ink),0.025em -0.060em 0 var(--ink),0.046em -0.046em 0 var(--ink),0.060em -0.025em 0 var(--ink),0 0.095em 0 var(--ink),0 0.125em 0 var(--ink),0 0.155em 0 var(--ink),0 0.175em 0 var(--ink),0 .2em .25em rgba(13,43,69,.35);letter-spacing:.015em}
-.hc h1 span,.pot b,.meter b,.pc big,.hv b{color:#ffd23f}
-.st h3,.mc h3,.coin h3,.pc h3{letter-spacing:.02em}
-.lg{text-shadow:0.065em 0.000em 0 var(--ink),0.060em 0.025em 0 var(--ink),0.046em 0.046em 0 var(--ink),0.025em 0.060em 0 var(--ink),0.000em 0.065em 0 var(--ink),-0.025em 0.060em 0 var(--ink),-0.046em 0.046em 0 var(--ink),-0.060em 0.025em 0 var(--ink),-0.065em 0.000em 0 var(--ink),-0.060em -0.025em 0 var(--ink),-0.046em -0.046em 0 var(--ink),-0.025em -0.060em 0 var(--ink),-0.000em -0.065em 0 var(--ink),0.025em -0.060em 0 var(--ink),0.046em -0.046em 0 var(--ink),0.060em -0.025em 0 var(--ink),0 0.095em 0 var(--ink),0 0.125em 0 var(--ink),0 0.155em 0 var(--ink),0 0.175em 0 var(--ink),0 .2em .25em rgba(13,43,69,.35)}
+/* bubbly display type: Titan One, candy extrusion instead of outlines */
+.hc h1,.sh h2,.st h3,.mc h3,.pot b,.meter b,.hv b,.pc h3,.pc big,.coin h3,.lg{font-family:'Titan One',Fredoka,sans-serif;font-weight:400;letter-spacing:.01em}
+.hc h1{color:#fff;line-height:.98;text-shadow:0 .03em 0 #d6ecff,0 .06em 0 #a9d4ff,0 .09em 0 #7db8ff,0 .12em 0 #5a9cf5,0 .2em .3em rgba(13,43,69,.35)}
+.hc h1 span{color:#ffd23f;text-shadow:0 .03em 0 #ffc21a,0 .06em 0 #ffab12,0 .09em 0 #f58f0c,0 .12em 0 #e07406,0 .2em .3em rgba(13,43,69,.35)}
+.lg{color:#fff;text-shadow:0 .04em 0 #a9d4ff,0 .08em 0 #5a9cf5,0 .16em .3em rgba(13,43,69,.4)}
+.sh h2,.mc h3,.coin h3,.pc h3{color:var(--ink);text-shadow:0 .05em 0 #cfe6ff,0 .1em 0 #a9d4ff}
+.st h3{color:var(--ink);text-shadow:0 .06em 0 #dcedff}
+.pot b,.meter b,.pc big,.hv b{color:#ff9f1a;text-shadow:0 .04em 0 #ffd23f,0 .08em 0 #e07406}
+.hc p{font-weight:600}
 /* game HUD */
 .hud{position:fixed;inset:0;z-index:40;pointer-events:none;display:none}.hud.on{display:block}
 .hv{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:#fff;border-radius:26px;padding:10px 26px;text-align:center;box-shadow:inset 0 -5px 0 rgba(13,43,69,.08),0 14px 34px rgba(13,43,69,.2)}
