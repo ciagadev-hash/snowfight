@@ -31,7 +31,7 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 const Q = new URLSearchParams(location.search), A = Q.get('a') || 'banner', [W, H] = { banner: [1500, 500], og: [1200, 630], pfp: [1000, 1000], xb: [1500, 500] }[A]; if (A === 'pfp' || A === 'xb') document.getElementById('sunfx').remove();
-const XB = A === 'xb', SX = 1255;   // xb: the pfp poster stretched to an X banner; the ball sits in the right third (screen x SX), type on the left
+const XB = A === 'xb', SX = 1200, SQUAD = [], clear = (v, pad) => !SQUAD.some((q) => q.c.distanceTo(v) < q.r + pad);   // nothing may poke into a squad ball   // xb: the pfp poster stretched to an X banner; the ball sits in the right third (screen x SX), type on the left
 document.getElementById('R').style.cssText = `width:${W}px;height:${H}px`;
 const HH = Q.get('hat') ? '#' + Q.get('hat') : null;   // ?hat=5cc888: the hero's beanie colour (pump.fun pill green); its neighbour swaps to red so the pair still contrasts
 let sd = 5; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
@@ -159,14 +159,22 @@ if (A === 'banner') {
   const rc = new THREE.DirectionalLight(0x6ff3ff, 3.2); rc.position.set(8, 3, -4); const rp = new THREE.DirectionalLight(0xff6fd0, 2.6); rp.position.set(-8, -2, -3); sc.add(rc, rp);
   cam.position.set(0, .2, 11.6); cam.lookAt(0, .25, 0); R.toneMappingExposure = .78;
   if (XB) { cam.position.set(0, .2, 13.6); cam.lookAt(0, .25, 0); cam.aspect = 2 * SX / H; cam.setViewOffset(2 * SX, H, 0, 0, W, H); cam.updateProjectionMatrix();   // smaller ball, lens shift puts it at x SX
-    for (let i = 0; i < 90; i++) { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(.05 + rnd() * .18, 1), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .85, sheen: 1, sheenColor: new THREE.Color(0xbfe6ff) })); m.position.set(-4 - rnd() * 16, (rnd() - .5) * 8, -2 - rnd() * 6); sc.add(m); } }
-  const b = snowball(2.25, HH || '#ff3d50', [0, -2.15, 0], -.32, .1, 'hype'); b.rotation.x = .12;
-  const hat = b.children[2]; hat.rotation.z = -.06; hat.position.y = .06; hat.children[2].position.set(.12, 1.12, -.05);
+ }
+  if (XB) {   // the X banner: the colourful squad bursting out (the pfp keeps the green hero alone)
+    // [r, hat, centre, yaw, tilt, face]; snowball() takes the bottom point, so y is shifted by .92 r
+    const SQ = [[1.5, '#ff4f9e', [1.25, -1.45, 1.3], -.35, .1, 'grit'], [1.15, '#3aa8ff', [-1.15, -1.75, -.3], .4, -.08, 'shock'], [1.0, '#ff8f3a', [3.4, 1.05, -.8], -.55, -.32, 'hype'],
+      [.9, '#9a63ff', [.35, 1.55, -3.2], .15, .05, 'smile'], [.7, HH || '#1c8259', [2.3, 3.0, -6], -.2, .08, 'smile'], [.75, '#ffd23f', [-17, 2.3, -2], .8, .55, 'hype']];
+    for (const [r, hat, c, yaw, tilt, face] of SQ) { snowball(r, hat, [c[0], c[1] - r * .92, c[2]], yaw, tilt, face); SQUAD.push({ c: new THREE.Vector3(...c), r }); }
+    // a powder trail behind the little one flying in from the left
+    for (let i = 0; i < 26; i++) { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(.05 + rnd() * .14, 1), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .9, sheen: 1, sheenColor: new THREE.Color(0xbfe6ff) })); m.position.set(-18.2 - rnd() * 4, 2.1 + (rnd() - .5) * 1.4, -2 + (rnd() - .5)); sc.add(m); }
+  for (let i = 0; i < 90; i++) { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(.05 + rnd() * .18, 1), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .85, sheen: 1, sheenColor: new THREE.Color(0xbfe6ff) })); m.position.set(-4 - rnd() * 16, (rnd() - .5) * 8, -2 - rnd() * 6); if (clear(m.position, .3)) sc.add(m); }
+  } else { const b = snowball(2.25, HH || '#ff3d50', [0, -2.15, 0], -.32, .1, 'hype'); b.rotation.x = .12;
+  const hat = b.children[2]; hat.rotation.z = -.06; hat.position.y = .06; hat.children[2].position.set(.12, 1.12, -.05); }
   // snow burst behind and around
   for (let i = 0; i < 120; i++) { const a = rnd() * Math.PI * 2, d = 2.6 + rnd() * 3.4, m = new THREE.Mesh(new THREE.IcosahedronGeometry(.05 + rnd() * .2, 1), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .85, sheen: 1, sheenColor: new THREE.Color(0xbfe4ff), emissive: 0xbfe8ff, emissiveIntensity: .05 }));
-    m.position.set(Math.cos(a) * d, Math.sin(a) * d * .9 + .1, -1.5 - rnd() * 2.5 + (d > 4.5 ? 1.5 : 0)); sc.add(m); }
+    m.position.set(Math.cos(a) * d, Math.sin(a) * d * .9 + .1, -1.5 - rnd() * 2.5 + (d > 4.5 ? 1.5 : 0)); if (clear(m.position, .35)) sc.add(m); }
   const streakT = (() => { const c = document.createElement('canvas'); c.width = 16; c.height = 128; const x = c.getContext('2d'), g = x.createLinearGradient(0, 0, 0, 128); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.5, 'rgba(255,255,255,1)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(5, 0, 6, 128); return new THREE.CanvasTexture(c); })();
-  for (let i = 0; i < 46; i++) { const a = rnd() * Math.PI * 2, d = 3.3 + rnd() * 2.4, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: streakT, transparent: true, opacity: .8, depthWrite: false, blending: THREE.AdditiveBlending })); sp.position.set(Math.cos(a) * d, Math.sin(a) * d, -.5); sp.scale.set(.08, .9 + rnd() * .9, 1); sp.material.rotation = a - Math.PI / 2; sc.add(sp); }
+  for (let i = 0; i < 46; i++) { const a = rnd() * Math.PI * 2, d = 3.3 + rnd() * 2.4, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: streakT, transparent: true, opacity: .8, depthWrite: false, blending: THREE.AdditiveBlending })); sp.position.set(Math.cos(a) * d, Math.sin(a) * d, -.5); sp.scale.set(.08, .9 + rnd() * .9, 1); sp.material.rotation = a - Math.PI / 2; if (!XB || SQUAD.every((q) => Math.hypot(q.c.x - sp.position.x, q.c.y - sp.position.y) > q.r + .9)) sc.add(sp); }
 }
 
 // falling snow: crisp flakes plus a few big soft ones close to the lens
