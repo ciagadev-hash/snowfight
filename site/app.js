@@ -209,6 +209,9 @@ function updateShare(runs = store.get('runs', [])) {
 
 // coin
 document.querySelectorAll('.caT').forEach((e) => { if (CFG.ca) e.textContent = CFG.ca; });
-if (CFG.ca && innerWidth < 640) document.querySelectorAll('.cabar code, .hca code').forEach((e) => { e.textContent = CFG.ca.slice(0, 6) + '…' + CFG.ca.slice(-6); });   // short on phones, Copy copies the full CA
-document.querySelectorAll('.caB').forEach((b) => { b.onclick = () => { if (!CFG.ca) return toast('CA drops at launch'); navigator.clipboard.writeText(CFG.ca).then(() => toast('CA copied')); }; });
+document.querySelectorAll('.caS').forEach((e) => { if (CFG.ca) e.textContent = CFG.ca.slice(0, 6) + '…' + CFG.ca.slice(-6); });   // the small glass pill under the logo; a click copies the full CA
+// copy with a fallback for in-app browsers without the async clipboard (X, Telegram webviews)
+const copyText = (t) => { const done = () => toast('CA copied'), legacy = () => { const a = document.createElement('textarea'); a.value = t; a.setAttribute('readonly', ''); a.style.cssText = 'position:fixed;top:-99px;opacity:0'; document.body.appendChild(a); a.select(); a.setSelectionRange(0, t.length); let ok = false; try { ok = document.execCommand('copy'); } catch (_) { } a.remove(); ok ? done() : toast(t); };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(t).then(done, legacy); else legacy(); };
+document.querySelectorAll('.caB').forEach((b) => { b.onclick = () => { if (!CFG.ca) return toast('CA drops at launch'); copyText(CFG.ca); }; });
 paintAvatars(); updateShare(); route();
