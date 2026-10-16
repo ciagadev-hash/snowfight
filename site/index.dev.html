@@ -63,15 +63,15 @@ section.s{padding:110px 0 30px}
 .coin img{width:64px;height:64px;border-radius:50%}.coin h3{font:700 28px Fredoka}.coin code{font:600 15px Fredoka;background:#eef6ff;padding:10px 14px;border-radius:14px;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis}
 footer{text-align:center;color:var(--ink2);font-weight:500;padding:70px 20px 50px;font-size:15px}
 
-/* bubbly display type: Titan One, candy extrusion instead of outlines */
-.hc h1,.sh h2,.st h3,.mc h3,.pot b,.meter b,.hv b,.pc h3,.pc big,.coin h3,.lg{font-family:'Titan One',Fredoka,sans-serif;font-weight:400;letter-spacing:.01em}
-.hc h1{color:#fff;line-height:.98;text-shadow:0 .03em 0 #d6ecff,0 .06em 0 #a9d4ff,0 .09em 0 #7db8ff,0 .12em 0 #5a9cf5,0 .2em .3em rgba(13,43,69,.35)}
-.hc h1 span{color:#ffd23f;text-shadow:0 .03em 0 #ffc21a,0 .06em 0 #ffab12,0 .09em 0 #f58f0c,0 .12em 0 #e07406,0 .2em .3em rgba(13,43,69,.35)}
-.lg{color:#fff;text-shadow:0 .04em 0 #a9d4ff,0 .08em 0 #5a9cf5,0 .16em .3em rgba(13,43,69,.4)}
-.sh h2,.mc h3,.coin h3,.pc h3{color:var(--ink);text-shadow:0 .05em 0 #cfe6ff,0 .1em 0 #a9d4ff}
-.st h3{color:var(--ink);text-shadow:0 .06em 0 #dcedff}
-.pot b,.meter b,.pc big,.hv b{color:#ff9f1a;text-shadow:0 .04em 0 #ffd23f,0 .08em 0 #e07406}
-.hc p{font-weight:600}
+/* bubbly display type: Titan One inflated into icy bubble letters by an SVG light filter */
+.hc h1,.sh h2,.st h3,.mc h3,.pot b,.meter b,.hv b,.pc h3,.pc big,.coin h3,.lg{font-family:'Titan One',Fredoka,sans-serif;font-weight:400;letter-spacing:.02em;text-shadow:none}
+.hc h1{color:#9fd8ff;filter:url(#bubL);line-height:1;padding:.1em .2em .15em}
+.hc h1 span{color:#ffc93a}
+.sh h2{color:#5fb2ff;filter:url(#bubM);padding:.08em .2em .12em}
+.mc h3,.coin h3,.pc h3{color:#5fb2ff;filter:url(#bubS)}
+.st h3{color:#5fb2ff;filter:url(#bubS)}
+.pot b,.meter b,.pc big,.hv b{color:#ffb21a;filter:url(#bubS)}
+.lg{color:#bfe6ff;filter:url(#bubS)}
 /* game HUD */
 .hud{position:fixed;inset:0;z-index:40;pointer-events:none;display:none}.hud.on{display:block}
 .hv{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:#fff;border-radius:26px;padding:10px 26px;text-align:center;box-shadow:inset 0 -5px 0 rgba(13,43,69,.08),0 14px 34px rgba(13,43,69,.2)}
@@ -92,6 +92,40 @@ footer{text-align:center;color:var(--ink2);font-weight:500;padding:70px 20px 50p
 @media (max-width:900px){.steps{grid-template-columns:1fr 1fr}.money{grid-template-columns:1fr}nav{display:none}.pot{top:auto;bottom:calc(7vh + 250px);right:50%;transform:translateX(50%)}}
 @media (max-width:560px){.steps{grid-template-columns:1fr}.lg{font-size:24px}.lg img{width:40px;height:40px}.hc p{font-size:17px}.hv b{font-size:30px}.joy{display:block}.hint2{display:none}.pot{display:none}}
 </style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><filter id="bubL" x="-8%" y="-25%" width="116%" height="160%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="6" result="b"/>
+<feSpecularLighting in="b" surfaceScale="7" specularConstant="1.25" specularExponent="26" lighting-color="#ffffff" result="s"><feDistantLight azimuth="240" elevation="52"/></feSpecularLighting>
+<feComposite in="s" in2="SourceAlpha" operator="in" result="s2"/>
+<feDiffuseLighting in="b" surfaceScale="7" diffuseConstant="1" lighting-color="#ffffff" result="d"><feDistantLight azimuth="240" elevation="58"/></feDiffuseLighting>
+<feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="lit"/>
+<feMorphology in="SourceAlpha" operator="erode" radius="4" result="er"/><feGaussianBlur in="er" stdDeviation="4" result="erb"/>
+<feComposite in="SourceAlpha" in2="erb" operator="out" result="rim"/>
+<feColorMatrix in="SourceGraphic" type="matrix" values=".35 0 0 0 0  0 .45 0 0 0  0 0 .7 0 0  0 0 0 .9 0" result="dark"/><feComposite in="dark" in2="rim" operator="in" result="rimc"/>
+<feComponentTransfer in="lit" result="body"><feFuncA type="linear" slope=".92"/></feComponentTransfer>
+<feOffset in="SourceAlpha" dy="9" result="o"/><feGaussianBlur in="o" stdDeviation="8" result="ob"/><feFlood flood-color="#0d2b45" flood-opacity=".32"/><feComposite in2="ob" operator="in" result="sh"/>
+<feMerge><feMergeNode in="sh"/><feMergeNode in="body"/><feMergeNode in="rimc"/><feMergeNode in="s2"/></feMerge></filter><filter id="bubM" x="-8%" y="-25%" width="116%" height="160%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="3.5" result="b"/>
+<feSpecularLighting in="b" surfaceScale="5" specularConstant="1.25" specularExponent="26" lighting-color="#ffffff" result="s"><feDistantLight azimuth="240" elevation="52"/></feSpecularLighting>
+<feComposite in="s" in2="SourceAlpha" operator="in" result="s2"/>
+<feDiffuseLighting in="b" surfaceScale="5" diffuseConstant="1" lighting-color="#ffffff" result="d"><feDistantLight azimuth="240" elevation="58"/></feDiffuseLighting>
+<feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="lit"/>
+<feMorphology in="SourceAlpha" operator="erode" radius="2.5" result="er"/><feGaussianBlur in="er" stdDeviation="2.5" result="erb"/>
+<feComposite in="SourceAlpha" in2="erb" operator="out" result="rim"/>
+<feColorMatrix in="SourceGraphic" type="matrix" values=".35 0 0 0 0  0 .45 0 0 0  0 0 .7 0 0  0 0 0 .9 0" result="dark"/><feComposite in="dark" in2="rim" operator="in" result="rimc"/>
+<feComponentTransfer in="lit" result="body"><feFuncA type="linear" slope=".92"/></feComponentTransfer>
+<feOffset in="SourceAlpha" dy="5" result="o"/><feGaussianBlur in="o" stdDeviation="5" result="ob"/><feFlood flood-color="#0d2b45" flood-opacity=".32"/><feComposite in2="ob" operator="in" result="sh"/>
+<feMerge><feMergeNode in="sh"/><feMergeNode in="body"/><feMergeNode in="rimc"/><feMergeNode in="s2"/></feMerge></filter><filter id="bubS" x="-8%" y="-25%" width="116%" height="160%" color-interpolation-filters="sRGB">
+<feGaussianBlur in="SourceAlpha" stdDeviation="2" result="b"/>
+<feSpecularLighting in="b" surfaceScale="3.5" specularConstant="1.25" specularExponent="26" lighting-color="#ffffff" result="s"><feDistantLight azimuth="240" elevation="52"/></feSpecularLighting>
+<feComposite in="s" in2="SourceAlpha" operator="in" result="s2"/>
+<feDiffuseLighting in="b" surfaceScale="3.5" diffuseConstant="1" lighting-color="#ffffff" result="d"><feDistantLight azimuth="240" elevation="58"/></feDiffuseLighting>
+<feComposite in="SourceGraphic" in2="d" operator="arithmetic" k1="1" k2="0" k3="0" k4="0" result="lit"/>
+<feMorphology in="SourceAlpha" operator="erode" radius="1.5" result="er"/><feGaussianBlur in="er" stdDeviation="1.5" result="erb"/>
+<feComposite in="SourceAlpha" in2="erb" operator="out" result="rim"/>
+<feColorMatrix in="SourceGraphic" type="matrix" values=".35 0 0 0 0  0 .45 0 0 0  0 0 .7 0 0  0 0 0 .9 0" result="dark"/><feComposite in="dark" in2="rim" operator="in" result="rimc"/>
+<feComponentTransfer in="lit" result="body"><feFuncA type="linear" slope=".92"/></feComponentTransfer>
+<feOffset in="SourceAlpha" dy="3" result="o"/><feGaussianBlur in="o" stdDeviation="3" result="ob"/><feFlood flood-color="#0d2b45" flood-opacity=".32"/><feComposite in2="ob" operator="in" result="sh"/>
+<feMerge><feMergeNode in="sh"/><feMergeNode in="body"/><feMergeNode in="rimc"/><feMergeNode in="s2"/></feMerge></filter></defs></svg>
 <header><div class="w"><a class="lg" href="#top"><img src="__PFP__" alt="">Snowfight</a>
 <nav><a href="#how">How to play</a><a href="#money">The pot</a><a href="#coin">$SNOW</a></nav>
 <button class="bb w2 sm" id="wBtn">Connect wallet</button></div></header>
