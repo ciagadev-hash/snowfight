@@ -28,3 +28,7 @@
 ## Fájlok
 - `brand/banner.html` (three.js, ?a=banner|og|pfp), render: `python -I tools/shot.py "brand/banner.html?a=banner" brand/out/banner.png 1500 500`.
 - Mentés: minden lépés után commit (a felhasználó kérte, fogy a credit).
+
+## Betűtípus (2026-10-16)
+- A felhasználó a Sniglet ExtraBold-ot választotta a 6 fontos mintából (`brand/fonts.html`). Címsor, gomb, címke: Sniglet 800, folyó szöveg: Sniglet 400.
+- A hero cím valódi 3D (`site/title3d.js`): Sniglet TTF felfújt, lekerekített betűkkel, jégkék és arany anyaggal. A Fredoka, a Titan One és az SVG-filteres buborékbetű el lett utasítva.
