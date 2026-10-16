@@ -134,8 +134,8 @@ if (A === 'banner') {
   snowball(1.1, '#ffc233', [-7, 0, -2.4], .5, 0, 'smile', ['$9.40']); snowball(.95, '#3d6bff', [6.6, 0, -2.6], -.4, .1, 'smile', ['$6.10']); puff(1.4, .1, 2.2, 16, 1.6);
 } else {
   // pfp: an electric-blue sunburst, the ball charging at you through a burst of snow
-  { const c = document.createElement('canvas'); c.width = c.height = 1024; const x = c.getContext('2d'); const g = x.createRadialGradient(512, 470, 30, 512, 470, 720); g.addColorStop(0, '#8fe9ff'); g.addColorStop(.35, '#2f8bff'); g.addColorStop(1, '#1236b8'); x.fillStyle = g; x.fillRect(0, 0, 1024, 1024);
-    x.translate(512, 470); for (let i = 0; i < 28; i++) { x.rotate(Math.PI * 2 / 28); x.fillStyle = i % 2 ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.04)'; x.beginPath(); x.moveTo(0, 0); x.lineTo(900, -70); x.lineTo(900, 70); x.fill(); }
+  { const c = document.createElement('canvas'); c.width = c.height = 1024; const x = c.getContext('2d'); const g = x.createRadialGradient(512, 470, 30, 512, 470, 720); g.addColorStop(0, '#e6fbff'); g.addColorStop(.4, '#9fdcff'); g.addColorStop(1, '#4fa6ff'); x.fillStyle = g; x.fillRect(0, 0, 1024, 1024);
+    x.translate(512, 470); for (let i = 0; i < 28; i++) { x.rotate(Math.PI * 2 / 28); x.fillStyle = i % 2 ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.08)'; x.beginPath(); x.moveTo(0, 0); x.lineTo(900, -70); x.lineTo(900, 70); x.fill(); }
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; sc.background = t; sc.fog = null; }
   sc.remove(sc.children.find((o) => o.isMesh && o.geometry.type === 'PlaneGeometry'));
   sc.children.filter((o) => o.isMesh && o.material === iceM).forEach((o) => o.visible = false);
