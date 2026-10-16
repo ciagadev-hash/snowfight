@@ -94,13 +94,17 @@ arena.on('feed', (f) => {
 let banT = 0; const banner = (txt, ms = 2600) => { const b = $('banner'); gt(b, txt); b.classList.add('on'); clearTimeout(banT); banT = setTimeout(() => b.classList.remove('on'), ms); };
 arena.on('phase', (p) => { if (p.phase === 'soon') banner('The ice is about to crack!', 2800); if (p.phase === 'shrink') banner('The ice is cracking!', 2600); if (p.phase === 'refreeze') banner('The ice refreezes', 2200); });
 arena.on('cashbreak', () => { toast('Bumped! Cash out reset'); });
-const note = CFG.live ? '' : '<p style="font-size:14px;margin:-6px 0 16px">Payouts switch on when $SNOWPVP launches. Until then every round is a warm-up.</p>';
+// first round clock (config.json firstRound, set by build.py --first-in); every round before it is practice
+const FR_AT = CFG.firstRound ? Date.parse(CFG.firstRound) : 0, frLeft = () => Math.max(0, FR_AT - Date.now());
+const mmss = (ms) => { const s = Math.ceil(ms / 1000); return String(Math.floor(s / 60)).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0'); };
+const note = () => CFG.live ? '' : `<p style="font-size:14px;margin:-6px 0 16px">${FR_AT && frLeft() > 0 ? `Practice round. The first round starts in ${mmss(frLeft())}.` : FR_AT ? 'Practice round. The first round is opening: watch @SnowPumpPvP for the go-live.' : 'Practice round. Payouts open with the first round.'}</p>`;
+if (FR_AT) { const box = $('fr'); box.hidden = false; const tick = () => { const l = frLeft(); if (l > 0) gt($('frT'), mmss(l)); else { $('frK').textContent = 'FIRST ROUND'; gt($('frT'), 'OPENING'); $('frS').textContent = 'Watch @SnowPumpPvP for the go-live'; } }; tick(); setInterval(tick, 250); }
 arena.on('fell', (f) => { saveRun({ out: 'splash', v: f.v, best: f.best, kills: f.kills }); });
 arena.on('fell', (f) => setTimeout(() => pop(`<h3 class="gt p" data-t="Splash!">Splash!</h3><p>${f.by ? `${esc(f.by)} shoved you into the sea.` : 'You rolled off the edge.'}</p>
   <div class="stats"><div><b>${money(f.v)}</b><small>LOST</small></div><div><b>${money(f.best)}</b><small>BEST</small></div><div><b>${f.kills}</b><small>KOS</small></div></div>
   <button class="btn" id="again">Play again</button><button class="btn wh" id="home">Back to the site</button>`), 1300));
 arena.on('cashout', (c) => { saveRun({ out: 'cash', v: c.v, best: c.best || c.v, kills: c.kills }); });
-arena.on('cashout', (c) => setTimeout(() => pop(`<h3 class="gt g" data-t="Cashed out!">Cashed out!</h3><p>Your snowball is safe in your wallet.</p><span class="gt g big" data-t="${money(c.v)}">${money(c.v)}</span>${note}
+arena.on('cashout', (c) => setTimeout(() => pop(`<h3 class="gt g" data-t="Cashed out!">Cashed out!</h3><p>${CFG.live ? 'Your snowball is safe in your wallet.' : 'Practice cash out. Nice run.'}</p><span class="gt g big" data-t="${money(c.v)}">${money(c.v)}</span>${note()}
   <button class="btn" id="again">Roll again</button><button class="btn wh" id="home">Back to the site</button>`), 900));
 
 // cash out: hold the button or E
@@ -162,7 +166,7 @@ function renderBoard() {
   $('podium').innerHTML = podium(list.slice(0, 3), tab); $('lbCol').textContent = COLS[tab];
   $('homePodium').innerHTML = podium((d.earners || []).slice(0, 3), 'earners');
   $('lbRows').innerHTML = list.length > 3 ? list.slice(3).map((o, i) => `<div class="tr"><em>${i + 4}</em><span class="pl"><span class="av" data-av="${o.col || '#3aa8ff'}"></span><span>${who(o)}</span></span><b>${val(tab, o)}</b></div>`).join('')
-    : `<div class="empty"><div class="avs"><div class="av" data-av="#2ee07e"></div><div class="av" data-av="#ff4f9e" data-face="happy"></div><div class="av" data-av="#3aa8ff"></div></div><h3>${list.length ? 'More spots open' : 'Season 1 starts at launch'}</h3><p>${list.length ? 'Cash out big and take one.' : 'Every cash out lands on this board when $SNOWPVP goes live. Get your warm-up in now.'}</p><button class="btn playBtn">Play now</button></div>`;
+    : `<div class="empty"><div class="avs"><div class="av" data-av="#2ee07e"></div><div class="av" data-av="#ff4f9e" data-face="happy"></div><div class="av" data-av="#3aa8ff"></div></div><h3>${list.length ? 'More spots open' : 'Season 1 starts with the first round'}</h3><p>${list.length ? 'Cash out big and take one.' : 'Every cash out lands on this board when $SNOWPVP goes live. Get your warm-up in now.'}</p><button class="btn playBtn">Play now</button></div>`;
   document.querySelectorAll('.playBtn').forEach((b) => { b.onclick = playNow; }); paintAvatars();
 }
 $('lbTabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; BOARD.tab = b.dataset.lb; $('lbTabs').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); renderBoard(); });

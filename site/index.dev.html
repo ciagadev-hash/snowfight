@@ -49,6 +49,10 @@ header{position:absolute;top:0;left:0;right:0;z-index:30}header .w{display:flex;
 .logo{font-size:clamp(64px,12.5vw,176px);transform:rotate(-2deg)}
 .tag{font-size:clamp(28px,4.2vw,56px);margin-top:4px}
 .hc p{margin:16px auto 24px;max-width:620px;font:900 clamp(16px,1.6vw,20px)/1.45 Nunito;color:var(--ink);text-shadow:0 0 3px #fff,0 0 12px #fff,0 0 24px rgba(255,255,255,.9)}
+.frc{display:inline-flex;align-items:center;gap:12px;margin:0 auto 10px;padding:9px 20px 10px 16px;border-radius:999px;background:#fff;box-shadow:0 0 0 4px var(--ink),0 7px 0 4px var(--inkS),0 16px 26px rgba(14,31,82,.25);pointer-events:auto}.frc[hidden]{display:none}
+.frc i{width:12px;height:12px;border-radius:50%;background:var(--p2);animation:frp 1.4s infinite}@keyframes frp{0%{box-shadow:0 0 0 0 rgba(255,63,147,.6)}100%{box-shadow:0 0 0 12px rgba(255,63,147,0)}}
+.frc small{font:900 14px Nunito;letter-spacing:.08em;color:var(--ink)}.frc .gt{font-size:34px;min-width:3.4em}.frc em{font:800 13px Nunito;font-style:normal;color:var(--text)}
+@media (max-width:640px){.frc{flex-wrap:wrap;justify-content:center;border-radius:24px;row-gap:2px;max-width:330px}.frc em{flex-basis:100%;text-align:center}}
 .hc .row{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
 .pot{position:absolute;right:24px;top:110px;z-index:5;background:#fff;border-radius:22px;padding:14px 20px 16px;box-shadow:0 0 0 4px var(--ink),0 7px 0 4px var(--inkS),0 18px 30px rgba(14,31,82,.25);text-align:center;transform:rotate(2deg)}
 .pot small{display:block;font:900 13px Nunito;letter-spacing:.08em;color:var(--text)}.pot .gt{font-size:40px}.pot em{display:block;font:900 13px Nunito;font-style:normal;color:var(--text)}
@@ -185,7 +189,7 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 <main class="page" data-page="home">
 <section class="hero" id="top"><canvas id="arena"></canvas><div id="tags"></div>
 <div class="pot"><small>PRIZE POT</small><span class="gt g" data-t="$SNOWPVP fees">$SNOWPVP fees</span><em>are up for grabs</em></div>
-<div class="hc"><h1 class="sr">SnowPump. Push. Grow. Cash out.</h1>
+<div class="hc"><div class="frc" id="fr" hidden><i></i><small id="frK">FIRST ROUND STARTS IN</small><span class="gt g" id="frT" data-t="10:00">10:00</span><em id="frS">Practice rounds until then</em></div><h1 class="sr">SnowPump. Push. Grow. Cash out.</h1>
 <div class="gt logo" data-t="SnowPump" aria-hidden="true">SnowPump</div><br>
 <div class="gt tag" aria-hidden="true" data-t="Push. Grow.">Push. Grow.</div> <div class="gt g tag" aria-hidden="true" data-t="Cash out!">Cash out!</div>
 <p>A snowball brawl on a melting ice floe. Every ball has a price, and you play to win the coin's fees.</p>
@@ -219,7 +223,7 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 <div class="tabs" id="lbTabs"><button class="on" data-lb="earners">Top earners</button><button data-lb="biggest">Biggest cash outs</button><button data-lb="kos">Most knockouts</button></div>
 <div class="podium" id="podium"></div>
 <div class="card table" id="lbTable"><div class="tr th"><span>#</span><span>Player</span><span id="lbCol">Cashed out</span></div><div id="lbRows"></div></div>
-<div class="card mine"><div class="mh"><h3>Your warm-up runs</h3><small>On this device</small></div>
+<div class="card mine"><div class="mh"><h3>Your practice runs</h3><small>On this device</small></div>
 <div class="stats4" id="mineStats"></div><div class="runs" id="mineRuns"></div></div>
 </section>
 </main>
@@ -244,10 +248,10 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 <div class="faq">
 <details><summary>Is it free to play?</summary><p>Yes. You only need a Solana wallet (Phantom, Solflare or Backpack) to sign in.</p></details>
 <details><summary>Does connecting cost anything?</summary><p>No. Connecting shares your public address only. SnowPump never asks you to sign a payment to play.</p></details>
-<details><summary>When do payouts start?</summary><p>When $SNOWPVP launches. Until then every round is a warm-up, and your best runs are saved on your device.</p></details>
+<details><summary>When do payouts start?</summary><p>With the first round, right after the $SNOWPVP launch. Until then every round is practice, and your best runs are saved on your device.</p></details>
 <details><summary>What happens if I fall in?</summary><p>You lose your snowball. If someone shoved you, they keep 60% of your snow and the rest goes back to the pot.</p></details>
 <details><summary>Why did my cash out reset?</summary><p>Any bump while you hold resets it. Find a quiet spot, ideally away from bigger balls.</p></details>
-<details><summary>Who else is on the floe?</summary><p>Right now you roll with practice bots, marked BOT. Live multiplayer opens with the launch.</p></details>
+<details><summary>Who else is on the floe?</summary><p>Right now you roll with practice bots, marked BOT. Live multiplayer opens with the first round.</p></details>
 <details><summary>Can I play on my phone?</summary><p>Yes. Use the stick to roll and the buttons to shove and cash out.</p></details>
 </div>
 <div class="more"><button class="btn playBtn">Play now</button></div>

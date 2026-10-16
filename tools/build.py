@@ -1,7 +1,8 @@
 # Build the release: dist/index.html (one self-contained file) + og.png + _worker.js, and snowpump-site.zip for Cloudflare Pages.
-#   python -I tools/build.py [CA]        links (X, Discord, pump.fun) and the CA live in site/config.json
+#   python -I tools/build.py [CA] [--first-in MIN]   links (X, Discord, pump.fun) and the CA live in site/config.json;
+#   --first-in sets the FIRST ROUND clock to MIN minutes after the build (UTC), practice rounds until then
 # The site's ES modules (sim, world, sfx, game) are inlined as data: URL modules behind the import map, so each keeps its own scope.
-import base64, io, pathlib, re, shutil, sys, zipfile, json
+import base64, io, pathlib, re, shutil, sys, zipfile, json, datetime
 from PIL import Image
 ROOT = pathlib.Path(__file__).resolve().parent.parent; SITE, DIST = ROOT / 'site', ROOT / 'dist'; DIST.mkdir(exist_ok=True)
 MODULES = ['sim', 'world', 'sfx', 'game']
@@ -14,7 +15,9 @@ m = re.search(r'<script type="importmap">(.*?)</script>', h, re.S); imap = json.
 for name in MODULES: imap['imports'][f'snowpump/{name}'] = 'data:text/javascript;base64,' + base64.b64encode(local((SITE / f'{name}.js').read_text(encoding='utf8')).encode()).decode()
 h = h.replace(m.group(0), '<script type="importmap">' + json.dumps(imap, separators=(',', ':')) + '</script>')
 cfg = dict(json.loads((SITE / 'config.json').read_text(encoding='utf8')), live=False)   # ca, x, discord, pumpfun links
-if len(sys.argv) > 1: cfg['ca'] = sys.argv[1]
+args = sys.argv[1:]
+if '--first-in' in args: i = args.index('--first-in'); at = datetime.datetime.now(datetime.timezone.utc).replace(microsecond=0) + datetime.timedelta(minutes=float(args[i + 1])); cfg['firstRound'] = at.isoformat().replace('+00:00', 'Z'); del args[i:i + 2]; print('FIRST ROUND at', cfg['firstRound'], '(UTC)')
+if args: cfg['ca'] = args[0]
 app = local((SITE / 'app.js').read_text(encoding='utf8'))
 h = h.replace('<script type="module" src="app.js"></script>', f'<script>window.SNOWPUMP={json.dumps(cfg)}</script>\n<script type="module">\n{app}\n</script>')
 (DIST / 'index.html').write_text(h, encoding='utf8', newline='\n')
