@@ -4,7 +4,7 @@
 <style>
 /* Snowfight showcase, 1920x1080, deterministic: window.renderAt(t) */
 *{box-sizing:border-box;margin:0}html,body{width:1920px;height:1080px;overflow:hidden;background:#cfe9ff;font-family:Sniglet,sans-serif;color:#0d2b45}
-#cv{position:absolute;inset:0;width:1920px;height:1080px}#ui{position:absolute;inset:0;pointer-events:none}
+#cv{position:absolute;inset:0;width:1920px;height:1080px;filter:saturate(1.4) contrast(1.06)}#ui{position:absolute;inset:0;pointer-events:none}
 .tg{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:3px}
 .tg b{background:#fff;border-radius:999px;padding:5px 14px;font:800 22px Sniglet;box-shadow:0 5px 14px rgba(13,43,69,.25)}.tg span{font:800 17px Sniglet;color:#fff;text-shadow:0 2px 4px rgba(13,43,69,.7)}
 .tg.me b{background:#ff4d5e;color:#fff;font-size:28px}.tg.me span{font-size:20px}
@@ -42,14 +42,14 @@ const R = new THREE.WebGLRenderer({ canvas: document.getElementById('cv'), antia
 R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .92; R.shadowMap.enabled = true; R.shadowMap.type = THREE.PCFSoftShadowMap;
 const sc = new THREE.Scene(), cam = new THREE.PerspectiveCamera(34, W / H, .1, 400);
 sc.environment = new THREE.PMREMGenerator(R).fromScene(new RoomEnvironment(), .02).texture; sc.environmentIntensity = .5;
-{ const c = document.createElement('canvas'); c.width = 16; c.height = 512; const x = c.getContext('2d'), g = x.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, '#6fb7ff'); g.addColorStop(.45, '#b9dcff'); g.addColorStop(.62, '#ffe6d6'); g.addColorStop(1, '#ffd2bd'); x.fillStyle = g; x.fillRect(0, 0, 16, 512); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; sc.background = t; }
+{ const c = document.createElement('canvas'); c.width = 16; c.height = 512; const x = c.getContext('2d'), g = x.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, '#3f9bff'); g.addColorStop(.45, '#a8d6ff'); g.addColorStop(.62, '#ffe6d6'); g.addColorStop(1, '#ffd2bd'); x.fillStyle = g; x.fillRect(0, 0, 16, 512); const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; sc.background = t; }
 sc.fog = new THREE.Fog(0xffe2d2, 80, 200);
 sc.add(new THREE.HemisphereLight(0xd6ebff, 0x3f7ea6, .85));
 const sun = new THREE.DirectionalLight(0xffecd6, 3); sun.position.set(-20, 30, 16); sun.castShadow = true; sun.shadow.mapSize.set(2048, 2048); sun.shadow.radius = 5; sun.shadow.bias = -.0005;
 Object.assign(sun.shadow.camera, { left: -34, right: 34, top: 34, bottom: -34, near: 1, far: 100 }); sc.add(sun, sun.target); const rim = new THREE.DirectionalLight(0x9fd2ff, 1.2); rim.position.set(14, 8, -18); sc.add(rim);
 const grain = () => { const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); x.fillStyle = '#808080'; x.fillRect(0, 0, 256, 256); for (let i = 0; i < 4000; i++) { const v = 90 + rnd() * 165 | 0; x.fillStyle = `rgb(${v},${v},${v})`; x.beginPath(); x.arc(rnd() * 256, rnd() * 256, rnd() * 1.6 + .3, 0, 7); x.fill(); } const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(4, 4); return t; };
 const bump = grain();
-const sea = new THREE.Mesh(new THREE.PlaneGeometry(700, 700), new THREE.MeshPhysicalMaterial({ color: 0x0a5c7a, roughness: .38, clearcoat: .2, envMapIntensity: .25 })); sea.rotation.x = -Math.PI / 2; sea.position.y = -1.4; sea.receiveShadow = true; sc.add(sea);
+const sea = new THREE.Mesh(new THREE.PlaneGeometry(700, 700), new THREE.MeshPhysicalMaterial({ color: 0x0796b8, roughness: .32, clearcoat: .2, envMapIntensity: .25 })); sea.rotation.x = -Math.PI / 2; sea.position.y = -1.4; sea.receiveShadow = true; sc.add(sea);
 const iceM = new THREE.MeshPhysicalMaterial({ color: 0xd9efff, roughness: .55, sheen: 1, sheenColor: new THREE.Color(0x9fd6ff), flatShading: true });
 for (let i = 0; i < 10; i++) { const g = new THREE.IcosahedronGeometry(1, 3), p = g.attributes.position; for (let k = 0; k < p.count; k++) { const v = new THREE.Vector3().fromBufferAttribute(p, k); v.multiplyScalar(.7 + noise3(v.x * 1.6 + i, v.y * 1.6, v.z * 1.6) * .7); if (v.y < 0) v.y *= .2; p.setXYZ(k, v.x, v.y, v.z); } g.computeVertexNormals();
   const m = new THREE.Mesh(g, iceM), a = i / 10 * Math.PI * 2 + rnd(), d = 95 + rnd() * 40; m.scale.set(7 + rnd() * 9, 5 + rnd() * 7, 7 + rnd() * 7); m.position.set(Math.cos(a) * d, -1.4, Math.sin(a) * d); sc.add(m); }
@@ -73,13 +73,13 @@ const bodyM = new THREE.MeshPhysicalMaterial({ color: 0xffffff, vertexColors: tr
 const eyeM = new THREE.MeshPhysicalMaterial({ color: 0x0b1626, roughness: .05, clearcoat: 1 }), shineM = new THREE.MeshBasicMaterial({ color: 0xffffff }), blushM = new THREE.MeshBasicMaterial({ color: 0xff8fa3, transparent: true, opacity: .6 });
 const eyeG = new THREE.SphereGeometry(.15, 20, 14), shG = new THREE.SphereGeometry(.05, 10, 8), sh2G = new THREE.SphereGeometry(.022, 8, 6), blG = new THREE.CircleGeometry(.11, 16), mouthG = new THREE.TorusGeometry(.11, .03, 8, 20, Math.PI), oG = new THREE.SphereGeometry(.1, 16, 12);
 const capG = new THREE.SphereGeometry(1.03, 40, 20, 0, Math.PI * 2, 0, Math.PI * .36), bandG = new THREE.TorusGeometry(.92, .13, 12, 40), pomG = new THREE.IcosahedronGeometry(.24, 2);
-const hatMs = {}; const hatM = (c) => hatMs[c] || (hatMs[c] = new THREE.MeshPhysicalMaterial({ color: c, roughness: .65, sheen: 1, sheenColor: new THREE.Color(c) }));
+const hatMs = {}; const hatM = (c) => hatMs[c] || (hatMs[c] = new THREE.MeshPhysicalMaterial({ color: c, roughness: .45, clearcoat: .4, emissive: c, emissiveIntensity: .12 }));
 function ball(col) { const g = new THREE.Group(), spin = new THREE.Group(), body = new THREE.Mesh(bodyG, bodyM); body.castShadow = true; spin.add(body);
   const F = new THREE.Group(); for (const s of [-1, 1]) { const e = new THREE.Mesh(eyeG, eyeM); e.scale.set(1, 1.35, .5); e.position.set(s * .3, .14, .96); const h = new THREE.Mesh(shG, shineM); h.position.set(s * .3 + .05, .22, 1.03); const h2 = new THREE.Mesh(sh2G, shineM); h2.position.set(s * .3 - .04, .07, 1.03); const b = new THREE.Mesh(blG, blushM); b.position.set(s * .5, -.08, .87); b.lookAt(s * 3, -.4, 5); F.add(e, h, h2, b); }
   const smile = new THREE.Mesh(mouthG, eyeM); smile.rotation.z = Math.PI; smile.position.set(0, -.1, .99); const oh = new THREE.Mesh(oG, eyeM); oh.scale.set(1, 1.3, .5); oh.position.set(0, -.2, .97); oh.visible = false; F.add(smile, oh);
   const hm = hatM(col), hat = new THREE.Group(), cap = new THREE.Mesh(capG, hm), band = new THREE.Mesh(bandG, hm), pom = new THREE.Mesh(pomG, pileM); band.rotation.x = Math.PI / 2; band.position.y = .42; pom.position.y = 1.12; cap.castShadow = true; hat.add(cap, band, pom); hat.rotation.z = -.12;
   g.add(spin, F, hat); g.userData = { spin, smile, oh }; sc.add(g); return g; }
-const COLS = ['#2fd3a0', '#ffc233', '#3d6bff', '#ff7a2f', '#b45cff', '#00b7ff', '#ff5fc8', '#7ed957', '#ffd23f', '#5a7bff', '#ff9ec7', '#3fe0d0'];
+const COLS = ['#00e0a0', '#ffc000', '#2f5bff', '#ff6a00', '#a63dff', '#00aaff', '#ff3dbb', '#5fe03a', '#ffe000', '#4060ff', '#ff6fae', '#00d8c8'];
 const NAMES = ['Mochi', 'Blizz', 'Frosty', 'Slushie', 'Pebble', 'Igloo', 'Flurry', 'Yeti', 'Nippy', 'Drift', 'Sleet', 'Chill', 'Powder', 'Glacier', 'Brrr', 'Puffin', 'Snowbae', 'Hailey', 'Iceman', 'Tundra', 'Avalanche', 'Mittens', 'Krill', 'Polar', 'Cocoa', 'Sledd', 'Penguin', 'Wisp', 'Fjord', 'Kelvin', 'Nova', 'Orca', 'Biscuit', 'Juno', 'Ziggy', 'Lumi', 'Tofu', 'Dash', 'Frost', 'Pip', 'Maple', 'Sora', 'Rex', 'Echo', 'Gus', 'Yuki', 'Bram'];
 // every player: a deterministic wander with a join time; a few have scripted fates
 const P = [];
