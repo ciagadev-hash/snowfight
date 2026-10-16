@@ -1,0 +1,58 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>*{margin:0}html,body{background:#060a1c;overflow:hidden}#cv{display:block}</style></head><body><canvas id="cv"></canvas>
+<script type="module">
+/* Snowfight brand renders, glossy-jelly snowballs with faces. ?a=banner (1500x500) | og (1200x630) | pfp (1000x1000) */
+import * as THREE from 'three';
+import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
+import { BokehPass } from 'three/addons/postprocessing/BokehPass.js';
+import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
+const Q = new URLSearchParams(location.search), A = Q.get('a') || 'banner', [W, H] = { banner: [1500, 500], og: [1200, 630], pfp: [1000, 1000] }[A];
+let sd = +(Q.get('seed') || 11); const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+const R = new THREE.WebGLRenderer({ canvas: document.getElementById('cv'), antialias: true, preserveDrawingBuffer: true }); R.setPixelRatio(2); R.setSize(W, H); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .92;
+const sc = new THREE.Scene(), cam = new THREE.PerspectiveCamera(A === 'pfp' ? 30 : 28, W / H, .1, 200); cam.position.set(0, 0, 22);
+sc.environment = new THREE.PMREMGenerator(R).fromScene(new RoomEnvironment(), .02).texture; sc.environmentIntensity = .8;
+// night-sky backdrop: deep navy with soft blue and violet glows
+{ const c = document.createElement('canvas'); c.width = 1024; c.height = 512; const x = c.getContext('2d'); const g = x.createLinearGradient(0, 0, 0, 512); g.addColorStop(0, '#0b1438'); g.addColorStop(1, '#03050f'); x.fillStyle = g; x.fillRect(0, 0, 1024, 512);
+  for (const [cx, cy, r, col] of [[260, 220, 300, 'rgba(70,120,255,.35)'], [760, 300, 340, 'rgba(150,80,255,.28)'], [520, 120, 260, 'rgba(60,200,255,.18)']]) { const rg = x.createRadialGradient(cx, cy, 0, cx, cy, r); rg.addColorStop(0, col); rg.addColorStop(1, 'rgba(0,0,0,0)'); x.fillStyle = rg; x.fillRect(0, 0, 1024, 512); }
+  const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; sc.background = t; }
+sc.add(new THREE.AmbientLight(0x8fa8ff, .35)); const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(-6, 8, 10); sc.add(key);
+const rim = new THREE.DirectionalLight(0x7fb6ff, 2.4); rim.position.set(8, 4, -6); sc.add(rim); const rim2 = new THREE.DirectionalLight(0xff8fd8, 1.4); rim2.position.set(-9, -3, -5); sc.add(rim2);
+// frosty grain for the snow look under the gloss
+const frost = (() => { const c = document.createElement('canvas'); c.width = c.height = 512; const x = c.getContext('2d'); x.fillStyle = '#808080'; x.fillRect(0, 0, 512, 512); for (let i = 0; i < 9000; i++) { const v = 100 + rnd() * 155 | 0; x.fillStyle = `rgb(${v},${v},${v})`; x.beginPath(); x.arc(rnd() * 512, rnd() * 512, rnd() * 2.2 + .4, 0, 7); x.fill(); } const t = new THREE.CanvasTexture(c); t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(3, 2); return t; })();
+const glowT = (() => { const c = document.createElement('canvas'); c.width = c.height = 256; const x = c.getContext('2d'); const g = x.createRadialGradient(128, 128, 0, 128, 128, 128); g.addColorStop(0, 'rgba(255,255,255,.9)'); g.addColorStop(.35, 'rgba(255,255,255,.25)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 256, 256); return new THREE.CanvasTexture(c); })();
+const COLS = ['#2f8dff', '#19d3ff', '#ff3d8e', '#ffb31a', '#7a4dff', '#21e28a', '#ff6a2b', '#3a5bff', '#bfe6ff'];
+const eyeW = new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .15, clearcoat: 1 }), eyeK = new THREE.MeshPhysicalMaterial({ color: 0x0a0d18, roughness: .1, clearcoat: 1 }), hl = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const mouthM = new THREE.MeshPhysicalMaterial({ color: 0x1a0f22, roughness: .3, clearcoat: 1 }), cheekM = new THREE.MeshBasicMaterial({ color: 0xff7fb0, transparent: true, opacity: .55 });
+function ball(r, col, pos, look = [0, 0], mood = 0) {
+  const g = new THREE.Group(), c = new THREE.Color(col);
+  const body = new THREE.Mesh(new THREE.SphereGeometry(1, 96, 64), new THREE.MeshPhysicalMaterial({ color: c, roughness: .22, roughnessMap: frost, clearcoat: 1, clearcoatRoughness: .03, iridescence: .25, iridescenceIOR: 1.35, emissive: c.clone().multiplyScalar(.55), emissiveIntensity: .12, bumpMap: frost, bumpScale: .35 }));
+  const glow = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowT, color: c, transparent: true, opacity: .55, blending: THREE.AdditiveBlending, depthWrite: false })); glow.scale.setScalar(3.0); glow.position.z = -.6; glow.material.opacity = .32;
+  g.add(glow, body);
+  // face: big glossy eyes with highlights, a small mouth, blush
+  const face = new THREE.Group(), ex = .34, ey = .16;
+  for (const s of [-1, 1]) { const e = new THREE.Mesh(new THREE.SphereGeometry(.23, 32, 24), eyeW); e.scale.set(1, 1.15, .45); e.position.set(s * ex, ey, .93);
+    const p = new THREE.Mesh(new THREE.SphereGeometry(.16, 32, 24), eyeK); p.scale.set(1, 1.1, .5); p.position.set(s * ex + look[0] * .05, ey + look[1] * .05, 1.0);
+    const h = new THREE.Mesh(new THREE.SphereGeometry(.045, 16, 12), hl); h.position.set(s * ex + .05, ey + .07, 1.06);
+    const ck = new THREE.Mesh(new THREE.CircleGeometry(.1, 24), cheekM); ck.position.set(s * .55, -.12, .86); ck.lookAt(s * 2, -.5, 4); face.add(e, p, h, ck); }
+  const m = mood === 1 ? new THREE.Mesh(new THREE.SphereGeometry(.09, 24, 16), mouthM) : new THREE.Mesh(new THREE.TorusGeometry(.1, .03, 12, 32, Math.PI), mouthM);
+  if (mood === 1) { m.scale.set(1, 1.2, .5); m.position.set(0, -.18, .97); } else { m.rotation.z = Math.PI; m.position.set(0, -.12, .99); }
+  face.add(m); face.rotation.set(-look[1] * .35, look[0] * .45, 0); g.add(face);
+  g.scale.setScalar(r); g.position.set(...pos); sc.add(g); return g;
+}
+// cast: one hero ball in front, a crowd behind, tiny ones far back
+const L = A === 'pfp' ? [[3.6, 0, [0, -.2, 2]]] : A === 'og' ? [[2.6, 0, [-1.2, -.3, 3]], [1.7, 2, [3.6, .7, 0]], [1.3, 3, [6.6, -1.4, -1]], [1.1, 4, [-5.6, 1.6, -1]], [.9, 5, [-8.2, -1.5, -2]], [.8, 6, [1.6, 3.4, -3]], [.7, 1, [-3, -3.6, -2]], [.55, 7, [8.6, 2.4, -4]]]
+  : [[2.15, 0, [0, -.2, 3]], [1.45, 2, [-4.2, .6, 1]], [1.3, 3, [4.4, -.6, 1.2]], [1.0, 4, [-8.4, -1.3, 0]], [1.05, 5, [8.6, 1.2, 0]], [.75, 6, [-12.6, 1.4, -1]], [.8, 1, [12.8, -1.5, -1]], [.6, 7, [-2.2, 2.6, -3]], [.55, 8, [2.6, 2.9, -3.5]], [.5, 2, [-16.4, -2.2, -3]], [.5, 3, [16.6, 2.4, -3]], [.45, 5, [-6.4, -3.1, -2.5]], [.4, 4, [6.2, 3.2, -4]]];
+L.forEach(([r, ci, p], i) => ball(r, COLS[ci], p, [(-p[0]) * .06 + (rnd() - .5) * .4, (-p[1]) * .08 + (rnd() - .5) * .3], i % 3 === 1 ? 1 : 0));
+// far blobs and bokeh flakes
+for (let i = 0; i < (A === 'pfp' ? 14 : 40); i++) ball(.15 + rnd() * .3, COLS[i % COLS.length], [(rnd() - .5) * 46, (rnd() - .5) * 18, -10 - rnd() * 14], [0, 0], i % 2);
+const bk = new THREE.Group(); for (let i = 0; i < 260; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: glowT, color: new THREE.Color(rnd() < .7 ? '#bfe2ff' : COLS[i % COLS.length]), transparent: true, opacity: .25 + rnd() * .6, blending: THREE.AdditiveBlending, depthWrite: false }));
+  const z = -18 + rnd() * 30; s.position.set((rnd() - .5) * 60, (rnd() - .5) * 24, z); s.scale.setScalar(.08 + rnd() * (z > 5 ? .9 : .35)); bk.add(s); } sc.add(bk);
+const comp = new EffectComposer(R); comp.addPass(new RenderPass(sc, cam));
+comp.addPass(new BokehPass(sc, cam, { focus: 19, aperture: .0016, maxblur: .008 }));
+comp.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), .32, .5, .9)); comp.addPass(new OutputPass());
+comp.render(); requestAnimationFrame(() => { comp.render(); document.body.dataset.ready = '1'; });
+</script></body></html>
