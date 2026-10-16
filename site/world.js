@@ -1,4 +1,4 @@
-// Snowfight world: the arctic scene, the snowball characters and every effect, drawn from a running sim.
+// SnowPump world: the arctic scene, the snowball characters and every effect, drawn from a running sim.
 // Everything that repeats is instanced, so the whole arena is about 25 draw calls. No shadow maps: soft blob shadows.
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
@@ -124,7 +124,7 @@ export function createWorld(canvas, o = {}) {
       void main(){
         vec2 p = vW.xz; float d = length(p), te = uFR - d;
         float n = fbm(p * .09) * .6 + fbm(p * .35 + 3.) * .4;
-        vec3 col = mix(vec3(.86, .93, 1.), vec3(.95, .98, 1.), smoothstep(.3, .66, n));
+        vec3 col = mix(vec3(.8, .89, .99), vec3(.93, .965, 1.), smoothstep(.3, .66, n));
         float e = .6, hx = fbm((p + vec2(e, 0.)) * .35) - fbm((p - vec2(e, 0.)) * .35), hz = fbm((p + vec2(0., e)) * .35) - fbm((p - vec2(0., e)) * .35);
         col *= 1. + (hx * uSun.x + hz * uSun.z) * -.22;
         col = mix(vec3(.72, .89, 1.), col, smoothstep(.0, .9, te));
@@ -271,7 +271,7 @@ export function createWorld(canvas, o = {}) {
   const put = (n, mat) => { const P = parts[n.userData.part]; P.m.setMatrixAt(P.i, n.matrixWorld); if (mat) P.m.setColorAt(P.i, mat); P.i++; };
   const putM = (name, m, col) => { const P = parts[name]; P.m.setMatrixAt(P.i, m); if (col) P.m.setColorAt(P.i, col); P.i++; return P.i - 1; };
 
-  function rigFor(e) { let g = W.rigs.get(e.id); if (!g) { g = { e, col: new THREE.Color(e.col), q: new THREE.Quaternion(), sq: 0, sqv: 0, vr: e.r, blinkAt: 1 + (e.id * 1.37 % 3), blink: 1, happy: 0, hurt: 0, angry: 0, splashed: false, yaw: e.face, seen: W.time, wob: 0 }; W.rigs.set(e.id, g); } return g; }
+  function rigFor(e) { let g = W.rigs.get(e.id); if (!g) { g = { e, col: new THREE.Color(e.col), q: new THREE.Quaternion(), sq: 0, sqv: 0, air: 0, vy: 0, vr: e.r, blinkAt: 1 + (e.id * 1.37 % 3), blink: 1, happy: 0, hurt: 0, angry: 0, splashed: false, yaw: e.face, seen: W.time, wob: 0 }; W.rigs.set(e.id, g); } return g; }
   W.kick = (e, s) => { const g = W.rigs.get(e.id); if (g) g.sqv += s; };
 
   // ---- sim events -> effects
@@ -279,7 +279,8 @@ export function createWorld(canvas, o = {}) {
     const e = ev.e, g = e && W.rigs.get(e.id);
     if (ev.k === 'hit') { const s = ev.s; W.puff(ev.x, .5, ev.z, Math.min(26, 4 + s * 1.6), 2 + s * .3, .16 + Math.min(.2, s * .015), 2.5); const a = W.rigs.get(ev.a.id), b = W.rigs.get(ev.b.id);
       if (a) { a.sqv += Math.min(5, s * .35); } if (b) { b.sqv += Math.min(5, s * .35); }
-      if (ev.dash) { W.ringFx(ev.x, .08, ev.z, .4, 3.4 + s * .12, .45, 0xffffff, .9); const v = ev.b.hitBy === ev.a ? b : a; if (v) v.hurt = .7; const at = v === b ? a : b; if (at) at.angry = .5; } }
+      if (ev.dash) { W.ringFx(ev.x, .08, ev.z, .4, 3.4 + s * .12, .45, 0xffffff, .9); const v = ev.b.hitBy === ev.a ? b : a; if (v) { v.hurt = .8; v.vy = Math.max(v.vy, 3.5 + Math.min(7, s * .28)); v.spin = 1; } const at = v === b ? a : b; if (at) at.angry = .5;
+        W.puff(ev.x, .9, ev.z, 14, 5 + s * .15, .22, 4.5); } }
     else if (ev.k === 'dash' && g) { g.angry = .55; g.sqv -= 2.2; W.puff(e.x - ev.dx * e.r, .3, e.z - ev.dz * e.r, 10, 3, .2, 1.5); }
     else if (ev.k === 'pile') { const pg = W.rigs.get(e.id); for (let i = 0; i < 6; i++) snowP.add({ x: ev.x, y: .3, z: ev.z, vx: (e.x - ev.x) * 3 + (rnd() - .5) * 3, vy: 2 + rnd() * 3, vz: (e.z - ev.z) * 3 + (rnd() - .5) * 3, g: 12, drag: 3, floor: .05, s: .14 + rnd() * .1, life: .35 + rnd() * .2, c: SNOWC[i % 3], grow: true }); if (pg) { pg.sqv += .9; pg.happy = Math.max(pg.happy, .35); } }
     else if (ev.k === 'land' && g) { g.sqv += 4; W.puff(e.x, .1, e.z, 16, 4.5, .26, 1.2); W.ringFx(e.x, .07, e.z, e.r * .8, e.r * 3, .5, 0xffffff, .7); }
@@ -305,18 +306,20 @@ export function createWorld(canvas, o = {}) {
       // squash spring
       g.sqv += (-g.sq * 160 - g.sqv * 11) * dt; g.sq += g.sqv * dt; g.sq = cl(g.sq, -.35, .4);
       g.happy -= dt; g.hurt -= dt; g.angry -= dt;
+      if (g.air > 0 || g.vy > 0) { g.vy -= 30 * dt; g.air += g.vy * dt; if (g.air <= 0) { g.air = 0; if (g.vy < -4 && e.st === 'live') { g.sqv += Math.min(4, -g.vy * .35); W.puff(e.x, .1, e.z, 8, 3, .2, 1); } g.vy = 0; g.spin = 0; } }
       if (W.time > g.blinkAt) { g.blinkAt = W.time + 2.2 + ((e.id * 7.13 + W.time * 3.1) % 2.6); g.blinkS = W.time; } const bk = W.time - (g.blinkS || -9); g.blink = bk < .13 ? Math.abs(bk / .065 - 1) * .9 + .1 : 1;
       const sp = Math.hypot(e.vx, e.vz);
       let y = r * .94, tip = 0, scale = r, vis = true, faceYaw = e.face;
       if (e.st === 'spawn') { const k = cl(age / SPAWN_T); y += 16 * (1 - k * k); }
-      if (e.st === 'fall') { const k = age; y = r * .94 - (k > .18 ? 0 : 0) - 11 * Math.max(0, k - .12) ** 2; tip = Math.min(1.9, k * 2.6); faceYaw = g.fallDir ?? faceYaw;
+      if (e.st === 'fall') { const k = age; y = r * .94 - 11 * Math.max(0, k - .12) ** 2; tip = Math.min(.55, k * 1.4); faceYaw = g.fallDir ?? faceYaw;
         if (!g.splashed && y < SEA_Y + r * .2) { g.splashed = true; W.splash(x, z, cl(.7 + r * .25, .7, 1.6)); if (W.onSplash) W.onSplash(e); }
         if (y < SEA_Y - r * 2.2) vis = false; }
       if (e.st === 'cashed') { const k = cl(age / .55); scale = r * (1 - ease.out(k)) * (1 + Math.sin(k * 9) * .1); y += k * 2.5; faceYaw += k * 12; if (k >= 1) vis = false; }
       if (!vis) continue;
+      y += g.air;
       // rolling: the snow turns under the face, which keeps looking where it goes
-      if (sp > .05 && e.st !== 'cashed') { tmpV.set(e.vz, 0, -e.vx).normalize(); g.q.premultiply(tmpQ.setFromAxisAngle(tmpV, sp * dt / r)); }
-      let dy = faceYaw - camYaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); const want = e.st === 'fall' ? faceYaw : camYaw + cl(dy * (1 - W.faceCam), -W.faceMax, W.faceMax); g.yaw = angLerp(g.yaw, want, Math.min(1, dt * 12));
+      if (sp > .05 && e.st !== 'cashed') { tmpV.set(e.vz, 0, -e.vx).normalize(); g.q.premultiply(tmpQ.setFromAxisAngle(tmpV, sp * dt / r * (g.spin ? 2.2 : 1))); }
+      let dy = faceYaw - camYaw; dy = Math.atan2(Math.sin(dy), Math.cos(dy)); const want = camYaw + cl(dy * (1 - W.faceCam), -W.faceMax, W.faceMax); g.yaw = angLerp(g.yaw, want, Math.min(1, dt * 12));
       const edge = W.FR - Math.hypot(x, z) - r * .55, teeter = e.st === 'live' && edge < 0;
       if (teeter) g.wob += dt * 22;
       // expression
@@ -324,7 +327,7 @@ export function createWorld(canvas, o = {}) {
       const s1 = 1 + g.sq * .55, s2 = 1 - g.sq;
       root.position.set(x, y + (e.st === 'live' ? Math.abs(Math.sin(W.time * 9 + e.id)) * Math.min(.08, sp * .006) * r : 0), z); root.scale.set(scale * s1, scale * s2, scale * s1); root.rotation.set(0, 0, 0);
       body.quaternion.copy(g.q);
-      head.rotation.y = g.yaw; head.rotation.x = Math.min(.22, sp * .02) + tip + (teeter ? Math.sin(g.wob) * .12 : 0);
+      head.rotation.y = g.yaw; head.rotation.x = Math.min(.22, sp * .02) + tip + (teeter ? Math.sin(g.wob) * .12 : 0) - Math.min(.5, g.air * .25);
       // face pieces per expression
       const wide = expr === 'scared' ? 1.18 : 1, sqz = expr === 'angry' ? .78 : 1;
       eyes.forEach((n) => { n.scale.set(wide, g.blink * wide * sqz, wide); n.visible = expr !== 'happy' && expr !== 'hurt'; });
@@ -339,7 +342,7 @@ export function createWorld(canvas, o = {}) {
       for (const n of [smile, oh, grin, ...brows, ...arcs]) if (n.visible) put(n);
       put(cap, g.col); put(band, g.col); put(pom);
       // shadow, shield, cash ring live on the ice
-      if (e.st !== 'fall') { const air = e.st === 'spawn' ? 1 - cl(age / SPAWN_T) : 0, ss = r * (2.3 - air * 1.2) * (1 + g.sq * .3); dummy.position.set(x, .03, z); dummy.rotation.set(0, 0, 0); dummy.scale.set(ss, 1, ss); dummy.updateMatrix(); putM('shadow', dummy.matrix); }
+      if (e.st !== 'fall') { const air = e.st === 'spawn' ? 1 - cl(age / SPAWN_T) : 0, ss = r * (2.3 - air * 1.2) * (1 + g.sq * .3) / (1 + g.air * .35); dummy.position.set(x, .03, z); dummy.rotation.set(0, 0, 0); dummy.scale.set(ss, 1, ss); dummy.updateMatrix(); putM('shadow', dummy.matrix); }
       if (e.shield > 0 && e.st === 'live') { dummy.position.set(x, y, z); dummy.scale.setScalar(r * 1.3 * (1 + Math.sin(W.time * 8) * .02)); dummy.updateMatrix(); putM('shield', dummy.matrix); }
       if (e.cash > 0 && e.st === 'live') { dummy.position.set(x, .06, z); dummy.scale.setScalar(r * 1.55); dummy.updateMatrix(); const i = putM('ring', dummy.matrix); progA.array[i] = e.cash / 3; progA.needsUpdate = true; }
     }
@@ -352,6 +355,8 @@ export function createWorld(canvas, o = {}) {
     // keep the sun and clouds with the camera
     sky.position.copy(cam.position); W.flakes.material.uniforms.uPx.value = R.getPixelRatio() * (R.domElement.height / R.getPixelRatio()) / 900;
   };
+  // start a fresh scene (the film cuts between independent shots)
+  W.reset = () => { W.rigs.clear(); for (const P of [snowP, chunkP, confP, ringP]) { P.a.length = 0; P.update(0); } rip.forEach((r) => r.set(0, 0, -99, 0)); W.time = 0; sd = 1; lastFR = W.FR; chunkAcc = 0; };
   W.setSize = (w, h, dpr) => { R.setPixelRatio(dpr); R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); W.w = w; W.h = h; };
   W.render = () => { U.uCam.value = cam.position; R.render(scene, cam); };
   const pv = new THREE.Vector3();

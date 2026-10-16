@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
-<title>Snowfight · Push. Grow. Cash out.</title>
+<title>SnowPump · Push. Grow. Cash out.</title>
 <meta name="description" content="A snowball brawl on a melting ice floe. Push others off, scoop snow, grow your ball and cash it out. The pot is paid by creator fees.">
-<meta property="og:title" content="Snowfight"><meta property="og:description" content="Push. Grow. Cash out."><meta property="og:image" content="og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="SnowPump"><meta property="og:description" content="Push. Grow. Cash out."><meta property="og:image" content="og.png"><meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#2f8dff">
 <link rel="icon" href="__ICON__">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -38,6 +38,7 @@ nav a{padding:8px 16px;border-radius:12px;font:900 16px Nunito}nav a:hover{backg
 .hero{position:relative;height:100vh;height:100svh;min-height:640px;overflow:hidden}
 #arena{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #tags{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 45%,transparent 55%,rgba(21,60,140,.28))}
 .ptag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:1px;will-change:transform;transform-origin:50% 100%}
 .ptag b{font:700 16px/1 DynaPuff;color:#fff;background:var(--ink);border-radius:999px;padding:5px 11px 6px;box-shadow:0 3px 0 var(--inkS),0 6px 12px rgba(14,31,82,.25)}
 .ptag span{font:900 13px/1.2 Nunito;color:#fff;text-shadow:0 1px 0 var(--ink),1px 0 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),0 2px 3px rgba(14,31,82,.6)}
@@ -128,14 +129,14 @@ footer{text-align:center;color:var(--text);font-weight:800;padding:80px 20px 50p
   .hb{left:auto;right:18px;transform:none;flex-direction:column-reverse;align-items:flex-end;bottom:20px;gap:20px}.cash{min-width:0;width:172px;height:64px;padding:0 10px}.cash span{font-size:16px}.rb{width:86px;height:86px}.rb svg{width:110px;height:110px}
   .hl{top:auto;bottom:auto;left:auto;right:16px;top:186px;display:none}}
 </style></head><body>
-<header><div class="w"><a class="lg" href="#top"><img src="__PFP__" alt=""><span class="gt" data-t="Snowfight">Snowfight</span></a>
+<header><div class="w"><a class="lg" href="#top"><img src="__PFP__" alt=""><span class="gt" data-t="SnowPump">SnowPump</span></a>
 <nav><a href="#how">How to play</a><a href="#money">The pot</a><a href="#coin">$SNOW</a></nav>
 <button class="btn wh sm" id="wBtn">Connect wallet</button></div></header>
 
 <section class="hero" id="top"><canvas id="arena"></canvas><div id="tags"></div>
 <div class="pot"><small>PRIZE POT</small><span class="gt g" data-t="100%">100%</span><em>of creator fees</em></div>
-<div class="hc"><h1 class="sr">Snowfight. Push. Grow. Cash out.</h1>
-<div class="gt logo" data-t="Snowfight" aria-hidden="true">Snowfight</div><br>
+<div class="hc"><h1 class="sr">SnowPump. Push. Grow. Cash out.</h1>
+<div class="gt logo" data-t="SnowPump" aria-hidden="true">SnowPump</div><br>
 <div class="gt tag" aria-hidden="true" data-t="Push. Grow.">Push. Grow.</div> <div class="gt g tag" aria-hidden="true" data-t="Cash out!">Cash out!</div>
 <p>A snowball brawl on a melting ice floe. Every ball has a price, and the pot is paid by creator fees.</p>
 <div class="row"><button class="btn" id="play">Play now</button><a class="btn wh" href="#how">How to play</a></div></div></section>
@@ -155,7 +156,7 @@ footer{text-align:center;color:var(--text);font-weight:800;padding:80px 20px 50p
 </div></div></section>
 
 <section class="s" id="coin" style="padding-bottom:0"><div class="w"><div class="coin card"><img src="__PFP__" alt=""><span class="gt b" data-t="$SNOW">$SNOW</span><code id="ca">CA: launching on pump.fun</code><button class="btn sm" id="caB">Copy</button></div></div></section>
-<footer>Snowfight · Launching on pump.fun · Memecoins are risky. Nothing here is financial advice.</footer>
+<footer>SnowPump · Launching on pump.fun · Memecoins are risky. Nothing here is financial advice.</footer>
 
 <div class="hud" id="hud"><div class="vig" id="vig"></div>
 <div class="hv"><small>YOUR SNOWBALL</small><span class="gt g" id="hV" data-t="$1.60">$1.60</span></div>

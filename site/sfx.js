@@ -1,7 +1,7 @@
-// Snowfight sounds: everything is synthesized with WebAudio, no files. Starts on the first user gesture.
+// SnowPump sounds: everything is synthesized with WebAudio, no files. Starts on the first user gesture.
 export function createSfx() {
   let ac = null, out = null, noiseBuf = null, muted = false;
-  try { muted = localStorage.getItem('snowfight.mute') === '1'; } catch (_) { }
+  try { muted = localStorage.getItem('snowpump.mute') === '1'; } catch (_) { }
   const init = () => {
     if (ac) return ac.state === 'suspended' ? ac.resume() : null;
     const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return;
@@ -15,7 +15,7 @@ export function createSfx() {
   return {
     init,
     get muted() { return muted; },
-    mute(m) { muted = m; try { localStorage.setItem('snowfight.mute', m ? '1' : '0'); } catch (_) { } if (out) out.gain.value = m ? 0 : .55; },
+    mute(m) { muted = m; try { localStorage.setItem('snowpump.mute', m ? '1' : '0'); } catch (_) { } if (out) out.gain.value = m ? 0 : .55; },
     pile() { if (!ac) return; const now = ac.currentTime; combo = now - comboT < .7 ? Math.min(combo + 1, 12) : 0; comboT = now; const f = 520 * Math.pow(2, combo / 12); tone('sine', f, f * 1.5, .09, .16); tone('triangle', f * 2, 0, .05, .04); },
     bump(s) { const v = Math.min(1, s / 14); tone('sine', 150 + v * 40, 55, .18, .25 + v * .35); noise('lowpass', 900 + v * 1200, 200, 1, .14, .12 + v * .25); },
     dash() { noise('bandpass', 500, 2600, 1.4, .22, .3); tone('sine', 220, 440, .12, .06); },

@@ -1,3 +1,5 @@
 brand/out/_*
 .env
 video/_*
+video/*.mp4
+snowfight-site.zip

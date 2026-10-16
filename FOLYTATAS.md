@@ -37,3 +37,16 @@
 - `video/film.html` (determinisztikus `renderAt(t)`, three.js + DOM HUD), `python -I video/render.py` → `video/snowfight-showcase.mp4` és `-muted.mp4` (30 mp, 1080p, 60 fps, szintetizált zene). Állóképek: `--stills 1.6 10.5 …`.
 - Jelenetek: hógolyók potyognak a jégre (Snowball brawl) → lobby, 48 játékos érkezik, joined toastok, online-számláló → te gyűjtöd a havat, értékkijelző, toplista → lelököd Mochit, csobbanás, kill feed, 1. hely → zsugorodó jég, sorban esnek le a többiek → hold to cash out gyűrű, konfetti, +$48.20 a walletben → zárókép a pfp-vel.
 - Az arcok mindig a kamera felé néznek, a kamera kiszámítása a játékosok előtt történik (`cam.updateMatrixWorld()`), különben a címkék elcsúsznak.
+
+## Giga update (2026-10-16 délután): SnowPump
+- **Név: SnowPump** (a felhasználó kérte). A $SNOW ticker marad.
+- A felhasználó visszajelzése: a régi színek, a betűtípus, a felirat és a sárga gagyi volt, a showcase nem nézett ki játékreklámnak, a játék laggolt, a golyók átcsúsztak egymáson, és nem volt rendes kiesés-animáció. A karakter maga jó, csak legyen minőségibb. Bubisabb betűk, tisztább színek.
+- **Betűtípus:** DynaPuff (a 11 bubis betűből az 1-est választotta), Nunito a kis szövegekhez. **Színek:** a "B, finom fény" paletta: ink #152b6b, fehér, zöld a pénznek és a Play gombnak, pink a knockoutnak és a "you"-nak, kék. Sárga szöveg nincs.
+- **Motor nulláról:** `site/sim.js` (fix 120 Hz-es lépés, teljes átfedés-feloldás, dash-lökés knockbackkel, okosabb botok, spawn-pajzs, zsugorodó jég, kiesés és kredit), `site/world.js` (shaderes tenger habbal és fodrozódással, repedő jég, instancolt karakterek arckifejezésekkel, pislogással, nyúlással, ugrással, blob-árnyékok, részecskék, kb. 25 draw call), `site/game.js` (sima kamera, interpoláció, hit-stop, adaptív felbontás, minimap), `site/sfx.js` (szintetizált hangok). Az oldal és a HUD is új (DynaPuff, játékos gombok, ranglista, minimap, shove cooldown, cash out tartás, kill feed, knockout feliratok).
+- **Showcase:** `video/film.html` + `video/shots.js`: 30 mp, 128 BPM-re vágva, 10 jelenet, mindegyik valódi szimuláció (nyitás lassított lökéssel és csobbanással, logó, hógyűjtés, BONK, STRIKE, BYE BYE, repedő jég, "Every ball has a price", cash out hajszálnyi megúszással, zárókép a csapattal és PLAY FREE gombbal). Átmenetek: whip pan, hó-írisz, csíkok, ink-írisz, villanások. `?ar=916` függőleges változat. Zene és hangeffekt: `video/soundtrack.py`, az effektek a film valódi eseményeire szólnak.
+- **Renderelés:** a felhasználó a gépén lévő Claude-dal rendereli (`python -I video/render.py --gpu`, `--vertical`). Lásd README.
+- Kód a `giga-update` ágon.
+
+## Következik
+- Brand képek újra (pfp, OG, banner) az új kinézettel és a SnowPump névvel.
+- Multiplayer szerver, kifizetések, CA (lásd fent).

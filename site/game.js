@@ -1,4 +1,4 @@
-// Snowfight arena: runs the sim, draws it with the world, and turns input, camera, sound and HUD into a game.
+// SnowPump arena: runs the sim, draws it with the world, and turns input, camera, sound and HUD into a game.
 // One engine runs both the hero backdrop (attract mode, bots only) and the game (you + bots).
 import { createSim, value, money, CASH_MIN, CASH_HOLD, FMAX, NAMES, HATS } from './sim.js';
 import { createWorld } from './world.js';
@@ -8,7 +8,7 @@ const $$ = (t, c) => { const e = document.createElement(t); if (c) e.className =
 const cl = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v)), lerp = (a, b, k) => a + (b - a) * k;
 
 export function createArena(canvas, tagsEl, opts = {}) {
-  const W = createWorld(canvas, { faceCam: .3, faceMax: .62 }), cam = W.cam, sfx = createSfx();
+  const W = createWorld(canvas, { faceCam: .45, faceMax: .5 }), cam = W.cam, sfx = createSfx();
   const BOTS = opts.bots || 15, listeners = {}, emit = (k, v) => (listeners[k] || []).forEach((f) => f(v));
   let S, me = null, state = 'attract', simTime = 0, nameI = 0, respawn = [], slow = [], shake = 0, hudT = 0, lbT = 0, popAcc = 0, popT = 0, phase = '', warned = false;
 
@@ -52,7 +52,7 @@ export function createArena(canvas, tagsEl, opts = {}) {
     if (state !== 'attract' && me) {
       const x = lerp(me.px, me.x, a), z = lerp(me.pz, me.z, a), r = me.r, fall = me.st === 'fall';
       lx = x + (fall ? 0 : me.vx * .3); lz = z + (fall ? 0 : me.vz * .3) - 1.2; ly = fall ? -.8 : 0;
-      tx = lx; ty = (fall ? 9 : 12) + r * 3.2; tz = lz + (fall ? 9.5 : 13.5) + r * 4; rate = C.k < 1 ? 1.6 + C.k * 3 : 5;
+      tx = lx; ty = (fall ? 9 : 11) + r * 3; tz = lz + (fall ? 9.5 : 12.8) + r * 3.8; rate = C.k < 1 ? 1.6 + C.k * 3 : 5;
     } else { const t = now / 1000 * .045; tx = Math.sin(t) * 47; ty = 21 + Math.sin(t * 1.7) * 2; tz = Math.cos(t) * 47; lx = 0; ly = -2.5; lz = 0; rate = 2; }
     C.k = Math.min(1, C.k + dt * .7); const k = 1 - Math.exp(-dt * rate);
     C.x += (tx - C.x) * k; C.y += (ty - C.y) * k; C.z += (tz - C.z) * k; C.lx += (lx - C.lx) * k; C.ly += (ly - C.ly) * k; C.lz += (lz - C.lz) * k;

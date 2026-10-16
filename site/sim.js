@@ -1,4 +1,4 @@
-// Snowfight simulation: deterministic, fixed step, no rendering. The game, the hero backdrop and the showcase film all run it.
+// SnowPump simulation: deterministic, fixed step, no rendering. The game, the hero backdrop and the showcase film all run it.
 // Units are metres and seconds. A ball's mass is its snow area (r²), and its dollar value is r² × RATE.
 export const STEP = 1 / 120;
 export const RATE = 1.6, CASH_MIN = 8, CASH_HOLD = 3;
@@ -23,13 +23,13 @@ export function floeAt(t) {
 
 export function createSim(o = {}) {
   const R = rng(o.seed || 7);
-  const S = { t: o.t0 || 0, FR: FMAX, next: FMAX, phase: 'calm', auto: o.auto !== false, ents: [], piles: [], ev: [], uid: 0, R };
+  const S = { t: o.t0 || 0, FR: o.floe || FMAX, next: o.floe || FMAX, phase: 'calm', auto: o.auto !== false, ents: [], piles: [], ev: [], uid: 0, R, hold: o.cashHold || CASH_HOLD, pre: null };
   const emit = (k, d) => S.ev.push(Object.assign({ k, t: S.t }, d));
   const live = (e) => e.st === 'live';
 
   // ---- snow piles
   function placePile(p, delay) { const a = R() * Math.PI * 2, d = Math.sqrt(R()) * Math.max(2, S.FR - 2.2); p.x = Math.cos(a) * d; p.z = Math.sin(a) * d; p.s = .75 + R() * .6; p.t0 = S.t + delay; p.on = true; }
-  for (let i = 0; i < PILES; i++) { const p = { i }; placePile(p, -R() * 2); S.piles.push(p); }
+  for (let i = 0; i < (o.piles ?? PILES); i++) { const p = { i }; placePile(p, -R() * 2); S.piles.push(p); }
 
   // ---- players
   S.spawn = (d = {}) => {
@@ -80,6 +80,7 @@ export function createSim(o = {}) {
   S.step = () => {
     const dt = STEP, t = (S.t += dt);
     if (S.auto) { const f = floeAt(t); S.FR = f.r; S.next = f.next; S.phase = f.phase; S.left = f.left; }
+    if (S.pre) S.pre(S, t);
     for (const e of S.ents) { e.px = e.x; e.pz = e.z; }
     for (const e of S.ents) {
       if (e.st === 'spawn') { if (t - e.st0 >= SPAWN_T) { e.st = 'live'; emit('land', { e }); } continue; }
@@ -91,7 +92,7 @@ export function createSim(o = {}) {
       e.r += (e.rT - e.r) * Math.min(1, dt * 7);
       // cash out: stand still and hold; a bump resets it
       const canCash = value(e) >= CASH_MIN && e.stun <= 0;
-      if (c.cash && canCash) { if (e.cash <= 0) emit('cashstart', { e }); e.cash += dt; if (e.cash >= CASH_HOLD) { e.st = 'cashed'; e.st0 = t; emit('cashout', { e, v: value(e) }); continue; } }
+      if (c.cash && canCash) { if (e.cash <= 0) emit('cashstart', { e }); e.cash += dt; if (e.cash >= S.hold) { e.st = 'cashed'; e.st0 = t; emit('cashout', { e, v: value(e) }); continue; } }
       else if (e.cash > 0) { e.cash = 0; emit('cashstop', { e }); }
       const cashing = e.cash > 0;
       let ix = cashing || e.stun > 0 ? 0 : c.x, iz = cashing || e.stun > 0 ? 0 : c.z; const il = Math.hypot(ix, iz); if (il > 1) { ix /= il; iz /= il; }
