@@ -284,13 +284,13 @@ import { Font } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 async function mountTitle(canvas, lines, fontUrl) {
-  const R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio || 1)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = 1.05;
+  const R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true }); R.setPixelRatio(Math.min(2, devicePixelRatio || 1)); R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.ACESFilmicToneMapping; R.toneMappingExposure = .95;
   const sc = new THREE.Scene(), cam = new THREE.PerspectiveCamera(18, 1, .1, 100);
   sc.environment = new THREE.PMREMGenerator(R).fromScene(new RoomEnvironment(), .02).texture; sc.environmentIntensity = 1.2;
   const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(-4, 6, 8); const rim = new THREE.DirectionalLight(0x9fd2ff, 2); rim.position.set(5, 2, -6); sc.add(key, rim, new THREE.AmbientLight(0xffffff, .35));
   const buf = await (await fetch(fontUrl)).arrayBuffer(), font = new Font(new TTFLoader().parse(buf));
-  const ice = new THREE.MeshPhysicalMaterial({ color: 0x4fa8ff, roughness: .07, clearcoat: 1, clearcoatRoughness: .03, iridescence: .6, iridescenceIOR: 1.3, iridescenceThicknessRange: [200, 750], sheen: .5, sheenColor: new THREE.Color(0xffffff), envMapIntensity: 1.5, emissive: 0x1f5fd0, emissiveIntensity: .12 });
-  const gold = new THREE.MeshPhysicalMaterial({ color: 0xffc23a, metalness: .85, roughness: .16, clearcoat: 1, clearcoatRoughness: .05, envMapIntensity: 1.6 });
+  const ice = new THREE.MeshPhysicalMaterial({ color: 0x2f86ff, roughness: .08, clearcoat: 1, clearcoatRoughness: .03, iridescence: .25, iridescenceIOR: 1.3, iridescenceThicknessRange: [200, 750], sheen: .3, sheenColor: new THREE.Color(0xbfe6ff), envMapIntensity: 1.0, emissive: 0x1550c8, emissiveIntensity: .18 });
+  const gold = new THREE.MeshPhysicalMaterial({ color: 0xffb81a, metalness: .75, roughness: .12, clearcoat: 1, clearcoatRoughness: .04, envMapIntensity: 1.3, emissive: 0xff8a00, emissiveIntensity: .08 });
   const G = new THREE.Group(); sc.add(G);
   const mk = (text, mat, y) => { const g = new TextGeometry(text, { font, size: 1, depth: .3, curveSegments: 16, bevelEnabled: true, bevelThickness: .22, bevelSize: .08, bevelSegments: 12 });
     g.computeBoundingBox(); const b = g.boundingBox; g.translate(-(b.max.x + b.min.x) / 2, -(b.max.y + b.min.y) / 2, -.15); const m = new THREE.Mesh(g, mat); m.position.y = y; G.add(m); return b.max.x - b.min.x; };
