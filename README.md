@@ -45,6 +45,7 @@ Needs Python with `pip install playwright numpy imageio-ffmpeg pillow` and `pyth
 python -I video/render.py --stills 0.3 8.7 22.7      # quick check stills -> video/_still_*.png
 python -I video/render.py --gpu                      # 16:9, 1920x1080, 60 fps, with sound -> video/snowpump-showcase.mp4 (+ -muted.mp4)
 python -I video/render.py --vertical --gpu           # 9:16, 1080x1920 -> video/snowpump-showcase-vertical.mp4
+python -I video/render.py --gpu --max                # max quality: renders at 2x, then a supersampled 1080p film + video/snowpump-showcase-4k.mp4
 ```
 
 `--gpu` uses the graphics card and is much faster; if it gives errors or black frames, run without it (SwiftShader, slow but always works). `--workers N` sets the parallel browsers (default 4). Frames are cached in `video/_frames*` and thrown away automatically when the film sources change.

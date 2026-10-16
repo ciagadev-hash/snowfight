@@ -2,6 +2,7 @@
 #   python -I video/render.py                     16:9 film  -> video/snowpump-showcase.mp4 (+ -muted.mp4)
 #   python -I video/render.py --vertical          9:16 cut   -> video/snowpump-showcase-vertical.mp4
 #   python -I video/render.py --stills 0.3 8.7    PNG stills -> video/_still_*.png
+#   python -I video/render.py --gpu --max          max quality: renders at 2x (3840x2160), then a supersampled 1080p film + a 4K master
 # Options: --workers N (parallel browsers, default 4), --gpu (use the graphics card instead of SwiftShader: much faster where it works),
 #          --fresh (throw away frames from an older render).
 # Needs: pip install playwright numpy imageio-ffmpeg  and  python -m playwright install chromium
@@ -14,10 +15,11 @@ HOST = 'http://snowpump.local/'
 ARGS = sys.argv[1:]
 VERT = '--vertical' in ARGS
 GPU = '--gpu' in ARGS
+SS = 2 if '--max' in ARGS else 1                   # supersampling: page rendered at 2x device pixels
 WORKERS = int(ARGS[ARGS.index('--workers') + 1]) if '--workers' in ARGS else int(os.environ.get('WORKERS', '4'))
 W, H = (1080, 1920) if VERT else (1920, 1080)
 FPS = 60
-FR = OUT / ('_frames916' if VERT else '_frames')
+FR = OUT / (('_frames916' if VERT else '_frames') + ('_x2' if SS > 1 else ''))
 NAME = 'snowpump-showcase-vertical' if VERT else 'snowpump-showcase'
 SOURCES = ['video/film.html', 'video/shots.js', 'site/world.js', 'site/sim.js']
 
@@ -35,7 +37,7 @@ def page(pw):
     args = ['--ignore-gpu-blocklist'] + ([] if GPU else ['--use-angle=swiftshader', '--enable-unsafe-swiftshader'])
     exe = os.environ.get('CHROME') or None
     b = pw.chromium.launch(args=args, executable_path=exe)
-    pg = b.new_page(viewport={'width': W, 'height': H})
+    pg = b.new_page(viewport={'width': W, 'height': H}, device_scale_factor=SS)
     pg.on('pageerror', lambda e: print('pageerror', e, flush=True))
     pg.route(HOST + '**', serve)
     pg.goto(HOST + 'video/film.html' + ('?ar=916' if VERT else ''))
@@ -50,14 +52,14 @@ def chunk(rng):
         for i in range(a, z):
             f = FR / f'f{i:05d}.jpg'
             if f.exists(): continue
-            pg.evaluate(f'renderAt({i / FPS})'); pg.screenshot(path=str(f), type='jpeg', quality=95)
+            pg.evaluate(f'renderAt({i / FPS})'); pg.screenshot(path=str(f), type='jpeg', quality=96 if SS > 1 else 95)
             if (i - a) % 60 == 0: print(f'  frames {a}-{z}: at {i}  ({(time.time() - t0) / max(1, i - a + 1):.2f}s/frame)', flush=True)
         b.close()
 
 def source_hash():
     h = hashlib.sha1()
     for s in SOURCES: h.update((ROOT / s).read_bytes())
-    return h.hexdigest()[:16] + ('v' if VERT else 'h')
+    return h.hexdigest()[:16] + ('v' if VERT else 'h') + str(SS)
 
 if __name__ == '__main__':
     from playwright.sync_api import sync_playwright
@@ -84,7 +86,11 @@ if __name__ == '__main__':
     sys.path.insert(0, str(OUT)); import soundtrack
     wav = OUT / '_soundtrack.wav'; soundtrack.build(info, wav); print('soundtrack ok', flush=True)
     mp4 = OUT / f'{NAME}.mp4'
-    subprocess.run([ffmpeg(), '-y', '-loglevel', 'error', '-framerate', str(FPS), '-i', str(FR / 'f%05d.jpg'), '-i', str(wav), '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', '18', '-preset', 'slow',
-                    '-c:a', 'aac', '-b:a', '256k', '-shortest', '-movflags', '+faststart', str(mp4)], check=True)
+    enc = lambda out, extra, crf: subprocess.run([ffmpeg(), '-y', '-loglevel', 'error', '-framerate', str(FPS), '-i', str(FR / 'f%05d.jpg'), '-i', str(wav), *extra, '-c:v', 'libx264', '-pix_fmt', 'yuv420p', '-crf', str(crf), '-preset', 'slow',
+                    '-profile:v', 'high', '-tune', 'animation', '-threads', '2', '-c:a', 'aac', '-b:a', '320k' if SS > 1 else '256k', '-shortest', '-movflags', '+faststart', str(out)], check=True)
+    if SS > 1:   # supersampled 1080p for posting, plus the 4K master
+        enc(mp4, ['-vf', f'scale={W}:{H}:flags=lanczos'], 15); print('1080p ok', flush=True)
+        enc(OUT / f'{NAME}-4k.mp4', [], 17); print('4k ok', flush=True)
+    else: enc(mp4, [], 18)
     subprocess.run([ffmpeg(), '-y', '-loglevel', 'error', '-i', str(mp4), '-an', '-c:v', 'copy', str(OUT / f'{NAME}-muted.mp4')], check=True)
     print('done', mp4)
