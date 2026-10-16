@@ -32,3 +32,8 @@
 ## Betűtípus (2026-10-16)
 - A felhasználó a Sniglet ExtraBold-ot választotta a 6 fontos mintából (`brand/fonts.html`). Címsor, gomb, címke: Sniglet 800, folyó szöveg: Sniglet 400.
 - A hero cím valódi 3D (`site/title3d.js`): Sniglet TTF felfújt, lekerekített betűkkel, jégkék és arany anyaggal. A Fredoka, a Titan One és az SVG-filteres buborékbetű el lett utasítva.
+
+## Showcase film (2026-10-16)
+- `video/film.html` (determinisztikus `renderAt(t)`, three.js + DOM HUD), `python -I video/render.py` → `video/snowfight-showcase.mp4` és `-muted.mp4` (30 mp, 1080p, 60 fps, szintetizált zene). Állóképek: `--stills 1.6 10.5 …`.
+- Jelenetek: hógolyók potyognak a jégre (Snowball brawl) → lobby, 48 játékos érkezik, joined toastok, online-számláló → te gyűjtöd a havat, értékkijelző, toplista → lelököd Mochit, csobbanás, kill feed, 1. hely → zsugorodó jég, sorban esnek le a többiek → hold to cash out gyűrű, konfetti, +$48.20 a walletben → zárókép a pfp-vel.
+- Az arcok mindig a kamera felé néznek, a kamera kiszámítása a játékosok előtt történik (`cam.updateMatrixWorld()`), különben a címkék elcsúsznak.
