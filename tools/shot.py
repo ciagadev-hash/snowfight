@@ -19,7 +19,7 @@ def main():
     h = int(sys.argv[4]) if len(sys.argv) > 4 else w
     with sync_playwright() as pw:
         b = pw.chromium.launch(args=['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist'])
-        pg = b.new_page(viewport={'width': w, 'height': h})
+        pg = b.new_page(viewport={'width': w, 'height': h}, device_scale_factor=float(os.environ.get('DSF', '1')))   # DSF=2: 2x output
         pg.on('console', lambda m: print('console:', m.text) if m.type in ('error', 'warning') else None)
         pg.on('pageerror', lambda e: print('pageerror:', e))
         pg.route(HOST + '**', serve)
