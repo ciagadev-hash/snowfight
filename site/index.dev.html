@@ -53,8 +53,13 @@ header{position:absolute;top:0;left:0;right:0;z-index:30}header .w{display:flex;
 .frc i{width:12px;height:12px;border-radius:50%;background:var(--p2);animation:frp 1.4s infinite}@keyframes frp{0%{box-shadow:0 0 0 0 rgba(255,63,147,.6)}100%{box-shadow:0 0 0 12px rgba(255,63,147,0)}}
 .frc small{font:900 14px Nunito;letter-spacing:.08em;color:var(--ink)}.frc .gt{font-size:34px;min-width:3.4em}.frc em{font:800 13px Nunito;font-style:normal;color:var(--text)}
 @media (max-width:640px){.frc{flex-wrap:wrap;justify-content:center;border-radius:24px;row-gap:2px;max-width:330px}.frc em{flex-basis:100%;text-align:center}}
+.cabar{display:flex;align-items:center;justify-content:center;gap:10px;height:34px;background:var(--ink);color:#fff;font:900 13px Nunito}.cabar span{opacity:.7;letter-spacing:.14em}.cabar code{font:900 14px Nunito;letter-spacing:.02em}
+.cabar button,.hca button,.fca button{border:0;cursor:pointer;font:900 13px Nunito;color:var(--ink);background:linear-gradient(180deg,var(--g1),var(--g2));box-shadow:inset 0 -3px 0 rgba(0,0,0,.12)}.cabar button{height:24px;padding:0 12px;border-radius:999px}
+.hca{display:inline-flex;align-items:center;gap:10px;margin-top:20px;padding:6px 6px 6px 16px;border-radius:18px;background:#fff;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS);pointer-events:auto;max-width:100%}
+.hca small{font:900 13px Nunito;letter-spacing:.12em;color:var(--text)}.hca code{font:900 16px Nunito;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}.hca button{height:38px;padding:0 16px;border-radius:12px;font-size:15px}
+.fca{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.fca code{font:900 15px Nunito;word-break:break-all}.fca button{height:30px;padding:0 12px;border-radius:10px}
 .hc .row{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
-.pot{position:absolute;right:24px;top:110px;z-index:5;background:#fff;border-radius:22px;padding:14px 20px 16px;box-shadow:0 0 0 4px var(--ink),0 7px 0 4px var(--inkS),0 18px 30px rgba(14,31,82,.25);text-align:center;transform:rotate(2deg)}
+.pot{position:absolute;right:24px;top:144px;z-index:5;background:#fff;border-radius:22px;padding:14px 20px 16px;box-shadow:0 0 0 4px var(--ink),0 7px 0 4px var(--inkS),0 18px 30px rgba(14,31,82,.25);text-align:center;transform:rotate(2deg)}
 .pot small{display:block;font:900 13px Nunito;letter-spacing:.08em;color:var(--text)}.pot .gt{font-size:40px}.pot em{display:block;font:900 13px Nunito;font-style:normal;color:var(--text)}
 /* sections */
 section.s{padding:110px 0 20px}
@@ -182,7 +187,7 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
   .hb{left:auto;right:18px;transform:none;flex-direction:column-reverse;align-items:flex-end;bottom:20px;gap:20px}.cash{min-width:0;width:172px;height:64px;padding:0 10px}.cash span{font-size:16px}.rb{width:86px;height:86px}.rb svg{width:110px;height:110px}
   .hl{top:auto;bottom:auto;left:auto;right:16px;top:186px;display:none}}
 </style></head><body>
-<header id="hdr"><div class="w"><a class="lg" href="#/"><span class="av lgav" data-av="#5cc888" data-face="happy"></span><span class="gt" data-t="SnowPump">SnowPump</span></a>
+<header id="hdr"><div class="cabar"><span>CA</span><code class="caT">drops at launch</code><button class="caB" type="button">Copy</button></div><div class="w"><a class="lg" href="#/"><span class="av lgav" data-av="#5cc888" data-face="happy"></span><span class="gt" data-t="SnowPump">SnowPump</span></a>
 <nav id="nav"><a href="#/" data-r="home">Play</a><a href="#/leaderboard" data-r="leaderboard">Leaderboard</a><a href="#/how" data-r="how">How to play</a><a href="#/snow" data-r="snow">$SNOWPVP</a><a href="#/community" data-r="community">Community</a></nav>
 <button class="btn wh sm" id="wBtn">Connect wallet</button><button class="burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button></div></header>
 
@@ -193,7 +198,8 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 <div class="gt logo" data-t="SnowPump" aria-hidden="true">SnowPump</div><br>
 <div class="gt tag" aria-hidden="true" data-t="Push. Grow.">Push. Grow.</div> <div class="gt g tag" aria-hidden="true" data-t="Cash out!">Cash out!</div>
 <p>A snowball brawl on a melting ice floe. Every ball has a price, and you play to win the coin's fees.</p>
-<div class="row"><button class="btn playBtn" id="play">Play now</button><a class="btn wh" href="#/how">How to play</a></div></div></section>
+<div class="row"><button class="btn playBtn" id="play">Play now</button><a class="btn wh" href="#/how">How to play</a></div>
+<div class="hca"><small>CA</small><code class="caT">drops at launch</code><button class="caB" type="button">Copy</button></div></div></section>
 
 <section class="s"><div class="w"><div class="sh"><span class="gt" data-t="How it works">How it works</span><p>Free to play. Connect a wallet and roll in.</p></div>
 <div class="steps">
@@ -278,6 +284,7 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 </main>
 
 <footer><div class="w"><div class="fl"><a href="#/" class="lg"><span class="gt" data-t="SnowPump">SnowPump</span></a><div class="fnav"><a href="#/leaderboard">Leaderboard</a><a href="#/how">How to play</a><a href="#/snow">$SNOWPVP</a><a href="#/community">Community</a><a data-sl="x" target="_blank" rel="noopener">X</a><a data-sl="discord" target="_blank" rel="noopener">Discord</a></div></div>
+<p class="fca"><b>CA</b> <code class="caT">drops at launch</code> <button class="caB" type="button">Copy</button></p>
 <p>SnowPump · $SNOWPVP on pump.fun · Memecoins are risky. Nothing here is financial advice.</p></div></footer>
 
 <div class="hud" id="hud"><div class="vig" id="vig"></div>

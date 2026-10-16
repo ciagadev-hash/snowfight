@@ -209,5 +209,6 @@ function updateShare(runs = store.get('runs', [])) {
 
 // coin
 document.querySelectorAll('.caT').forEach((e) => { if (CFG.ca) e.textContent = CFG.ca; });
+if (CFG.ca && innerWidth < 640) document.querySelectorAll('.cabar code, .hca code').forEach((e) => { e.textContent = CFG.ca.slice(0, 6) + '…' + CFG.ca.slice(-6); });   // short on phones, Copy copies the full CA
 document.querySelectorAll('.caB').forEach((b) => { b.onclick = () => { if (!CFG.ca) return toast('CA drops at launch'); navigator.clipboard.writeText(CFG.ca).then(() => toast('CA copied')); }; });
 paintAvatars(); updateShare(); route();
