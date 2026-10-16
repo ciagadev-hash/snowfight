@@ -1,126 +1,175 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>Snowfight · Push. Grow. Cash out.</title>
 <meta name="description" content="A snowball brawl on a melting ice floe. Push others off, scoop snow, grow your ball and cash it out. The pot is paid by creator fees.">
 <meta property="og:title" content="Snowfight"><meta property="og:description" content="Push. Grow. Cash out."><meta property="og:image" content="og.png"><meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#2f8dff">
 <link rel="icon" href="__ICON__">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@600;700&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
 <style>
-:root{--ink:#0d2b45;--ink2:#3d5a75;--sky:#b9dcff;--ice:#eaf5ff;--red:#ff4d5e;--mint:#2fd3a0;--sun:#ffc233;--blue:#3d6bff;--card:#ffffff}
+:root{--ink:#152b6b;--inkS:#0e1f52;--w1:#ffffff;--w2:#dff1ff;--g1:#5df29b;--g2:#1fcf6e;--gb1:#4ff09a;--gb2:#16c266;--p1:#ff7ab8;--p2:#ff3f93;--b1:#5cc0ff;--b2:#2f8dff;--text:#2a3f7a;--glass:rgba(21,43,107,.74)}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font:400 17px/1.5 Sniglet,system-ui,sans-serif;color:var(--ink);background:linear-gradient(#cfe7ff,#eef7ff 40%,#fff6ef);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+html{-webkit-text-size-adjust:100%}
+body{font:800 17px/1.5 Nunito,system-ui,sans-serif;color:var(--ink);background:linear-gradient(#bfe6ff,#e9f6ff 30%,#f6fbff);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .w{max-width:1200px;margin:0 auto;padding:0 24px}
-/* bubbly buttons: glossy, chunky, pressed bottom edge */
-.bb{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:56px;padding:0 28px;border-radius:999px;font:800 20px Sniglet;color:#fff;background:linear-gradient(#ff7280,#ff3d50);box-shadow:inset 0 -5px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.45),0 10px 24px rgba(255,61,80,.35);transition:transform .12s}
-.bb:after{content:"";position:absolute;left:18%;right:18%;top:7px;height:12px;border-radius:99px;background:rgba(255,255,255,.35)}
-.bb:hover{transform:translateY(-2px)}.bb:active{transform:translateY(2px);box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 4px 10px rgba(255,61,80,.3)}
-.bb.w2{color:var(--ink);background:linear-gradient(#ffffff,#e4f1ff);box-shadow:inset 0 -5px 0 rgba(13,43,69,.12),inset 0 3px 0 #fff,0 10px 24px rgba(13,43,69,.14)}.bb.w2:after{background:rgba(255,255,255,.8)}
-.bb.mint{background:linear-gradient(#5be6b9,#1fbf8c);box-shadow:inset 0 -5px 0 rgba(0,0,0,.16),inset 0 3px 0 rgba(255,255,255,.45),0 10px 24px rgba(31,191,140,.35)}
-.bb.sm{height:46px;font-size:17px;padding:0 20px}.bb[disabled]{filter:grayscale(.8);opacity:.6;pointer-events:none}
-.bb img{width:22px;height:22px;border-radius:6px}
+/* game text: bubbly DynaPuff, fill on top, a thick ink outline and a solid ink drop under it */
+.gt{position:relative;display:inline-block;font-family:DynaPuff,Nunito,sans-serif;font-weight:700;color:var(--ink);-webkit-text-stroke:.16em var(--ink);line-height:1.08;padding:0 .05em;white-space:nowrap;z-index:0;letter-spacing:.005em}
+.gt::before{content:attr(data-t);position:absolute;inset:0;padding:inherit;-webkit-text-stroke:0;color:transparent;background:linear-gradient(180deg,var(--w1),var(--w2));-webkit-background-clip:text;background-clip:text}
+.gt::after{content:attr(data-t);position:absolute;inset:0;padding:inherit;z-index:-1;color:var(--inkS);-webkit-text-stroke:.16em var(--inkS);transform:translateY(.075em)}
+.gt.g::before{background-image:linear-gradient(180deg,var(--g1),var(--g2))}.gt.p::before{background-image:linear-gradient(180deg,var(--p1),var(--p2))}.gt.b::before{background-image:linear-gradient(180deg,var(--b1),var(--b2))}
+/* outlined small text for buttons and chips */
+.ol{color:#fff;text-shadow:0 .09em 0 var(--ink),.08em 0 0 var(--ink),-.08em 0 0 var(--ink),0 -.08em 0 var(--ink),.06em .06em 0 var(--ink),-.06em .06em 0 var(--ink),.06em -.06em 0 var(--ink),-.06em -.06em 0 var(--ink),0 .16em 0 var(--ink)}
+/* chunky game buttons */
+.btn{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:64px;padding:0 32px;border-radius:22px;font:700 24px/1 DynaPuff,sans-serif;color:#fff;background:linear-gradient(180deg,var(--gb1),var(--gb2));box-shadow:inset 0 -6px 0 rgba(0,0,0,.14),inset 0 3px 0 rgba(255,255,255,.4),0 0 0 4px var(--ink),0 7px 0 4px var(--inkS),0 16px 24px rgba(14,31,82,.28);transition:transform .12s,box-shadow .12s;text-shadow:0 2px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink),0 -2px 0 var(--ink),1.5px 1.5px 0 var(--ink),-1.5px 1.5px 0 var(--ink),1.5px -1.5px 0 var(--ink),-1.5px -1.5px 0 var(--ink),0 4px 0 var(--ink)}
+.btn:hover{transform:translateY(-2px)}.btn:active{transform:translateY(5px);box-shadow:inset 0 -3px 0 rgba(0,0,0,.14),inset 0 3px 0 rgba(255,255,255,.4),0 0 0 4px var(--ink),0 2px 0 4px var(--inkS),0 6px 10px rgba(14,31,82,.25)}
+.btn.wh{color:var(--ink);text-shadow:none;background:linear-gradient(180deg,#fff,#e2f2ff)}.btn.bl{background:linear-gradient(180deg,var(--b1),var(--b2))}.btn.pk{background:linear-gradient(180deg,var(--p1),var(--p2))}
+.btn.sm{height:48px;font-size:18px;padding:0 20px;border-radius:16px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.12),inset 0 2px 0 rgba(255,255,255,.4),0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}
+.btn.sm:active{transform:translateY(4px);box-shadow:inset 0 -2px 0 rgba(0,0,0,.12),0 0 0 3px var(--ink),0 1px 0 3px var(--inkS)}
+.btn[disabled]{filter:saturate(.25) brightness(1.05);opacity:.75;pointer-events:none}.btn img{width:24px;height:24px;border-radius:7px}
+.glass{background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border-radius:18px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.14),0 10px 26px rgba(14,31,82,.25)}
 /* header */
-header{position:absolute;top:0;left:0;right:0;z-index:30}header .w{display:flex;align-items:center;gap:20px;height:84px}
-.lg{display:flex;align-items:center;gap:12px;font:800 30px/1 Sniglet;letter-spacing:-.01em;color:#fff;text-shadow:0 3px 0 rgba(13,43,69,.25),0 8px 20px rgba(13,43,69,.25)}.lg img{width:48px;height:48px;border-radius:50%;box-shadow:0 0 0 4px #fff,0 8px 20px rgba(13,43,69,.25)}
-nav{margin-left:auto;display:flex;gap:6px;background:rgba(255,255,255,.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px;border-radius:999px;box-shadow:0 8px 24px rgba(13,43,69,.1)}
-nav a{padding:9px 16px;border-radius:999px;font-weight:600;font-size:16px}nav a:hover{background:#fff}
-/* hero = the live arena */
-.hero{position:relative;height:100vh;min-height:680px;overflow:hidden}
+header{position:absolute;top:0;left:0;right:0;z-index:30}header .w{display:flex;align-items:center;gap:20px;height:92px}
+.lg{display:flex;align-items:center;gap:12px;font-size:30px}.lg img{width:50px;height:50px;border-radius:50%;box-shadow:0 0 0 4px #fff,0 0 0 7px var(--ink),0 8px 18px rgba(14,31,82,.3)}
+nav{margin-left:auto;display:flex;gap:4px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px;border-radius:18px;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}
+nav a{padding:8px 16px;border-radius:12px;font:900 16px Nunito}nav a:hover{background:#e4f3ff}
+/* hero: the live arena */
+.hero{position:relative;height:100vh;height:100svh;min-height:640px;overflow:hidden}
 #arena{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
 #tags{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.ptag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:2px;will-change:transform}
-.ptag b{background:#fff;color:var(--ink);border-radius:999px;padding:3px 10px;font:800 15px Sniglet;box-shadow:0 4px 12px rgba(13,43,69,.2)}
-.ptag span{font:800 12px Sniglet;color:#fff;text-shadow:0 1px 3px rgba(13,43,69,.6)}.ptag i{font-style:normal;opacity:.75;font-size:10px;background:rgba(13,43,69,.35);padding:0 5px;border-radius:5px}
-.ptag.rich b{background:var(--sun)}.ptag.me b{background:var(--red);color:#fff;font-size:18px}
-.hc{position:absolute;left:0;right:0;bottom:7vh;text-align:center;z-index:5;pointer-events:none}
-.hc h1{font:700 clamp(54px,8.6vw,124px)/1 Sniglet;padding:0 .1em .1em}
-.hc h1 span{color:var(--sun)}
-.hc p{margin:18px auto 26px;max-width:600px;font-size:20px;font-weight:600;color:var(--ink);text-shadow:0 0 12px #fff,0 0 4px #fff}
-.hc .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
-.pot{position:absolute;right:24px;top:100px;z-index:5;background:#fff;border-radius:26px;padding:16px 22px;box-shadow:inset 0 -5px 0 rgba(13,43,69,.08),0 16px 40px rgba(13,43,69,.18);text-align:right}
-.pot small{display:block;font-weight:600;color:var(--ink2);font-size:14px}.pot b{font:800 34px/1.1 Sniglet}.pot em{font-style:normal;font-size:13px;color:var(--ink2)}
+.ptag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:1px;will-change:transform;transform-origin:50% 100%}
+.ptag b{font:700 16px/1 DynaPuff;color:#fff;background:var(--ink);border-radius:999px;padding:5px 11px 6px;box-shadow:0 3px 0 var(--inkS),0 6px 12px rgba(14,31,82,.25)}
+.ptag span{font:900 13px/1.2 Nunito;color:#fff;text-shadow:0 1px 0 var(--ink),1px 0 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink),0 2px 3px rgba(14,31,82,.6)}
+.ptag i{font:900 9px Nunito;font-style:normal;letter-spacing:.06em;text-transform:uppercase;background:rgba(21,43,107,.55);padding:1px 5px;border-radius:5px;margin-left:5px;vertical-align:1px;text-shadow:none}
+.ptag.rich b{background:linear-gradient(180deg,var(--g1),var(--g2));text-shadow:0 1px 0 var(--ink),1px 0 0 var(--ink),-1px 0 0 var(--ink),0 -1px 0 var(--ink);box-shadow:0 0 0 2.5px var(--ink),0 4px 0 2.5px var(--inkS)}
+.ptag.me b{background:linear-gradient(180deg,var(--p1),var(--p2));font-size:19px;padding:6px 13px 7px;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS);text-shadow:0 1.5px 0 var(--ink),1.5px 0 0 var(--ink),-1.5px 0 0 var(--ink),0 -1.5px 0 var(--ink)}.ptag.me span{font-size:14px}
+.hc{position:absolute;left:0;right:0;bottom:6vh;text-align:center;z-index:5;pointer-events:none;padding:0 16px}
+.logo{font-size:clamp(64px,12.5vw,176px);transform:rotate(-2deg)}
+.tag{font-size:clamp(28px,4.2vw,56px);margin-top:4px}
+.hc p{margin:16px auto 24px;max-width:620px;font:900 clamp(16px,1.6vw,20px)/1.45 Nunito;color:var(--ink);text-shadow:0 0 3px #fff,0 0 12px #fff,0 0 24px rgba(255,255,255,.9)}
+.hc .row{display:flex;gap:22px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
+.pot{position:absolute;right:24px;top:110px;z-index:5;background:#fff;border-radius:22px;padding:14px 20px 16px;box-shadow:0 0 0 4px var(--ink),0 7px 0 4px var(--inkS),0 18px 30px rgba(14,31,82,.25);text-align:center;transform:rotate(2deg)}
+.pot small{display:block;font:900 13px Nunito;letter-spacing:.08em;color:var(--text)}.pot .gt{font-size:40px}.pot em{display:block;font:900 13px Nunito;font-style:normal;color:var(--text)}
 /* sections */
-section.s{padding:110px 0 30px}
-.sh{text-align:center;margin-bottom:46px}.sh h2{font:700 clamp(40px,5vw,64px)/1.05 Sniglet;padding:0 .1em .08em}.sh p{color:var(--ink2);font-size:19px;margin-top:12px}
-.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
-.st{background:var(--card);border-radius:30px;padding:26px 24px 28px;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 18px 40px rgba(13,43,69,.1);position:relative;overflow:hidden}
-.st .n{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font:800 26px Sniglet;color:#fff;margin-bottom:16px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15),inset 0 3px 0 rgba(255,255,255,.4)}
-.st h3{font:800 24px/1.1 Sniglet;margin-bottom:8px}.st p{color:var(--ink2);font-size:16.5px}
-.money{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:center}
-.mc{background:linear-gradient(160deg,#ffffff,#eaf5ff);border-radius:36px;padding:34px;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 24px 60px rgba(13,43,69,.12)}
-.mc h3{font:800 36px/1.05 Sniglet;margin-bottom:14px}.mc p{color:var(--ink2);font-size:18px}
-.flow{display:flex;flex-direction:column;gap:12px;margin-top:20px}
-.fr{display:flex;align-items:center;gap:14px;background:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 6px 16px rgba(13,43,69,.07);font-weight:600}
-.fr i{font-style:normal;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none}
-.meter{background:#fff;border-radius:36px;padding:30px;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 24px 60px rgba(13,43,69,.12);text-align:center}
-.meter img{width:190px;height:190px;border-radius:50%;box-shadow:0 0 0 8px #eaf5ff;margin-bottom:16px}
-.meter b{display:block;font:800 54px/1 Sniglet;color:var(--red)}.meter small{display:block;color:var(--ink2);font-weight:600;margin:6px 0 18px}
-.bar{height:20px;border-radius:99px;background:#eaf2fb;overflow:hidden;box-shadow:inset 0 2px 4px rgba(13,43,69,.1)}.bar i{display:block;height:100%;width:62%;border-radius:99px;background:linear-gradient(90deg,#5be6b9,#2fd3a0);animation:grow 4s ease-in-out infinite alternate}
+section.s{padding:110px 0 20px}
+.sh{text-align:center;margin-bottom:50px}.sh .gt{font-size:clamp(40px,5.4vw,72px)}.sh p{color:var(--text);font-size:19px;margin-top:10px}
+.card{background:#fff;border-radius:28px;box-shadow:0 0 0 4px var(--ink),0 8px 0 4px var(--inkS),0 24px 40px rgba(14,31,82,.12)}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:28px}
+.st{padding:26px 24px 28px;position:relative}
+.st .n{width:62px;height:62px;border-radius:20px;display:grid;place-items:center;margin-bottom:16px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.14),inset 0 3px 0 rgba(255,255,255,.4),0 0 0 3px var(--ink),0 5px 0 3px var(--inkS);font-size:34px}
+.st h3{font:700 27px/1.1 DynaPuff;margin-bottom:8px;color:var(--ink)}.st p{color:var(--text);font-size:16.5px;font-weight:800}
+.st kbd{font:900 13px Nunito;background:#eaf5ff;border-radius:7px;padding:1px 7px;box-shadow:0 2px 0 #c4def5}
+.money{display:grid;grid-template-columns:1.1fr 1fr;gap:34px;align-items:center}
+.mc{padding:34px}.mc h3{font:700 38px/1.08 DynaPuff;margin-bottom:12px;color:var(--ink)}.mc p{color:var(--text);font-size:18px}
+.flow{display:flex;flex-direction:column;gap:12px;margin-top:22px}
+.fr{display:flex;align-items:center;gap:14px;background:#f1f8ff;border-radius:18px;padding:12px 16px;font-weight:900;color:var(--ink)}
+.fr i{font-style:normal;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;flex:none;font-size:22px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.13),0 0 0 3px var(--ink)}
+.meter{padding:30px;text-align:center}
+.meter img{width:190px;height:190px;border-radius:50%;box-shadow:0 0 0 6px #fff,0 0 0 10px var(--ink);margin:6px 0 18px}
+.meter .gt{font-size:60px}.meter small{display:block;color:var(--text);font-weight:900;margin:4px 0 16px}
+.bar{height:24px;border-radius:99px;background:#e6f2fd;overflow:hidden;box-shadow:0 0 0 3px var(--ink)}.bar i{display:block;height:100%;width:62%;border-radius:99px;background:linear-gradient(180deg,var(--g1),var(--g2));box-shadow:inset 0 -4px 0 rgba(0,0,0,.12),inset 0 3px 0 rgba(255,255,255,.4);animation:grow 4s ease-in-out infinite alternate}
 @keyframes grow{from{width:18%}to{width:100%}}
-.bar+small{margin-top:8px}
-.coin{margin:70px auto 0;max-width:780px;background:#fff;border-radius:34px;padding:26px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 20px 50px rgba(13,43,69,.12)}
-.coin img{width:64px;height:64px;border-radius:50%}.coin h3{font:800 28px Sniglet}.coin code{font:800 15px Sniglet;background:#eef6ff;padding:10px 14px;border-radius:14px;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis}
-footer{text-align:center;color:var(--ink2);font-weight:500;padding:70px 20px 50px;font-size:15px}
-
-/* display type: the hero title is 3D (title3d.js); everything else is clean, smooth Sniglet */
+.coin{margin:80px auto 0;max-width:800px;padding:24px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.coin img{width:66px;height:66px;border-radius:50%;box-shadow:0 0 0 3px var(--ink)}.coin .gt{font-size:34px}.coin code{font:900 15px Nunito;background:#eef6ff;padding:12px 14px;border-radius:14px;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
+footer{text-align:center;color:var(--text);font-weight:800;padding:80px 20px 50px;font-size:15px}
+/* in-game HUD */
+.hud{position:fixed;inset:0;z-index:40;pointer-events:none;display:none;font-family:Nunito}.hud.on{display:block}
+.vig{position:absolute;inset:0;box-shadow:inset 0 0 160px 40px rgba(255,63,147,.55);opacity:0;transition:opacity .2s}
+.hv{position:absolute;left:50%;top:16px;transform:translateX(-50%);text-align:center}
+.hv small{display:block;font:900 13px Nunito;letter-spacing:.12em;color:#fff;text-shadow:0 2px 0 var(--ink),0 0 10px rgba(21,43,107,.5)}.hv .gt{font-size:54px;transition:transform .12s}.hv .gt.bump{transform:scale(1.12)}
+.banner{position:absolute;left:50%;top:118px;transform:translate(-50%,-10px) scale(.8);font-size:38px;opacity:0;transition:opacity .25s,transform .35s cubic-bezier(.3,1.6,.5,1)}.banner.on{opacity:1;transform:translate(-50%,0) scale(1)}
+.lb{position:absolute;left:16px;top:16px;width:236px;padding:12px 14px 10px}
+.lb h4{font:900 12px Nunito;letter-spacing:.12em;opacity:.8;margin-bottom:6px}
+.lb ol{list-style:none;display:flex;flex-direction:column;gap:3px}.lb li{display:flex;align-items:center;gap:8px;font:900 15px Nunito;padding:3px 6px;border-radius:9px}
+.lb li i{width:12px;height:12px;border-radius:50%;flex:none;box-shadow:0 0 0 2px rgba(255,255,255,.7)}.lb li span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.lb li b{font:700 15px DynaPuff;color:#7ff5b3}.lb li em{font-style:normal;opacity:.65;width:16px}
+.lb li.me{background:rgba(255,79,158,.35)}
+.mapw{position:absolute;right:16px;top:16px;display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+#map{width:150px;height:150px;border-radius:50%;background:rgba(21,43,107,.5);box-shadow:inset 0 0 0 3px rgba(255,255,255,.25),0 10px 26px rgba(14,31,82,.25)}
+.stat{display:flex;gap:8px}.stat div{padding:6px 12px;font:900 14px Nunito}.stat b{font:700 16px DynaPuff;margin-left:4px}
+.feed{position:absolute;right:16px;top:240px;display:flex;flex-direction:column;gap:6px;align-items:flex-end}
+.kf{padding:7px 12px;font:900 14px Nunito;display:flex;gap:6px;align-items:center;animation:kfin .3s cubic-bezier(.3,1.5,.5,1)}.kf em{font-style:normal;font-family:DynaPuff;font-weight:700;color:#7ff5b3}.kf.me{background:rgba(255,63,147,.82)}
+@keyframes kfin{from{transform:translateX(40px);opacity:0}}
+.pops{position:absolute;inset:0;overflow:hidden}.pp{position:absolute;font-size:24px;animation:pp 1s ease-out forwards;transform:translate(-50%,-50%)}
+@keyframes pp{0%{opacity:0;transform:translate(-50%,-30%) scale(.6)}15%{opacity:1;transform:translate(-50%,-60%) scale(1.1)}100%{opacity:0;transform:translate(-50%,-260%) scale(.9)}}
+.kopop{position:absolute;left:50%;top:34%;transform:translate(-50%,-50%) scale(.4);text-align:center;opacity:0}.kopop .gt{display:block}.kopop .gt.p{font-size:clamp(48px,7vw,86px)}.kopop .gt.g{font-size:clamp(34px,4.6vw,56px)}
+.kopop.on{animation:ko 1.6s cubic-bezier(.2,1.4,.4,1) forwards}
+@keyframes ko{0%{opacity:0;transform:translate(-50%,-50%) scale(.3) rotate(-8deg)}14%{opacity:1;transform:translate(-50%,-50%) scale(1.08) rotate(3deg)}24%{transform:translate(-50%,-50%) scale(1) rotate(-2deg)}80%{opacity:1;transform:translate(-50%,-50%) scale(1) rotate(-2deg)}100%{opacity:0;transform:translate(-50%,-80%) scale(.9) rotate(-2deg)}}
+.shieldtag{position:absolute;left:50%;top:104px;transform:translateX(-50%);padding:5px 12px;font:900 13px Nunito;letter-spacing:.1em;border-radius:999px;background:rgba(58,168,255,.85);color:#fff;box-shadow:0 0 0 2px #fff;opacity:0;transition:opacity .3s}.shieldtag.on{opacity:1}
+.hint{position:absolute;left:50%;bottom:130px;transform:translateX(-50%);font:900 15px Nunito;color:#fff;white-space:nowrap;text-shadow:0 2px 0 var(--ink),0 0 10px rgba(21,43,107,.6);transition:opacity 1s}
+.hb{position:absolute;left:50%;bottom:22px;transform:translateX(-50%);display:flex;gap:18px;pointer-events:auto;align-items:center}
+.rb{position:relative;width:96px;height:96px;border-radius:50%;background:linear-gradient(180deg,var(--b1),var(--b2));box-shadow:inset 0 -6px 0 rgba(0,0,0,.15),inset 0 3px 0 rgba(255,255,255,.4),0 0 0 4px var(--ink),0 6px 0 4px var(--inkS);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none}
+.rb:active{transform:translateY(4px)}.rb svg{position:absolute;inset:-12px;width:120px;height:120px;transform:rotate(-90deg)}.rb circle{fill:none;stroke-width:6}.rb .trk{stroke:rgba(21,43,107,.25)}.rb .cd{stroke:#fff;stroke-linecap:round;stroke-dasharray:276.5;stroke-dashoffset:0}
+.rb span{font:700 18px DynaPuff;color:#fff;text-shadow:0 2px 0 var(--ink),1.5px 0 0 var(--ink),-1.5px 0 0 var(--ink),0 -1.5px 0 var(--ink)}.rb small{font:900 10px Nunito;letter-spacing:.1em;color:#fff;opacity:.85}
+.rb.cool{filter:saturate(.4) brightness(.95)}
+.cash{position:relative;overflow:hidden;height:72px;min-width:280px;padding:0 26px;border-radius:24px;background:linear-gradient(180deg,var(--gb1),var(--gb2));box-shadow:inset 0 -6px 0 rgba(0,0,0,.14),inset 0 3px 0 rgba(255,255,255,.4),0 0 0 4px var(--ink),0 6px 0 4px var(--inkS);display:flex;flex-direction:column;align-items:center;justify-content:center;touch-action:none;user-select:none;-webkit-user-select:none}
+.cash span{position:relative;font:700 21px DynaPuff;color:#fff;text-shadow:0 2px 0 var(--ink),1.5px 0 0 var(--ink),-1.5px 0 0 var(--ink),0 -1.5px 0 var(--ink),0 3px 0 var(--ink)}.cash small{position:relative;font:900 10px Nunito;letter-spacing:.12em;color:#fff;opacity:.9}
+.cash i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(180deg,rgba(255,255,255,.55),rgba(255,255,255,.3))}
+.cash[disabled]{background:linear-gradient(180deg,#9fb4d6,#7f97c2)}.cash.ready{animation:rdy 1.2s ease-in-out infinite}
+@keyframes rdy{50%{transform:scale(1.04)}}
+.hl{position:absolute;left:16px;bottom:22px;display:flex;gap:10px;pointer-events:auto}.sq{height:46px;min-width:46px;padding:0 14px;display:grid;place-items:center;font:900 15px Nunito}.sq svg{width:22px;height:22px}
+.joy{position:absolute;left:26px;bottom:110px;width:140px;height:140px;border-radius:50%;background:rgba(21,43,107,.32);box-shadow:inset 0 0 0 3px rgba(255,255,255,.55);pointer-events:auto;display:none;touch-action:none}.joy i{position:absolute;left:50%;top:50%;width:62px;height:62px;margin:-31px;border-radius:50%;background:#fff;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}
+/* popups */
+.pop{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(14,31,82,.38);backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);padding:20px}.pop.on{display:flex}
+.pc{background:#fff;border-radius:30px;padding:30px 28px 28px;width:100%;max-width:430px;text-align:center;box-shadow:0 0 0 4px var(--ink),0 9px 0 4px var(--inkS),0 40px 90px rgba(14,31,82,.4);animation:pin .35s cubic-bezier(.3,1.5,.5,1)}
+@keyframes pin{from{transform:scale(.7);opacity:0}}
+.pc h3{font-size:46px;margin-bottom:6px}.pc p{color:var(--text);margin-bottom:18px;font-weight:800}.pc .big{font-size:60px;margin:2px 0 16px}
+.pc .btn{width:100%;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:4px 0 22px}.stats div{background:#f1f8ff;border-radius:16px;padding:10px 6px}.stats b{display:block;font:700 22px DynaPuff;color:var(--ink)}.stats small{font:900 11px Nunito;letter-spacing:.08em;color:var(--text)}
+.wl{display:flex;flex-direction:column;gap:12px;margin-bottom:6px}.wl button{display:flex;align-items:center;gap:12px;height:60px;padding:0 18px;border-radius:18px;background:#f1f8ff;font:900 18px Nunito;color:var(--ink);box-shadow:0 0 0 3px var(--ink),0 4px 0 3px var(--inkS)}.wl button:hover{background:#e2f1ff}.wl img{width:32px;height:32px;border-radius:9px}
+.cols{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:6px 0 22px}.cols button{width:38px;height:38px;border-radius:50%;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15),inset 0 3px 0 rgba(255,255,255,.4),0 0 0 3px var(--ink)}.cols button.on{box-shadow:inset 0 -4px 0 rgba(0,0,0,.15),0 0 0 3px #fff,0 0 0 6px var(--ink);transform:scale(1.1)}
+.nm{width:100%;height:58px;border-radius:18px;border:0;background:#f1f8ff;font:700 22px DynaPuff;color:var(--ink);text-align:center;outline:none;margin-bottom:16px;box-shadow:inset 0 0 0 3px var(--ink)}
+.toast{position:fixed;left:50%;top:96px;transform:translate(-50%,-20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font:900 16px Nunito;opacity:0;transition:.25s;z-index:80;pointer-events:none;box-shadow:0 4px 0 var(--inkS)}.toast.on{opacity:1;transform:translate(-50%,0)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-#title3d{display:block;width:min(94vw,1080px);aspect-ratio:1080/330;margin:0 auto;filter:drop-shadow(0 18px 22px rgba(13,43,69,.28))}
-.sh h2,.mc h3,.coin h3,.pc h3,.st h3{font-family:Sniglet;font-weight:800;color:var(--ink);letter-spacing:-.015em}
-.pot b,.meter b,.pc big,.hv b{font-family:Sniglet;font-weight:800;color:#ff8a1a;letter-spacing:-.01em}
-.lg{font-family:Sniglet;font-weight:800;color:#fff;text-shadow:0 2px 0 rgba(13,43,69,.25),0 8px 20px rgba(13,43,69,.3)}
-/* game HUD */
-.hud{position:fixed;inset:0;z-index:40;pointer-events:none;display:none}.hud.on{display:block}
-.hv{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:#fff;border-radius:26px;padding:10px 26px;text-align:center;box-shadow:inset 0 -5px 0 rgba(13,43,69,.08),0 14px 34px rgba(13,43,69,.2)}
-.hv small{display:block;font-weight:600;color:var(--ink2);font-size:13px}.hv b{font:800 40px/1 Sniglet}
-.hs{position:absolute;left:18px;top:18px;display:flex;flex-direction:column;gap:8px}.hs div{background:rgba(255,255,255,.92);border-radius:16px;padding:8px 14px;font-weight:600;font-size:15px;box-shadow:0 8px 20px rgba(13,43,69,.12)}
-.hq{position:absolute;right:18px;top:18px;pointer-events:auto}
-.hb{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;gap:14px;pointer-events:auto;align-items:center}
-.cash{position:relative;overflow:hidden}.cash .pr{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.45)}
-.hint2{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);font-weight:600;color:#fff;text-shadow:0 2px 8px rgba(13,43,69,.5);font-size:15px;white-space:nowrap}
-.pop{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(13,43,69,.35);backdrop-filter:blur(4px);padding:20px}.pop.on{display:flex}
-.pc{background:#fff;border-radius:34px;padding:30px;width:100%;max-width:420px;text-align:center;box-shadow:inset 0 -6px 0 rgba(13,43,69,.08),0 40px 100px rgba(13,43,69,.3)}
-.pc h3{font:800 32px/1.05 Sniglet;margin-bottom:8px}.pc p{color:var(--ink2);margin-bottom:18px}.pc big{display:block;font:800 56px/1 Sniglet;color:var(--red);margin:6px 0 16px}
-.wl{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}.wl button{display:flex;align-items:center;gap:12px;height:58px;padding:0 18px;border-radius:20px;background:#f2f8ff;font:800 18px Sniglet;box-shadow:inset 0 -4px 0 rgba(13,43,69,.08)}.wl button:hover{background:#e4f1ff}.wl img{width:32px;height:32px;border-radius:9px}
-.cols{display:flex;gap:10px;justify-content:center;margin:4px 0 18px}.cols button{width:40px;height:40px;border-radius:50%;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15),inset 0 3px 0 rgba(255,255,255,.4)}.cols button.on{outline:4px solid var(--ink);outline-offset:2px}
-.nm{width:100%;height:54px;border-radius:18px;border:0;background:#f2f8ff;font:800 20px Sniglet;text-align:center;outline:none;margin-bottom:14px;box-shadow:inset 0 3px 6px rgba(13,43,69,.08)}
-.joy{position:absolute;left:28px;bottom:28px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.35);box-shadow:inset 0 0 0 3px rgba(255,255,255,.7);pointer-events:auto;display:none;touch-action:none}.joy i{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px;border-radius:50%;background:#fff;box-shadow:0 6px 14px rgba(13,43,69,.25)}
-.toast{position:fixed;left:50%;top:90px;transform:translate(-50%,-20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-weight:600;opacity:0;transition:.25s;z-index:80;pointer-events:none}.toast.on{opacity:1;transform:translate(-50%,0)}
-@media (max-width:900px){.steps{grid-template-columns:1fr 1fr}.money{grid-template-columns:1fr}nav{display:none}.pot{top:auto;bottom:calc(7vh + 250px);right:50%;transform:translateX(50%)}}
-@media (max-width:560px){.steps{grid-template-columns:1fr}.lg{font-size:24px}.lg img{width:40px;height:40px}.hc p{font-size:17px}.hv b{font-size:30px}.joy{display:block}.hint2{display:none}.pot{display:none}}
+@media (max-width:980px){.steps{grid-template-columns:1fr 1fr}.money{grid-template-columns:1fr}nav{display:none}.pot{display:none}}
+@media (max-width:640px){.steps{grid-template-columns:1fr}.lg{font-size:24px}.lg img{width:40px;height:40px}header .w{height:76px}
+  .lb{width:170px;padding:9px 10px}.lb li{font-size:13px}.lb li:nth-child(n+4){display:none}#map{width:104px;height:104px}.feed{top:186px}.feed .kf{font-size:12px}
+  .hv .gt{font-size:40px}.banner{font-size:26px;top:96px}.hint{display:none}.joy{display:block}
+  .hb{left:auto;right:18px;transform:none;flex-direction:column-reverse;align-items:flex-end;bottom:20px;gap:20px}.cash{min-width:0;width:172px;height:64px;padding:0 10px}.cash span{font-size:16px}.rb{width:86px;height:86px}.rb svg{width:110px;height:110px}
+  .hl{top:auto;bottom:auto;left:auto;right:16px;top:186px;display:none}}
 </style></head><body>
-<header><div class="w"><a class="lg" href="#top"><img src="__PFP__" alt="">Snowfight</a>
+<header><div class="w"><a class="lg" href="#top"><img src="__PFP__" alt=""><span class="gt" data-t="Snowfight">Snowfight</span></a>
 <nav><a href="#how">How to play</a><a href="#money">The pot</a><a href="#coin">$SNOW</a></nav>
-<button class="bb w2 sm" id="wBtn">Connect wallet</button></div></header>
+<button class="btn wh sm" id="wBtn">Connect wallet</button></div></header>
 
 <section class="hero" id="top"><canvas id="arena"></canvas><div id="tags"></div>
-<div class="pot"><small>Prize pot</small><b id="potV">100%</b><br><em>of creator fees</em></div>
-<div class="hc"><h1 class="sr" id="h1">Push. Grow.<br><span>Cash out.</span></h1><canvas id="title3d"></canvas>
+<div class="pot"><small>PRIZE POT</small><span class="gt g" data-t="100%">100%</span><em>of creator fees</em></div>
+<div class="hc"><h1 class="sr">Snowfight. Push. Grow. Cash out.</h1>
+<div class="gt logo" data-t="Snowfight" aria-hidden="true">Snowfight</div><br>
+<div class="gt tag" aria-hidden="true" data-t="Push. Grow.">Push. Grow.</div> <div class="gt g tag" aria-hidden="true" data-t="Cash out!">Cash out!</div>
 <p>A snowball brawl on a melting ice floe. Every ball has a price, and the pot is paid by creator fees.</p>
-<div class="row"><button class="bb" id="play">Play now</button><a class="bb w2" href="#how">How to play</a></div></div></section>
+<div class="row"><button class="btn" id="play">Play now</button><a class="btn wh" href="#how">How to play</a></div></div></section>
 
-<section class="s" id="how"><div class="w"><div class="sh"><h2>How to play</h2><p>Free to play. Connect a wallet and jump in.</p></div>
+<section class="s" id="how"><div class="w"><div class="sh"><span class="gt" data-t="How to play">How to play</span><p>Free to play. Connect a wallet and roll in.</p></div>
 <div class="steps">
-<div class="st"><div class="n" style="background:var(--blue)">1</div><h3>Roll</h3><p>Steer with your mouse or thumb. Snow piles make you bigger.</p></div>
-<div class="st"><div class="n" style="background:var(--mint)">2</div><h3>Push</h3><p>Hit Space to shove. Knock someone off the floe and you keep most of their snow.</p></div>
-<div class="st"><div class="n" style="background:var(--sun)">3</div><h3>Watch the ice</h3><p>The floe shrinks every round. Stay off the edge.</p></div>
-<div class="st"><div class="n" style="background:var(--red)">4</div><h3>Cash out</h3><p>Big enough? Hold Cash out for 3 seconds. Get bumped and it resets.</p></div>
+<div class="st card"><div class="n" style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></div><h3>Roll</h3><p>Steer with your mouse, <kbd>WASD</kbd> or your thumb. Snow piles make you bigger.</p></div>
+<div class="st card"><div class="n" style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></div><h3>Shove</h3><p>Click or hit <kbd>Space</kbd> to dash. Knock someone off the floe and you keep most of their snow.</p></div>
+<div class="st card"><div class="n" style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></div><h3>Watch the ice</h3><p>The floe cracks and shrinks every round. The pink line shows where it breaks.</p></div>
+<div class="st card"><div class="n" style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></div><h3>Cash out</h3><p>Big enough? Hold <kbd>E</kbd> for 3 seconds and stand still. Get bumped and it resets.</p></div>
 </div></div></section>
 
 <section class="s" id="money"><div class="w"><div class="money">
-<div class="mc"><h3>Your snowball is worth real money.</h3><p>Creator fees from $SNOW fill the prize pot. The pot is spread over all the snow in play, so every ball has a live dollar value that grows as you do.</p>
-<div class="flow"><div class="fr"><i style="background:var(--blue)">1</i>Trades of $SNOW pay creator fees</div><div class="fr"><i style="background:var(--mint)">2</i>Fees fill the prize pot</div><div class="fr"><i style="background:var(--sun)">3</i>Your share = your snow ÷ all snow</div><div class="fr"><i style="background:var(--red)">4</i>Cash out and it lands in your wallet</div></div></div>
-<div class="meter"><img src="__PFP__" alt=""><b>$48.20</b><small>a big snowball, live</small><div class="bar"><i></i></div><small>Cash out unlocks at $<span id="cmin">8</span></small></div>
+<div class="mc card"><h3>Your snowball is worth real money.</h3><p>Creator fees from $SNOW fill the prize pot. The pot is spread over all the snow in play, so every ball has a live dollar value that grows as you do.</p>
+<div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Trades of $SNOW pay creator fees</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>Fees fill the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>Your share = your snow ÷ all snow</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and it lands in your wallet</div></div></div>
+<div class="meter card"><img src="__PFP__" alt=""><br><span class="gt g" data-t="$48.20">$48.20</span><small>a big snowball, live</small><div class="bar"><i></i></div><small style="margin:12px 0 0">Cash out unlocks at $<span id="cmin">8</span></small></div>
 </div></div></section>
 
-<section class="s" id="coin" style="padding-bottom:0"><div class="w"><div class="coin"><img src="__PFP__" alt=""><h3>$SNOW</h3><code id="ca">CA: launching on pump.fun</code><button class="bb sm" id="caB">Copy</button></div></div></section>
+<section class="s" id="coin" style="padding-bottom:0"><div class="w"><div class="coin card"><img src="__PFP__" alt=""><span class="gt b" data-t="$SNOW">$SNOW</span><code id="ca">CA: launching on pump.fun</code><button class="btn sm" id="caB">Copy</button></div></div></section>
 <footer>Snowfight · Launching on pump.fun · Memecoins are risky. Nothing here is financial advice.</footer>
 
-<div class="hud" id="hud"><div class="hv"><small>Your snowball</small><b id="hV">$0.00</b></div>
-<div class="hs"><div id="hR">Rank #1</div><div id="hK">Knockouts 0</div><div id="hF">Ice 100%</div></div>
-<div class="hq"><button class="bb w2 sm" id="quit">Leave</button></div>
-<div class="hint2" id="hint2">Mouse to steer · Space to shove · Hold E to cash out</div>
-<div class="hb"><button class="bb mint sm" id="boost">Shove</button><button class="bb sm cash" id="cash" disabled><span class="pr" id="cpr"></span><span id="cashT">Cash out at $8</span></button></div>
+<div class="hud" id="hud"><div class="vig" id="vig"></div>
+<div class="hv"><small>YOUR SNOWBALL</small><span class="gt g" id="hV" data-t="$1.60">$1.60</span></div>
+<div class="shieldtag" id="shieldT">SPAWN SHIELD</div>
+<div class="gt p banner" id="banner" data-t=""></div>
+<div class="lb glass"><h4>TOP SNOWBALLS</h4><ol id="lbL"></ol></div>
+<div class="mapw"><canvas id="map" width="300" height="300"></canvas><div class="stat"><div class="glass">Rank<b id="hR">#1</b></div><div class="glass">KOs<b id="hK">0</b></div></div></div>
+<div class="feed" id="feed"></div>
+<div class="pops" id="pops"></div>
+<div class="kopop" id="kopop"><span class="gt p" data-t="KNOCKOUT!">KNOCKOUT!</span><span class="gt g" id="koV" data-t=""></span></div>
+<div class="hint" id="hint">Mouse or WASD to roll · Click or Space to shove · Hold E to cash out</div>
+<div class="hb"><button class="rb" id="dash" aria-label="Shove"><svg viewBox="0 0 100 100"><circle class="trk" cx="50" cy="50" r="44"/><circle class="cd" id="dashR" cx="50" cy="50" r="44"/></svg><span>SHOVE</span><small>SPACE</small></button>
+<button class="cash" id="cash" disabled><i id="cpr"></i><span id="cashT">CASH OUT AT $8</span><small id="cashS">GROW TO UNLOCK</small></button></div>
+<div class="hl"><button class="sq glass" id="mute" aria-label="Sound"></button><button class="sq glass" id="quit">Leave</button></div>
 <div class="joy" id="joy"><i id="joyK"></i></div></div>
 
 <div class="pop" id="pop"><div class="pc" id="popC"></div></div>

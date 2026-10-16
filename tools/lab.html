@@ -1,0 +1,26 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>html,body{margin:0;height:100%;overflow:hidden;background:#000}canvas{width:100%;height:100%;display:block}</style></head><body><canvas id="c"></canvas>
+<script type="module">
+// Dev lab: run the sim for ?t seconds and render one frame from a chosen camera. Not part of the site build.
+import { createSim, STEP, NAMES, HATS } from '../site/sim.js';
+import { createWorld } from '../site/world.js';
+const q = new URLSearchParams(location.search), T = +(q.get('t') || 8), N = +(q.get('n') || 14), cv = document.getElementById('c');
+const S = createSim({ seed: +(q.get('seed') || 3) });
+for (let i = 0; i < N; i++) S.spawn({ bot: true, name: NAMES[i], col: HATS[i % HATS.length], r: .9 + S.R() * .9, instant: true });
+const me = S.spawn({ name: 'you', col: '#ff4f9e', x: 0, z: 0, instant: true, r: 1.4 });
+const W = createWorld(cv, { faceCam: .5 });
+W.setSize(innerWidth, innerHeight, 1);
+const dt = 1 / 60; let ft = 0;
+const t0 = performance.now(); let simMs = 0, upMs = 0;
+while (ft < T) { ft += dt; const a = performance.now(); S.run(ft); simMs += performance.now() - a; for (const ev of S.ev) { W.event(ev); if (ev.k === 'gone' || ev.k === 'cashout') { S.remove(ev.e); S.spawn({ bot: true, name: NAMES[S.uid % NAMES.length], col: HATS[S.uid % HATS.length] }); } } S.ev.length = 0;
+  me.ctl.x = Math.sin(ft * .4); me.ctl.z = Math.cos(ft * .3); const b = performance.now(); W.update(S, 1, dt); upMs += performance.now() - b; }
+const mode = q.get('cam') || 'follow', f = S.ents.find((e) => e.name === 'you' && e.st === 'live') || S.ents[0];
+if (mode === 'follow') { W.cam.position.set(f.x, 13 + f.r * 4, f.z + 14 + f.r * 4); W.cam.lookAt(f.x, 0, f.z - 1.5); }
+else if (mode === 'close') { W.cam.position.set(f.x + 2, 2.6 * f.r, f.z + 7 * f.r); W.cam.lookAt(f.x, f.r * .9, f.z); }
+else if (mode === 'top') { W.cam.position.set(0, 70, 22); W.cam.lookAt(0, 0, 0); }
+else { W.cam.position.set(Math.sin(.6) * 44, 20, Math.cos(.6) * 44); W.cam.lookAt(0, -2, 0); }
+W.cam.updateMatrixWorld(); W.update(S, 1, 0); const c0 = performance.now(); W.render(); const rMs = performance.now() - c0;
+console.log(`sim ${(simMs / (T / dt)).toFixed(2)}ms/frame, update ${(upMs / (T / dt)).toFixed(2)}ms/frame, render ${rMs.toFixed(1)}ms, ents ${S.ents.length}, draws ${W.R.info.render.calls}, tris ${W.R.info.render.triangles}`);
+document.body.dataset.ready = '1';
+</script></body></html>
