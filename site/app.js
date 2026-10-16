@@ -193,7 +193,8 @@ const XH = ((CFG.x || '').match(/x\.com\/(\w+)/) || [])[1] || '';   // X handle 
 const SOC = {
   x: { name: 'X', short: 'Follow', tag: 'Follow', col: 'linear-gradient(#3a4566,#111827)', url: CFG.x, text: 'Launch news and the best shoves.' },
   discord: { name: 'Discord', tag: 'Join', col: 'linear-gradient(#8c95ff,#5865f2)', url: CFG.discord, text: 'Hang out, find squads, report bugs.' },
-  pumpfun: { name: 'Buy on pump.fun', tag: 'Buy', col: 'linear-gradient(var(--gb1),var(--gb2))', url: CFG.pumpfun || (CFG.ca ? `https://pump.fun/coin/${CFG.ca}` : ''), text: '' },
+  // buy: config.pumpfun overrides; a pump.fun mint (…pump) opens pump.fun, any other mint opens a Jupiter swap
+  pumpfun: { name: CFG.ca && /pump$/.test(CFG.ca) ? 'Buy on pump.fun' : 'Buy $SNOWPVP', tag: 'Buy', col: 'linear-gradient(var(--gb1),var(--gb2))', url: CFG.pumpfun || (CFG.ca ? (/pump$/.test(CFG.ca) ? `https://pump.fun/coin/${CFG.ca}` : `https://jup.ag/swap/SOL-${CFG.ca}`) : ''), text: '' },
   dex: { name: 'Chart', tag: 'Chart', col: 'linear-gradient(var(--b1),var(--b2))', url: CFG.ca ? `https://dexscreener.com/solana/${CFG.ca}` : '', text: '' },
 };
 document.querySelectorAll('[data-socials]').forEach((box) => { box.innerHTML = box.dataset.socials.split(',').map((k) => { const s = SOC[k], href = s.url ? ` href="${esc(s.url)}" target="_blank" rel="noopener"` : ' href="#" data-soon="1"';
