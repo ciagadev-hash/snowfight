@@ -1,0 +1,23 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>
+/* font sheet: each option as the 3D hero title plus a body sample */
+*{box-sizing:border-box;margin:0}body{width:1560px;background:linear-gradient(#cfe7ff,#eef7ff);padding:30px;font-family:sans-serif}
+.g{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.c{background:linear-gradient(#bfe0ff,#f4faff);border-radius:30px;padding:18px 26px 24px;position:relative;box-shadow:0 14px 34px rgba(13,43,69,.12)}
+.n{position:absolute;left:22px;top:16px;font:800 30px sans-serif;color:#ff4d5e}
+canvas{display:block;width:700px;height:240px;margin:0 auto;filter:drop-shadow(0 14px 16px rgba(13,43,69,.25))}
+.b{font-size:22px;color:#0d2b45;text-align:center;line-height:1.35}.b b{display:block;font-size:34px;margin-bottom:4px}
+.l{position:absolute;right:24px;top:20px;font:600 16px sans-serif;color:#3d5a75}
+</style></head><body><div class="g" id="g"></div>
+<script type="module">
+import { mountTitle } from '../site/title3d.js';
+const F = [['coiny', 'Coiny'], ['baloo-2', 'Baloo 2 ExtraBold'], ['nunito', 'Nunito Black'], ['lilita-one', 'Lilita One'], ['sniglet', 'Sniglet ExtraBold'], ['chewy', 'Chewy']];
+const g = document.getElementById('g');
+await Promise.all(F.map(async ([f, name], i) => {
+  const ff = new FontFace('F' + i, `url(../site/fonts/${f}.ttf)`); await ff.load(); document.fonts.add(ff);
+  const c = document.createElement('div'); c.className = 'c'; c.innerHTML = `<div class="n">${i + 1}</div><div class="l">${name}</div><canvas></canvas><div class="b" style="font-family:F${i}"><b>How to play</b>Roll around a melting ice floe and shove people into the sea.</div>`; g.appendChild(c);
+  await mountTitle(c.querySelector('canvas'), ['Push. Grow.', 'Cash out.'], `../site/fonts/${f}.ttf`);
+}));
+setTimeout(() => document.body.dataset.ready = '1', 2500);
+</script></body></html>
