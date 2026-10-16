@@ -78,6 +78,12 @@ function snowball(r, hat, pos, yaw = 0, tilt = 0, face = 'smile', tag = null) {
     const h1 = new THREE.Mesh(new THREE.SphereGeometry(.05, 16, 12), shine); h1.position.set(s * .3 + .05, .22, 1.03); const h2 = new THREE.Mesh(new THREE.SphereGeometry(.022, 12, 8), shine); h2.position.set(s * .3 - .04, .07, 1.03);
     const b = new THREE.Mesh(new THREE.CircleGeometry(.11, 24), blush); b.position.set(s * .5, -.08, .87); b.lookAt(s * 3, -.4, 5); F.add(e, h1, h2, b); }
   if (face === 'shock') { const m = new THREE.Mesh(new THREE.SphereGeometry(.1, 24, 16), eyeK); m.scale.set(1, 1.3, .5); m.position.set(0, -.2, .97); F.add(m); }
+  else if (face === 'hype') {
+    const mo = new THREE.Mesh(new THREE.SphereGeometry(.2, 32, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0x3a0d1c, roughness: .3, side: THREE.DoubleSide })); mo.scale.set(1.25, 1.1, .5); mo.position.set(0, -.08, .95); F.add(mo);
+    const tg = new THREE.Mesh(new THREE.SphereGeometry(.11, 24, 16), new THREE.MeshPhysicalMaterial({ color: 0xff6f91, roughness: .35, clearcoat: .6 })); tg.scale.set(1.2, .6, .5); tg.position.set(0, -.24, .99); F.add(tg);
+    for (const s of [-1, 1]) { const br = new THREE.Mesh(new THREE.CapsuleGeometry(.035, .2, 6, 12), eyeK); br.rotation.z = Math.PI / 2 + s * .4; br.position.set(s * .3, .34, .95); F.add(br);
+      const st = new THREE.Mesh(new THREE.OctahedronGeometry(.07, 0), shine); st.scale.set(.5, 1.4, .3); st.position.set(s * .3 - .05, .2, 1.06); st.rotation.z = .3; F.add(st); const st2 = st.clone(); st2.rotation.z = .3 + Math.PI / 2; F.add(st2); }
+  }
   else if (face === 'grit') { const m = new THREE.Mesh(new THREE.TorusGeometry(.13, .032, 12, 32, Math.PI), eyeK); m.rotation.z = Math.PI; m.position.set(0, -.08, .99); F.add(m); for (const s of [-1, 1]) { const br = new THREE.Mesh(new THREE.BoxGeometry(.22, .04, .04), eyeK); br.position.set(s * .3, .38, .93); br.rotation.z = -s * .35; F.add(br); } }
   else { const m = new THREE.Mesh(new THREE.TorusGeometry(.11, .03, 12, 32, Math.PI), eyeK); m.rotation.z = Math.PI; m.position.set(0, -.1, .99); F.add(m); }
   g.add(F);
@@ -108,14 +114,31 @@ if (A === 'banner') {
   cam.position.set(0, 9, 24); cam.lookAt(0, .8, 0);
   snowball(2.4, '#ff4d5e', [-1.6, 0, 1.6], .35, .05, 'grit', ['$48.20', 'up']); snowball(1.4, '#2fd3a0', [2.8, 0, 2.6], -.6, -.35, 'shock', ['$11.75']);
   snowball(1.1, '#ffc233', [-7, 0, -2.4], .5, 0, 'smile', ['$9.40']); snowball(.95, '#3d6bff', [6.6, 0, -2.6], -.4, .1, 'smile', ['$6.10']); puff(1.4, .1, 2.2, 16, 1.6);
-} else { cam.position.set(0, 3.4, 9.6); cam.lookAt(0, 1.9, 0); snowball(2.1, '#ff4d5e', [0, 0, 0], .18, .03, 'smile'); }
+} else {
+  // pfp: an electric-blue sunburst, the ball charging at you through a burst of snow
+  { const c = document.createElement('canvas'); c.width = c.height = 1024; const x = c.getContext('2d'); const g = x.createRadialGradient(512, 470, 30, 512, 470, 720); g.addColorStop(0, '#8fe9ff'); g.addColorStop(.35, '#2f8bff'); g.addColorStop(1, '#1236b8'); x.fillStyle = g; x.fillRect(0, 0, 1024, 1024);
+    x.translate(512, 470); for (let i = 0; i < 28; i++) { x.rotate(Math.PI * 2 / 28); x.fillStyle = i % 2 ? 'rgba(255,255,255,.10)' : 'rgba(255,255,255,.04)'; x.beginPath(); x.moveTo(0, 0); x.lineTo(900, -70); x.lineTo(900, 70); x.fill(); }
+    const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; sc.background = t; sc.fog = null; }
+  sc.remove(sc.children.find((o) => o.isMesh && o.geometry.type === 'PlaneGeometry'));
+  sc.children.filter((o) => o.isMesh && o.material === iceM).forEach((o) => o.visible = false);
+  sc.children.filter((o) => o.isMesh && (o.geometry.type === 'CircleGeometry' || o.geometry.type === 'CylinderGeometry')).forEach((o) => o.visible = false);
+  const rc = new THREE.DirectionalLight(0x6ff3ff, 3.2); rc.position.set(8, 3, -4); const rp = new THREE.DirectionalLight(0xff6fd0, 2.6); rp.position.set(-8, -2, -3); sc.add(rc, rp);
+  cam.position.set(0, .2, 11.6); cam.lookAt(0, .25, 0); R.toneMappingExposure = .78;
+  const b = snowball(2.25, '#ff3d50', [0, -2.15, 0], -.32, .1, 'hype'); b.rotation.x = .12;
+  const hat = b.children[2]; hat.rotation.z = -.2; hat.children[2].position.set(.12, 1.12, -.05);
+  // snow burst behind and around
+  for (let i = 0; i < 120; i++) { const a = rnd() * Math.PI * 2, d = 2.6 + rnd() * 3.4, m = new THREE.Mesh(new THREE.IcosahedronGeometry(.05 + rnd() * .2, 1), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .85, sheen: 1, sheenColor: new THREE.Color(0xbfe4ff), emissive: 0xbfe8ff, emissiveIntensity: .05 }));
+    m.position.set(Math.cos(a) * d, Math.sin(a) * d * .9 + .1, -1.5 - rnd() * 2.5 + (d > 4.5 ? 1.5 : 0)); sc.add(m); }
+  const streakT = (() => { const c = document.createElement('canvas'); c.width = 16; c.height = 128; const x = c.getContext('2d'), g = x.createLinearGradient(0, 0, 0, 128); g.addColorStop(0, 'rgba(255,255,255,0)'); g.addColorStop(.5, 'rgba(255,255,255,1)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(5, 0, 6, 128); return new THREE.CanvasTexture(c); })();
+  for (let i = 0; i < 46; i++) { const a = rnd() * Math.PI * 2, d = 3.3 + rnd() * 2.4, sp = new THREE.Sprite(new THREE.SpriteMaterial({ map: streakT, transparent: true, opacity: .8, depthWrite: false, blending: THREE.AdditiveBlending })); sp.position.set(Math.cos(a) * d, Math.sin(a) * d, -.5); sp.scale.set(.08, .9 + rnd() * .9, 1); sp.material.rotation = a - Math.PI / 2; sc.add(sp); }
+}
 
 // falling snow: crisp flakes plus a few big soft ones close to the lens
 const flakeT = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d'), g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.4, 'rgba(255,255,255,.7)'); g.addColorStop(1, 'rgba(255,255,255,0)'); x.fillStyle = g; x.fillRect(0, 0, 64, 64); return new THREE.CanvasTexture(c); })();
 for (let i = 0; i < 700; i++) { const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: flakeT, transparent: true, opacity: .55 + rnd() * .45, depthWrite: false, fog: true })); const z = -40 + rnd() * 62;
   s.position.set((rnd() - .5) * (60 + (30 - z)), rnd() * 26 - 2, z); s.scale.setScalar(z > 16 ? .18 + rnd() * .25 : .08 + rnd() * .16); sc.add(s); }
 
-const comp = new EffectComposer(R); comp.addPass(new RenderPass(sc, cam)); comp.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), .18, .4, .95)); comp.addPass(new OutputPass());
+const comp = new EffectComposer(R); comp.addPass(new RenderPass(sc, cam)); comp.addPass(new UnrealBloomPass(new THREE.Vector2(W, H), A === 'pfp' ? .3 : .18, .5, A === 'pfp' ? .9 : .95)); comp.addPass(new OutputPass());
 await document.fonts.ready; comp.render();
 // value tags over each player
 const fs = A === 'banner' ? 19 : 22;
