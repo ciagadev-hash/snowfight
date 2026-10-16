@@ -13,7 +13,7 @@ game = game.replace('export function createArena', 'function createArena')
 # the 3D title shares the module scope with the game, so its duplicate three/RoomEnvironment imports go
 title = (SITE / 'title3d.js').read_text(encoding='utf8').replace('export async function mountTitle', 'async function mountTitle')
 title = title.replace("import * as THREE from 'three';\n", '').replace("import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';\n", '')
-font = 'data:font/ttf;base64,' + base64.b64encode((SITE / 'fonts' / 'fredoka.ttf').read_bytes()).decode()
+font = 'data:font/ttf;base64,' + base64.b64encode((SITE / 'fonts' / 'sniglet.ttf').read_bytes()).decode()
 cfg = {'ca': sys.argv[1] if len(sys.argv) > 1 else '', 'live': False}
 h = h.replace('<script type="module" src="app.js"></script>', f'<script>window.SNOWFIGHT={json.dumps(cfg)};window.TITLE_FONT="{font}"</script>\n<script type="module">\n' + game + '\n' + title + '\n' + app + '\n</script>')
 (DIST / 'index.html').write_text(h, encoding='utf8', newline='\n')

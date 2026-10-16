@@ -1,4 +1,4 @@
-// The hero title as real 3D: Fredoka Bold extruded with a deep round bevel, so the letters look inflated.
+// The hero title as real 3D: Sniglet ExtraBold extruded with a deep round bevel, so the letters look inflated.
 // Line 1 is glossy icy blue with a soap-bubble sheen, line 2 is polished gold.
 import * as THREE from 'three';
 import { TTFLoader } from 'three/addons/loaders/TTFLoader.js';
@@ -12,7 +12,7 @@ export async function mountTitle(canvas, lines, fontUrl) {
   sc.environment = new THREE.PMREMGenerator(R).fromScene(new RoomEnvironment(), .02).texture; sc.environmentIntensity = 1.2;
   const key = new THREE.DirectionalLight(0xffffff, 2.2); key.position.set(-4, 6, 8); const rim = new THREE.DirectionalLight(0x9fd2ff, 2); rim.position.set(5, 2, -6); sc.add(key, rim, new THREE.AmbientLight(0xffffff, .35));
   const buf = await (await fetch(fontUrl)).arrayBuffer(), font = new Font(new TTFLoader().parse(buf));
-  const ice = new THREE.MeshPhysicalMaterial({ color: 0x9fd6ff, roughness: .07, clearcoat: 1, clearcoatRoughness: .03, iridescence: .6, iridescenceIOR: 1.3, iridescenceThicknessRange: [200, 750], sheen: .5, sheenColor: new THREE.Color(0xffffff), envMapIntensity: 1.5, emissive: 0x2f7fe0, emissiveIntensity: .1 });
+  const ice = new THREE.MeshPhysicalMaterial({ color: 0x4fa8ff, roughness: .07, clearcoat: 1, clearcoatRoughness: .03, iridescence: .6, iridescenceIOR: 1.3, iridescenceThicknessRange: [200, 750], sheen: .5, sheenColor: new THREE.Color(0xffffff), envMapIntensity: 1.5, emissive: 0x1f5fd0, emissiveIntensity: .12 });
   const gold = new THREE.MeshPhysicalMaterial({ color: 0xffc23a, metalness: .85, roughness: .16, clearcoat: 1, clearcoatRoughness: .05, envMapIntensity: 1.6 });
   const G = new THREE.Group(); sc.add(G);
   const mk = (text, mat, y) => { const g = new TextGeometry(text, { font, size: 1, depth: .3, curveSegments: 16, bevelEnabled: true, bevelThickness: .22, bevelSize: .08, bevelSegments: 12 });

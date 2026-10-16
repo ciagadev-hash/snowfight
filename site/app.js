@@ -7,7 +7,7 @@ let tT = 0; const toast = (m) => { const t = $('toast'); t.textContent = m; t.cl
 const store = { get(k, d) { try { const v = localStorage.getItem('snowfight.' + k); return v ? JSON.parse(v) : d; } catch (_) { return d; } }, set(k, v) { try { localStorage.setItem('snowfight.' + k, JSON.stringify(v)); } catch (_) { } } };
 const CFG = window.SNOWFIGHT || {};   // { ca, live } set at build time
 
-mountTitle($('title3d'), ['Push. Grow.', 'Cash out.'], window.TITLE_FONT || 'fonts/fredoka.ttf').catch(() => { $('h1').classList.remove('sr'); $('title3d').remove(); });
+mountTitle($('title3d'), ['Push. Grow.', 'Cash out.'], window.TITLE_FONT || 'fonts/sniglet.ttf').catch(() => { $('h1').classList.remove('sr'); $('title3d').remove(); });
 const arena = createArena($('arena'), $('tags'), { cashMin: 8 });
 $('cmin').textContent = arena.CASH_MIN;
 
