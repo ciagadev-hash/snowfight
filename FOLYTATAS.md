@@ -39,7 +39,7 @@
 - Az arcok mindig a kamera felé néznek, a kamera kiszámítása a játékosok előtt történik (`cam.updateMatrixWorld()`), különben a címkék elcsúsznak.
 
 ## Giga update (2026-10-16 délután): SnowPump
-- **Név: SnowPump** (a felhasználó kérte). A $SNOW ticker marad.
+- **Név: SnowPump** (a felhasználó kérte). A ticker később $SNOWPVP lett (lásd lent).
 - A felhasználó visszajelzése: a régi színek, a betűtípus, a felirat és a sárga gagyi volt, a showcase nem nézett ki játékreklámnak, a játék laggolt, a golyók átcsúsztak egymáson, és nem volt rendes kiesés-animáció. A karakter maga jó, csak legyen minőségibb. Bubisabb betűk, tisztább színek.
 - **Betűtípus:** DynaPuff (a 11 bubis betűből az 1-est választotta), Nunito a kis szövegekhez. **Színek:** a "B, finom fény" paletta: ink #152b6b, fehér, zöld a pénznek és a Play gombnak, pink a knockoutnak és a "you"-nak, kék. Sárga szöveg nincs.
 - **Motor nulláról:** `site/sim.js` (fix 120 Hz-es lépés, teljes átfedés-feloldás, dash-lökés knockbackkel, okosabb botok, spawn-pajzs, zsugorodó jég, kiesés és kredit), `site/world.js` (shaderes tenger habbal és fodrozódással, repedő jég, instancolt karakterek arckifejezésekkel, pislogással, nyúlással, ugrással, blob-árnyékok, részecskék, kb. 25 draw call), `site/game.js` (sima kamera, interpoláció, hit-stop, adaptív felbontás, minimap), `site/sfx.js` (szintetizált hangok). Az oldal és a HUD is új (DynaPuff, játékos gombok, ranglista, minimap, shove cooldown, cash out tartás, kill feed, knockout feliratok).
@@ -56,3 +56,9 @@
 - A leaderboard nem kap kitalált nyerteseket: a `/api/leaderboard`-ról olvas (KV `leaderboard`), üresen "Season 1 starts at launch" állapot látszik.
 - A linkek és a CA a `site/config.json`-ban vannak, a build beleégeti.
 - A logó és a $SNOW lap az új SVG hógolyó-avatart használja a régi pfp helyett.
+
+## Domain, X, ticker, film-javítás (2026-10-16 este)
+- **Domain:** snowballpvp.fun (og:url, abszolút og:image és twitter:image, canonical; a film zárókártyáján is ott van). **X:** https://x.com/SnowPumpPvP (`site/config.json` → Community lap, kezdőlap, footer, a megosztás gomb `via=SnowPumpPvP`, `twitter:site`). **Ticker: $SNOWPVP** (oldal, film, szövegek). A CA-t a felhasználó küldi.
+- **Akadozás a filmben** (a felhasználó szerint az első lelökésnél laggy volt): a `S.alpha` mindig 1 volt, így a golyók csak egész szimulációs lépésekben mozdultak, lassításban rángatva. Javítva (a renderelés egy lépéssel lemarad és interpolál, ez a játékban is simább mozgást ad). A kemény kimerevítések helyett sima sebesség-rámpák (`ramp()` a `video/shots.js`-ben), és a zuhanás, a spawn és a kamera is interpolált időt használ.
+- **Textúrahiba:** a göröngyös hó-test gurulás közben átbökött a szemen, a szájon, a pirosságon és a sapkán (darabos, villódzó arcok). A `faceSafe` shader a test anyagán az arc és a sapka alatt sima gömbre simítja a havat (példányonkénti `aFace`/`aUp` irány).
+- **Címkék:** a takart golyók címkéi elhalványulnak (`W.discs` + `W.cover`), nem úsznak rá az előttük lévő golyó arcára; leesésnél és a hatótáv szélén is elhalványulnak; a grow jelenetben a saját címke nem ütközik a HUD-dal.

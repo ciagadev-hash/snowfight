@@ -1,7 +1,7 @@
 <!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
 <title>SnowPump · Push. Grow. Cash out.</title>
 <meta name="description" content="A snowball brawl on a melting ice floe. Push others off, scoop snow, grow your ball and cash it out. Win the coin's fees.">
-<meta property="og:title" content="SnowPump"><meta property="og:description" content="Push. Grow. Cash out."><meta property="og:image" content="og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="SnowPump"><meta property="og:description" content="Push. Grow. Cash out."><meta property="og:url" content="https://snowballpvp.fun/"><meta property="og:image" content="https://snowballpvp.fun/og.png"><link rel="canonical" href="https://snowballpvp.fun/"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@SnowPumpPvP"><meta name="twitter:image" content="https://snowballpvp.fun/og.png">
 <meta name="theme-color" content="#2f8dff">
 <link rel="icon" href="__ICON__">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -106,7 +106,7 @@ kbd{font:900 14px Nunito;background:#eaf5ff;color:var(--ink);border-radius:9px;p
 .faq{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:16px}.faq details{background:#fff;border-radius:20px;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS);padding:0 22px}
 .faq summary{cursor:pointer;list-style:none;font:700 20px DynaPuff;color:var(--ink);padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}.faq summary::-webkit-details-marker{display:none}
 .faq summary::after{content:"+";font:700 30px/1 DynaPuff;color:var(--p2);transition:transform .2s}.faq details[open] summary::after{transform:rotate(45deg)}.faq p{color:var(--text);padding:0 0 18px}
-/* $SNOW */
+/* $SNOWPVP */
 .snowp{max-width:980px}.coinc{display:flex;gap:28px;align-items:center;padding:28px;margin-bottom:28px}.coinav{width:156px;height:156px;border-radius:50%;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#7fd0ff,#2f8dff);box-shadow:inset 0 -8px 0 rgba(0,0,0,.15),0 0 0 6px #fff,0 0 0 10px var(--ink)}.coinav .av{width:116px;height:116px}
 .ci{flex:1;min-width:0}.ci h3{font-size:32px;margin-bottom:14px}.caRow{display:flex;gap:12px;align-items:center;margin-bottom:18px}.caRow code{flex:1;min-width:0;font:900 15px Nunito;background:#eef6ff;padding:13px 14px;border-radius:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
 .facts{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:28px}.facts .card{padding:18px 12px;text-align:center}.facts small{display:block;font:900 12px Nunito;letter-spacing:.1em;color:var(--text)}.facts b{display:block;font:700 21px DynaPuff;color:var(--ink);margin-top:4px}
@@ -179,12 +179,12 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
   .hl{top:auto;bottom:auto;left:auto;right:16px;top:186px;display:none}}
 </style></head><body>
 <header id="hdr"><div class="w"><a class="lg" href="#/"><span class="av lgav" data-av="#ff4f9e" data-face="happy"></span><span class="gt" data-t="SnowPump">SnowPump</span></a>
-<nav id="nav"><a href="#/" data-r="home">Play</a><a href="#/leaderboard" data-r="leaderboard">Leaderboard</a><a href="#/how" data-r="how">How to play</a><a href="#/snow" data-r="snow">$SNOW</a><a href="#/community" data-r="community">Community</a></nav>
+<nav id="nav"><a href="#/" data-r="home">Play</a><a href="#/leaderboard" data-r="leaderboard">Leaderboard</a><a href="#/how" data-r="how">How to play</a><a href="#/snow" data-r="snow">$SNOWPVP</a><a href="#/community" data-r="community">Community</a></nav>
 <button class="btn wh sm" id="wBtn">Connect wallet</button><button class="burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button></div></header>
 
 <main class="page" data-page="home">
 <section class="hero" id="top"><canvas id="arena"></canvas><div id="tags"></div>
-<div class="pot"><small>PRIZE POT</small><span class="gt g" data-t="$SNOW fees">$SNOW fees</span><em>are up for grabs</em></div>
+<div class="pot"><small>PRIZE POT</small><span class="gt g" data-t="$SNOWPVP fees">$SNOWPVP fees</span><em>are up for grabs</em></div>
 <div class="hc"><h1 class="sr">SnowPump. Push. Grow. Cash out.</h1>
 <div class="gt logo" data-t="SnowPump" aria-hidden="true">SnowPump</div><br>
 <div class="gt tag" aria-hidden="true" data-t="Push. Grow.">Push. Grow.</div> <div class="gt g tag" aria-hidden="true" data-t="Cash out!">Cash out!</div>
@@ -203,9 +203,9 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 <div class="podium" id="homePodium"></div><div class="more"><a class="btn wh sm" href="#/leaderboard">Open the leaderboard</a></div></div></section>
 
 <section class="s"><div class="w"><div class="money">
-<div class="mc card"><h3>Your snowball is worth real money.</h3><p>You play for $SNOW's creator fees. The prize pot is spread over all the snow in play, so every ball has a live dollar value that grows as you do.</p>
-<div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Trades of $SNOW earn creator fees</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>Creator fees fund the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>Your share = your snow ÷ all snow</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and it lands in your wallet</div></div>
-<div class="more l"><a class="btn wh sm" href="#/snow">More about $SNOW</a></div></div>
+<div class="mc card"><h3>Your snowball is worth real money.</h3><p>You play for $SNOWPVP's creator fees. The prize pot is spread over all the snow in play, so every ball has a live dollar value that grows as you do.</p>
+<div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Trades of $SNOWPVP earn creator fees</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>Creator fees fund the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>Your share = your snow ÷ all snow</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and it lands in your wallet</div></div>
+<div class="more l"><a class="btn wh sm" href="#/snow">More about $SNOWPVP</a></div></div>
 <div class="meter card"><div class="av big" data-av="#ff4f9e"></div><span class="gt g" data-t="$48.20">$48.20</span><small>a big snowball, live</small><div class="bar"><i></i></div><small style="margin:12px 0 0">Cash out unlocks at $<span id="cmin">8</span></small></div>
 </div></div></section>
 
@@ -244,7 +244,7 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 <div class="faq">
 <details><summary>Is it free to play?</summary><p>Yes. You only need a Solana wallet (Phantom, Solflare or Backpack) to sign in.</p></details>
 <details><summary>Does connecting cost anything?</summary><p>No. Connecting shares your public address only. SnowPump never asks you to sign a payment to play.</p></details>
-<details><summary>When do payouts start?</summary><p>When $SNOW launches. Until then every round is a warm-up, and your best runs are saved on your device.</p></details>
+<details><summary>When do payouts start?</summary><p>When $SNOWPVP launches. Until then every round is a warm-up, and your best runs are saved on your device.</p></details>
 <details><summary>What happens if I fall in?</summary><p>You lose your snowball. If someone shoved you, they keep 60% of your snow and the rest goes back to the pot.</p></details>
 <details><summary>Why did my cash out reset?</summary><p>Any bump while you hold resets it. Find a quiet spot, ideally away from bigger balls.</p></details>
 <details><summary>Who else is on the floe?</summary><p>Right now you roll with practice bots, marked BOT. Live multiplayer opens with the launch.</p></details>
@@ -255,12 +255,12 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 </main>
 
 <main class="page" data-page="snow" hidden>
-<section class="ph"><div class="w"><span class="gt b" data-t="$SNOW">$SNOW</span><p>The coin that fills the prize pot.</p></div></section>
+<section class="ph"><div class="w"><span class="gt b" data-t="$SNOWPVP">$SNOWPVP</span><p>The coin that fills the prize pot.</p></div></section>
 <section class="w snowp">
-<div class="card coinc"><div class="coinav"><div class="av" data-av="#ff4f9e" data-face="happy"></div></div><div class="ci"><h3>$SNOW on pump.fun</h3><div class="caRow"><code class="caT">CA: launching on pump.fun</code><button class="btn sm caB">Copy</button></div>
+<div class="card coinc"><div class="coinav"><div class="av" data-av="#ff4f9e" data-face="happy"></div></div><div class="ci"><h3>$SNOWPVP on pump.fun</h3><div class="caRow"><code class="caT">CA: launching on pump.fun</code><button class="btn sm caB">Copy</button></div>
 <div class="socrow" data-socials="pumpfun,dex"></div></div></div>
 <div class="facts"><div class="card"><small>CHAIN</small><b>Solana</b></div><div class="card"><small>LAUNCH</small><b>pump.fun</b></div><div class="card"><small>PRIZE POT</small><b>Funded by fees</b></div><div class="card"><small>CASH OUT FROM</small><b>$<span class="cminT">8</span></b></div></div>
-<div class="card mc"><h3>How the pot works</h3><div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Every trade of $SNOW earns a creator fee</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>Creator fees fund the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>The pot is spread over all the snow in play</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and your share lands in your wallet</div><div class="fr"><i style="background:linear-gradient(#7fe0ff,#16b8e8)"><span class="gt" data-t="5">5</span></i>A knocked-off ball's leftover snow goes back to the pot</div></div></div>
+<div class="card mc"><h3>How the pot works</h3><div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Every trade of $SNOWPVP earns a creator fee</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>Creator fees fund the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>The pot is spread over all the snow in play</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and your share lands in your wallet</div><div class="fr"><i style="background:linear-gradient(#7fe0ff,#16b8e8)"><span class="gt" data-t="5">5</span></i>A knocked-off ball's leftover snow goes back to the pot</div></div></div>
 <p class="risk">Memecoins are risky and can lose all their value. Nothing here is financial advice.</p>
 </section>
 </main>
@@ -273,7 +273,7 @@ footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}foot
 </section>
 </main>
 
-<footer><div class="w"><div class="fl"><a href="#/" class="lg"><span class="gt" data-t="SnowPump">SnowPump</span></a><div class="fnav"><a href="#/leaderboard">Leaderboard</a><a href="#/how">How to play</a><a href="#/snow">$SNOW</a><a href="#/community">Community</a></div></div>
+<footer><div class="w"><div class="fl"><a href="#/" class="lg"><span class="gt" data-t="SnowPump">SnowPump</span></a><div class="fnav"><a href="#/leaderboard">Leaderboard</a><a href="#/how">How to play</a><a href="#/snow">$SNOWPVP</a><a href="#/community">Community</a><a data-sl="x" target="_blank" rel="noopener">X</a><a data-sl="discord" target="_blank" rel="noopener">Discord</a></div></div>
 <p>SnowPump · Launching on pump.fun · Memecoins are risky. Nothing here is financial advice.</p></div></footer>
 
 <div class="hud" id="hud"><div class="vig" id="vig"></div>

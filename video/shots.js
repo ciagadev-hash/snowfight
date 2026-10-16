@@ -11,8 +11,11 @@ export const filmMoney = (r) => '$' + (r * r * 1.6 * MULT).toFixed(2);
 export const rFor = (dollars) => Math.sqrt(dollars / (1.6 * MULT));
 
 const ease = (x) => x * x * (3 - 2 * x), cl = (v, a = 0, b = 1) => Math.min(b, Math.max(a, v));
-// piecewise-linear time remap: [[filmSec, simSec], ...]
-const remap = (pts) => (u) => { if (u <= pts[0][0]) return pts[0][1] + (u - pts[0][0]); for (let i = 1; i < pts.length; i++) if (u <= pts[i][0]) { const [a, b] = pts[i - 1], [c, d] = pts[i]; return b + (d - b) * (u - a) / (c - a); } const [a, b] = pts[pts.length - 1]; return b + (u - a); };
+// smooth speed ramp: keys [[filmSec, speed], ...], eased between keys; sim time is the integral, so slow motion never jumps or freezes dead
+const ramp = (keys) => { const N = 2400, last = keys[keys.length - 1], tab = [0];
+  const sp = (u) => { if (u <= keys[0][0]) return keys[0][1]; for (let i = 1; i < keys.length; i++) if (u <= keys[i][0]) { const [a, va] = keys[i - 1], [b, vb] = keys[i]; return va + (vb - va) * ease((u - a) / (b - a)); } return last[1]; };
+  for (let i = 1, s = 0; i <= (last[0] + 3) * N; i++) { s += sp((i - .5) / N) / N; tab.push(s); }
+  return (u) => { if (u <= 0) return u * keys[0][1]; const x = u * N, i = Math.floor(x); if (i + 1 >= tab.length) return tab[tab.length - 1] + (x - tab.length + 1) / N * last[1]; return tab[i] + (tab[i + 1] - tab[i]) * (x - i); }; };
 const sim = (seed, o = {}) => createSim({ seed, auto: false, floe: 30, ...o });
 const put = (S, name, col, x, z, r, o = {}) => { const e = S.spawn({ bot: !!o.ai, name, col, x, z, r, instant: true }); e.puppet = !o.ai; if (o.face != null) e.face = o.face; return e; };
 const crowd = (S, n, avoid, rad = 26, seed = 0) => { const names = ['Blizz', 'Frosty', 'Slushie', 'Pebble', 'Igloo', 'Flurry', 'Nippy', 'Drift', 'Sleet', 'Chill', 'Powder', 'Glacier', 'Brrr', 'Puffin', 'Hailey', 'Tundra', 'Mittens', 'Krill', 'Polar', 'Cocoa', 'Juno', 'Ziggy', 'Lumi', 'Tofu', 'Pip', 'Sora'], cols = ['#2ee07e', '#3aa8ff', '#ff8f3a', '#9a63ff', '#16d3c4', '#ff5d5d', '#5b6bff', '#e757ff', '#86e04a', '#00b8ff', '#ffd23f'];
@@ -25,7 +28,7 @@ export const SHOTS = [
       H.vz = -7; crowd(S, 7, [[0, -18, 9]], 25, 3); S.hero = H; S.victim = V;
       S.pre = (S, t) => { H.ctl.x = 0; H.ctl.z = t < .3 ? -1 : .7; if (t > .08 && t < .09) H.ctl.dash = true; V.ctl.x = Math.sin(t * 2) * .2; };
       return S; },
-    time: remap([[0, 0], [.215, .215], [.36, .218], [1.65, .7], [2.8125, 1.6]]) },
+    time: ramp([[0, 1], [.215, 1], [.235, .07], [.31, .07], [.5, .34], [1.55, .36], [2.2, .95], [2.9, 1]]) },
   { id: 'logo', b0: 6, b1: 10,
     setup() { const S = sim(21, { piles: 150 }); crowd(S, 18, [], 25, 0); return S; }, time: (u) => u + 2 },
   { id: 'grow', b0: 10, b1: 18,
@@ -38,18 +41,18 @@ export const SHOTS = [
     setup() { const S = sim(41); const H = put(S, HERO.name, HERO.col, 17.2, 2.2, 2.45, { face: Math.PI / 2 }), V = put(S, 'Blizz', '#3aa8ff', 24.2, 1.4, 1.45, { face: -Math.PI / 2 }); H.vx = 5;
       crowd(S, 8, [[19, 2, 9], [21, 14, 9]], 25, 2); S.hero = H; S.victim = V; S.pre = (S, t) => { H.ctl.x = 1; H.ctl.z = -.05; if (t > .08 && t < .1) H.ctl.dash = true; };
       return S; },
-    time: remap([[0, 0], [.23, .23], [.33, .232], [1.406, 1.4]]) },
+    time: ramp([[0, 1], [.23, 1], [.25, .08], [.32, .08], [.5, 1.2], [1.5, 1.2]]) },
   { id: 'strike', b0: 21, b1: 24,
     setup() { const S = sim(51); const H = put(S, HERO.name, HERO.col, -17.7, .25, 2.5, { face: -Math.PI / 2 }); H.vx = -6;
       const pins = [[-24, 0, 'Pip'], [-26, 1.35, 'Tofu'], [-26, -1.35, 'Juno'], [-28, 0, 'Lumi']].map(([x, z, n], i) => put(S, n, ['#ff8f3a', '#9a63ff', '#2ee07e', '#e757ff'][i], x, z, 1.05, { face: Math.PI / 2 }));
       crowd(S, 8, [[-19, 0, 10]], 24, 9); S.hero = H; S.pins = pins; S.pre = (S, t) => { H.ctl.x = t < .4 ? -1 : .6; H.ctl.z = 0; if (t > .08 && t < .09) H.ctl.dash = true; };
       return S; },
-    time: remap([[0, 0], [.205, .205], [.3, .207], [1.406, 1.4]]) },
+    time: ramp([[0, 1], [.205, 1], [.225, .08], [.29, .08], [.47, 1.2], [1.5, 1.2]]) },
   { id: 'bye', b0: 24, b1: 29,
     setup() { const S = sim(61); const Y = put(S, 'Yeti', '#5b6bff', -.6, -26.4, 2.7, { face: 0 }), H = put(S, HERO.name, HERO.col, .4, -18.4, 2.55, { face: Math.PI });
       crowd(S, 7, [[0, -22, 10]], 24, 12); S.hero = H; S.victim = Y; S.pre = (S, t) => { H.ctl.z = t < .35 ? -1 : .8; H.ctl.x = -.05; if (t > .1 && t < .12) H.ctl.dash = true; Y.ctl.x = 0; Y.ctl.z = .25; };
       return S; },
-    time: remap([[0, 0], [.265, .265], [.38, .268], [1.25, .62], [2.34375, 1.9]]) },
+    time: ramp([[0, 1], [.265, 1], [.285, .08], [.37, .08], [.55, .4], [1.2, .42], [1.45, 1.2], [2.4, 1.2]]) },
   { id: 'ice', b0: 29, b1: 36,
     setup() { const S = sim(71, { piles: 140 }); const H = put(S, HERO.name, HERO.col, 1.5, 2, 2.6, { ai: true }); H.bot = true; crowd(S, 26, [[1.5, 2, 4]], 28, 4); S.hero = H;
       S.pre = (S, t) => { const k = ease(cl((t - .35) / 3.4)); S.FR = 30 - 17 * k; S.next = Math.max(12.5, S.FR - 6); }; return S; },

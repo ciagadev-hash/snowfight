@@ -1,6 +1,6 @@
 # SnowPump
 
-A snowball .io brawl on a melting ice floe (the project was called Snowfight before; the owner renamed it SnowPump). Everyone plays in one arena, shoves each other into the sea, scoops snow to grow, and cashes out. The prize pot is paid by the coin's ($SNOW) pump.fun creator fees. Login is Solana wallet connect only.
+A snowball .io brawl on a melting ice floe (the project was called Snowfight before; the owner renamed it SnowPump). Everyone plays in one arena, shoves each other into the sea, scoops snow to grow, and cashes out. The prize pot is paid by the coin's ($SNOWPVP) pump.fun creator fees. Site: snowballpvp.fun · X: @SnowPumpPvP. Login is Solana wallet connect only.
 
 ## For the next Claude (read this first)
 
@@ -21,7 +21,7 @@ One deterministic engine runs the game, the hero backdrop and the showcase film.
 
 | Path | What |
 | --- | --- |
-| `site/sim.js` | Simulation (no rendering): fixed 120 Hz step, ball physics with full overlap resolution, dash shoves with knockback, bots, snow piles, the 90 s shrinking-floe cycle, falls and knockout credit, cash out, spawn shield. Emits events. |
+| `site/sim.js` | Simulation (no rendering): fixed 120 Hz step (renderers draw one step behind and blend with `S.alpha`, so slow motion and any refresh rate stay smooth), ball physics with full overlap resolution, dash shoves with knockback, bots, snow piles, the 90 s shrinking-floe cycle, falls and knockout credit, cash out, spawn shield. Emits events. |
 | `site/world.js` | three.js renderer: sky, shader sea (foam, ripples), cracking floe, icebergs, the instanced snowball characters (expressions, blinking, squash, hops), blob shadows, particles. About 25 draw calls. |
 | `site/game.js` | The playable arena: input (mouse, WASD, touch stick), smooth camera, interpolation, hit-stop, adaptive resolution, tags, minimap, HUD events. |
 | `site/sfx.js` | Game sounds, synthesized with WebAudio. |
@@ -53,6 +53,6 @@ python -I video/render.py --vertical --gpu           # 9:16, 1080x1920 -> video/
 
 - Real multiplayer server (e.g. Cloudflare Durable Objects + websockets, running `site/sim.js` server-side). Today everyone plays a local arena with labelled bots.
 - Real payouts: creator fees → treasury → cash-out transaction. A knocked-off ball's leftover 40% should go back to the pot.
-- The $SNOW contract address and the X / Discord links: put them in `site/config.json`, then `python -I tools/build.py`.
+- The $SNOWPVP contract address: put it in `site/config.json` (`ca`), then `python -I tools/build.py`. X (@SnowPumpPvP), Discord and the domain (snowballpvp.fun, in the meta tags and the film's end card) are set.
 - The leaderboard's data: the payout server should write `{ earners, biggest, kos }` to the KV key `leaderboard`. No made-up entries: the owner's buyers would read them as real earnings.
 - Brand images (`site/pfp.png`, `site/og.png`, `site/banner.png`) still show the old characters; re-render them with the new look and the SnowPump name.

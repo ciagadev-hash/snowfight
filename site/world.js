@@ -3,7 +3,7 @@
 import * as THREE from 'three';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { mergeGeometries, mergeVertices } from 'three/addons/utils/BufferGeometryUtils.js';
-import { SPAWN_T, FALL_T } from './sim.js';
+import { SPAWN_T, FALL_T, STEP } from './sim.js';
 
 export const PAL = { ink: '#152b6b', pink: '#ff4f9e', green: '#2ee07e', blue: '#3aa8ff', white: '#ffffff' };
 const SEA_Y = -1.4, MAXC = 64;
@@ -35,6 +35,20 @@ function snowify(m, glitter = 1) {
         outgoingLight += vec3(1.) * g * ${glitter.toFixed(2)} * 1.6;
         #include <opaque_fragment>`);
   };
+  return m;
+}
+
+// The body is lumpy snow that rolls under the face and the hat, so its bumps used to poke through the eyes, mouth, cheeks and the hat band.
+// Per instance, aFace / aUp are the face and hat directions in the body's own (rolling) space; the snow is smoothed to a clean sphere under both.
+function faceSafe(m) {
+  const prev = m.onBeforeCompile;
+  m.onBeforeCompile = (sh, r) => { prev(sh, r);
+    sh.vertexShader = sh.vertexShader.replace('#include <common>', '#include <common>\nattribute vec3 aFace; attribute vec3 aUp;')
+      .replace('#include <uv_vertex>', `vec3 sDir = normalize(position); float fmK = smoothstep(.6, .84, dot(sDir, aFace)), hmK = smoothstep(.06, .3, dot(sDir, aUp)), flatK = max(fmK, hmK);
+        #include <uv_vertex>`)
+      .replace('#include <beginnormal_vertex>', 'vec3 objectNormal = normalize(mix(normal, sDir, flatK));')
+      .replace('#include <begin_vertex>', 'vec3 transformed = mix(position, sDir * mix(.995, .97, hmK), flatK);')
+      .replace('#include <color_vertex>', '#include <color_vertex>\n#ifdef USE_COLOR\nvColor = mix(vColor, vec3(.97, .97, .995), flatK * .85);\n#endif'); };
   return m;
 }
 
@@ -169,10 +183,13 @@ export function createWorld(canvas, o = {}) {
   const eyeM = new THREE.MeshPhysicalMaterial({ color: 0x0d1430, roughness: .1, clearcoat: 1, clearcoatRoughness: .04, metalness: 0 });
   const darkM = new THREE.MeshStandardMaterial({ color: 0x25142e, roughness: .4 });
   const shineM = new THREE.MeshBasicMaterial({ color: 0xffffff }), blushM = new THREE.MeshBasicMaterial({ color: 0xff7fb0, transparent: true, opacity: .5, depthWrite: false });
+  const bodyM = faceSafe(snowify(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: .82, metalness: 0 })));
   const pomM = snowify(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 1 }), .4);
 
   // ---- character geometry (unit radius, centre at the origin)
   const bodyG = lumpy(new THREE.IcosahedronGeometry(1, o.lowPoly ? 8 : 12), .035, 2.3, 5.2);
+  const faceA = new THREE.InstancedBufferAttribute(new Float32Array(MAXC * 3), 3), upA = new THREE.InstancedBufferAttribute(new Float32Array(MAXC * 3), 3);
+  faceA.setUsage(THREE.DynamicDrawUsage); upA.setUsage(THREE.DynamicDrawUsage); bodyG.setAttribute('aFace', faceA); bodyG.setAttribute('aUp', upA);
   const eyeG = new THREE.SphereGeometry(.15, 22, 16); eyeG.scale(1, 1.38, .52);
   const shineG = mergeGeometries([new THREE.SphereGeometry(.052, 12, 8).translate(.05, .085, .07), new THREE.SphereGeometry(.024, 8, 6).translate(-.045, -.07, .07)]);
   const blushG = new THREE.CircleGeometry(.12, 20);
@@ -193,7 +210,7 @@ export function createWorld(canvas, o = {}) {
   // instanced parts, filled per frame
   const parts = {};
   const mk = (name, geo, mat, per, color) => { const m = new THREE.InstancedMesh(geo, mat, MAXC * per); m.instanceMatrix.setUsage(THREE.DynamicDrawUsage); m.frustumCulled = false; m.count = 0; if (color) m.setColorAt(0, new THREE.Color()); scene.add(m); parts[name] = { m, i: 0, color }; return m; };
-  mk('body', bodyG, snowM, 1); mk('eye', eyeG, eyeM, 2); mk('shine', shineG, shineM, 2); mk('blush', blushG, blushM, 2); mk('smile', smileG, darkM, 1); mk('oh', ohG, darkM, 1); mk('grin', grinG, darkM, 1);
+  mk('body', bodyG, bodyM, 1); mk('eye', eyeG, eyeM, 2); mk('shine', shineG, shineM, 2); mk('blush', blushG, blushM, 2); mk('smile', smileG, darkM, 1); mk('oh', ohG, darkM, 1); mk('grin', grinG, darkM, 1);
   mk('brow', browG, darkM, 2); mk('arc', arcG, darkM, 2); mk('cap', capG, capM, 1, true); mk('band', bandG, bandM, 1, true); mk('pom', pomG, pomM, 1); mk('shield', new THREE.IcosahedronGeometry(1, 4), shieldM, 1);
   parts.blush.m.renderOrder = 2; parts.shield.m.renderOrder = 5;
   // blob shadows + cash-out rings on the ice
@@ -268,6 +285,7 @@ export function createWorld(canvas, o = {}) {
   smile.rotation.x = .1; oh.rotation.x = .2; grin.rotation.x = .08;
   const brows = [-1, 1].map((s) => node(head, 'brow', s * .3, .4, .93)), arcs = [-1, 1].map((s) => node(head, 'arc', s * .3, .1, .975));
   const cap = node(hat, 'cap'), band = node(hat, 'band'), pom = node(hat, 'pom', 0, 1.13, 0);
+  const HAT_UP = new THREE.Vector3(0, 1, 0).applyEuler(hat.rotation), invQ = new THREE.Quaternion();
   const put = (n, mat) => { const P = parts[n.userData.part]; P.m.setMatrixAt(P.i, n.matrixWorld); if (mat) P.m.setColorAt(P.i, mat); P.i++; };
   const putM = (name, m, col) => { const P = parts[name]; P.m.setMatrixAt(P.i, m); if (col) P.m.setColorAt(P.i, col); P.i++; return P.i - 1; };
 
@@ -297,11 +315,11 @@ export function createWorld(canvas, o = {}) {
     // the ice breaks off in chunks while it shrinks
     if (W.FR < lastFR - 1e-4) { chunkAcc += (lastFR - W.FR) * 9; while (chunkAcc > 1) { chunkAcc--; const a = rnd() * 6.283; W.chunk(Math.cos(a) * W.FR, Math.sin(a) * W.FR); } } lastFR = W.FR;
     for (const k in parts) parts[k].i = 0;
-    const t = sim.t, camYaw = Math.atan2(cam.position.x, cam.position.z);
+    const t = sim.t - (1 - alpha) * STEP, camYaw = Math.atan2(cam.position.x, cam.position.z);
     for (const e of sim.ents) {
       if (e.st === 'gone') continue;
       const g = rigFor(e); g.seen = W.time;
-      const x = e.px + (e.x - e.px) * alpha, z = e.pz + (e.z - e.pz) * alpha, age = t - e.st0;
+      const x = e.px + (e.x - e.px) * alpha, z = e.pz + (e.z - e.pz) * alpha, age = Math.max(0, t - e.st0);
       g.vr += (e.r - g.vr) * Math.min(1, dt * 10); const r = g.vr;
       // squash spring
       g.sqv += (-g.sq * 160 - g.sqv * 11) * dt; g.sq += g.sqv * dt; g.sq = cl(g.sq, -.35, .4);
@@ -337,7 +355,9 @@ export function createWorld(canvas, o = {}) {
       smile.visible = expr === 'normal'; oh.visible = expr === 'scared' || expr === 'hurt'; grin.visible = expr === 'happy' || expr === 'angry' || expr === 'grin';
       pom.position.y = 1.13 + g.sq * -.15; pom.rotation.z = Math.sin(W.time * 4 + e.id) * .04 * Math.min(1, sp * .1);
       root.updateMatrixWorld(true);
-      putM('body', body.matrixWorld);
+      const bi = putM('body', body.matrixWorld); invQ.copy(g.q).invert();
+      tmpV.set(0, 0, 1).applyEuler(head.rotation).applyQuaternion(invQ); faceA.setXYZ(bi, tmpV.x, tmpV.y, tmpV.z);
+      tmpV.copy(HAT_UP).applyEuler(head.rotation).applyQuaternion(invQ); upA.setXYZ(bi, tmpV.x, tmpV.y, tmpV.z);
       eyes.forEach((n) => n.visible && put(n)); shines.forEach((n, i) => n.visible && eyes[i].visible && put(n)); blush.forEach((n) => put(n));
       for (const n of [smile, oh, grin, ...brows, ...arcs]) if (n.visible) put(n);
       put(cap, g.col); put(band, g.col); put(pom);
@@ -347,6 +367,7 @@ export function createWorld(canvas, o = {}) {
       if (e.cash > 0 && e.st === 'live') { dummy.position.set(x, .06, z); dummy.scale.setScalar(r * 1.55); dummy.updateMatrix(); const i = putM('ring', dummy.matrix); progA.array[i] = e.cash / 3; progA.needsUpdate = true; }
     }
     for (const [id, g] of W.rigs) if (g.seen < W.time - 1e-6) W.rigs.delete(id);
+    faceA.needsUpdate = upA.needsUpdate = true;
     for (const k in parts) { const P = parts[k]; P.m.count = P.i; P.m.instanceMatrix.needsUpdate = true; if (P.color && P.m.instanceColor) P.m.instanceColor.needsUpdate = true; }
     // piles grow in with a little bounce
     let n = 0; for (const p of sim.piles) { if (!p.on || p.t0 > t) continue; const k = cl((t - p.t0) / .45), s = p.s * ease.back(k); if (s <= .01) continue; dummy.position.set(p.x, 0, p.z); dummy.rotation.set(0, p.i * 2.4, 0); dummy.scale.set(s, s * (1 + Math.sin(W.time * 2 + p.i) * .03), s); dummy.updateMatrix(); piles.setMatrixAt(n++, dummy.matrix); }
@@ -361,6 +382,11 @@ export function createWorld(canvas, o = {}) {
   W.setSize = (w, h, dpr) => { R.setPixelRatio(dpr); R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); W.w = w; W.h = h; };
   W.render = () => { U.uCam.value = cam.position; R.render(scene, cam); };
   const pv = new THREE.Vector3();
+  // screen discs of the live snowballs, and how much a nearer ball covers a screen point (tags behind a ball fade out instead of floating on its face)
+  W.discs = (sim, alpha) => { const out = [], f = W.h / 2 / Math.tan(cam.fov * Math.PI / 360);
+    for (const e of sim.ents) { if (e.st !== 'live') continue; const g = W.rigs.get(e.id), r = g ? g.vr : e.r; pv.set(e.px + (e.x - e.px) * alpha, r * .94 + (g ? g.air : 0), e.pz + (e.z - e.pz) * alpha);
+      const d = pv.distanceTo(cam.position); pv.project(cam); if (pv.z >= 1) continue; out.push({ id: e.id, x: (pv.x * .5 + .5) * W.w, y: (-pv.y * .5 + .5) * W.h, r: r * f / d, d }); } return out; };
+  W.cover = (sx, sy, d, id, discs) => { let k = 0; for (const c of discs) { if (c.id === id || c.d > d - .6) continue; k = Math.max(k, cl((c.r * .97 - Math.hypot(sx - c.x, sy - c.y)) / (c.r * .2 + 2))); } return k; };
   W.project = (x, y, z) => { pv.set(x, y, z).project(cam); return { x: (pv.x * .5 + .5) * W.w, y: (-pv.y * .5 + .5) * W.h, on: pv.z < 1 && Math.abs(pv.x) < 1.15 && Math.abs(pv.y) < 1.15 }; };
   return W;
 }

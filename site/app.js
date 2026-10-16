@@ -94,7 +94,7 @@ arena.on('feed', (f) => {
 let banT = 0; const banner = (txt, ms = 2600) => { const b = $('banner'); gt(b, txt); b.classList.add('on'); clearTimeout(banT); banT = setTimeout(() => b.classList.remove('on'), ms); };
 arena.on('phase', (p) => { if (p.phase === 'soon') banner('The ice is about to crack!', 2800); if (p.phase === 'shrink') banner('The ice is cracking!', 2600); if (p.phase === 'refreeze') banner('The ice refreezes', 2200); });
 arena.on('cashbreak', () => { toast('Bumped! Cash out reset'); });
-const note = CFG.live ? '' : '<p style="font-size:14px;margin:-6px 0 16px">Payouts switch on when $SNOW launches. Until then every round is a warm-up.</p>';
+const note = CFG.live ? '' : '<p style="font-size:14px;margin:-6px 0 16px">Payouts switch on when $SNOWPVP launches. Until then every round is a warm-up.</p>';
 arena.on('fell', (f) => { saveRun({ out: 'splash', v: f.v, best: f.best, kills: f.kills }); });
 arena.on('fell', (f) => setTimeout(() => pop(`<h3 class="gt p" data-t="Splash!">Splash!</h3><p>${f.by ? `${esc(f.by)} shoved you into the sea.` : 'You rolled off the edge.'}</p>
   <div class="stats"><div><b>${money(f.v)}</b><small>LOST</small></div><div><b>${money(f.best)}</b><small>BEST</small></div><div><b>${f.kills}</b><small>KOS</small></div></div>
@@ -119,7 +119,7 @@ joy.addEventListener('pointerdown', (e) => { joy.setPointerCapture(e.pointerId);
 ['pointerup', 'pointercancel'].forEach((t) => joy.addEventListener(t, () => { knob.style.transform = ''; arena.steer(null); }));
 
 // ---------------- pages ----------------
-const PAGES = { home: 'SnowPump · Push. Grow. Cash out.', leaderboard: 'Leaderboard · SnowPump', how: 'How to play · SnowPump', snow: '$SNOW · SnowPump', community: 'Community · SnowPump' };
+const PAGES = { home: 'SnowPump · Push. Grow. Cash out.', leaderboard: 'Leaderboard · SnowPump', how: 'How to play · SnowPump', snow: '$SNOWPVP · SnowPump', community: 'Community · SnowPump' };
 let page = 'home';
 function route() {
   const r = (location.hash.match(/^#\/(\w+)/) || [])[1] || 'home'; page = PAGES[r] ? r : 'home';
@@ -162,7 +162,7 @@ function renderBoard() {
   $('podium').innerHTML = podium(list.slice(0, 3), tab); $('lbCol').textContent = COLS[tab];
   $('homePodium').innerHTML = podium((d.earners || []).slice(0, 3), 'earners');
   $('lbRows').innerHTML = list.length > 3 ? list.slice(3).map((o, i) => `<div class="tr"><em>${i + 4}</em><span class="pl"><span class="av" data-av="${o.col || '#3aa8ff'}"></span><span>${who(o)}</span></span><b>${val(tab, o)}</b></div>`).join('')
-    : `<div class="empty"><div class="avs"><div class="av" data-av="#2ee07e"></div><div class="av" data-av="#ff4f9e" data-face="happy"></div><div class="av" data-av="#3aa8ff"></div></div><h3>${list.length ? 'More spots open' : 'Season 1 starts at launch'}</h3><p>${list.length ? 'Cash out big and take one.' : 'Every cash out lands on this board when $SNOW goes live. Get your warm-up in now.'}</p><button class="btn playBtn">Play now</button></div>`;
+    : `<div class="empty"><div class="avs"><div class="av" data-av="#2ee07e"></div><div class="av" data-av="#ff4f9e" data-face="happy"></div><div class="av" data-av="#3aa8ff"></div></div><h3>${list.length ? 'More spots open' : 'Season 1 starts at launch'}</h3><p>${list.length ? 'Cash out big and take one.' : 'Every cash out lands on this board when $SNOWPVP goes live. Get your warm-up in now.'}</p><button class="btn playBtn">Play now</button></div>`;
   document.querySelectorAll('.playBtn').forEach((b) => { b.onclick = playNow; }); paintAvatars();
 }
 $('lbTabs').addEventListener('click', (e) => { const b = e.target.closest('button'); if (!b) return; BOARD.tab = b.dataset.lb; $('lbTabs').querySelectorAll('button').forEach((x) => x.classList.toggle('on', x === b)); renderBoard(); });
@@ -185,6 +185,7 @@ const ICON = {
   pumpfun: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><rect x="2.5" y="8" width="19" height="8" rx="4" transform="rotate(-35 12 12)"/><path d="M9.2 6.9l5.2 9.4" transform="rotate(0 12 12)"/></svg>',
   dex: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l5-6 4 3 6-8"/><path d="M15 6h3v3"/><path d="M3 21h18"/></svg>',
 };
+const XH = ((CFG.x || '').match(/x\.com\/(\w+)/) || [])[1] || '';   // X handle for share intents (via=)
 const SOC = {
   x: { name: 'X', short: 'Follow', tag: 'Follow', col: 'linear-gradient(#3a4566,#111827)', url: CFG.x, text: 'Launch news and the best shoves.' },
   discord: { name: 'Discord', tag: 'Join', col: 'linear-gradient(#8c95ff,#5865f2)', url: CFG.discord, text: 'Hang out, find squads, report bugs.' },
@@ -193,11 +194,12 @@ const SOC = {
 };
 document.querySelectorAll('[data-socials]').forEach((box) => { box.innerHTML = box.dataset.socials.split(',').map((k) => { const s = SOC[k], href = s.url ? ` href="${esc(s.url)}" target="_blank" rel="noopener"` : ' href="#" data-soon="1"';
   return box.dataset.big ? `<div class="sc card"><div class="lo" style="background:${s.col}">${ICON[k]}</div><h3>${s.name}</h3><p>${s.text}</p><a class="btn sm"${href}>${s.tag}</a></div>` : `<a class="btn sm ${k === 'pumpfun' ? '' : 'wh'} soc"${href}>${ICON[k]}${s.short || s.name}</a>`; }).join(''); });
+document.querySelectorAll('[data-sl]').forEach((a) => { const u = SOC[a.dataset.sl].url; if (u) a.href = u; else a.remove(); });
 document.addEventListener('click', (e) => { const a = e.target.closest('a[data-soon]'); if (!a) return; e.preventDefault(); toast('Link drops at launch'); });
 function updateShare(runs = store.get('runs', [])) {
   const best = runs.filter((r) => r.out === 'cash').reduce((m, r) => Math.max(m, r.v), 0);
   const text = best ? `I just cashed out ${money(best)} on SnowPump. Push. Grow. Cash out!` : 'Shoving snowballs into the sea on SnowPump. Push. Grow. Cash out!';
-  $('shareBtn').href = 'https://x.com/intent/post?text=' + encodeURIComponent(text + ' #SnowPump') + (location.protocol.startsWith('http') ? '&url=' + encodeURIComponent(location.origin) : '');
+  $('shareBtn').href = 'https://x.com/intent/post?text=' + encodeURIComponent(text + ' #SnowPump') + (XH ? '&via=' + XH : '') + (location.protocol.startsWith('http') ? '&url=' + encodeURIComponent(location.origin) : '');
 }
 
 // coin

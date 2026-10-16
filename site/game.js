@@ -36,11 +36,12 @@ export function createArena(canvas, tagsEl, opts = {}) {
   const tags = new Map();
   function tagFor(e) { let t = tags.get(e.id); if (!t) { const el = $$('div', 'ptag' + (e === me ? ' me' : '')); el.innerHTML = `<b></b><span>${e.name.replace(/[<>&]/g, '')}${e.bot && opts.botLabel !== false ? '<i>bot</i>' : ''}</span>`; tagsEl.appendChild(el); t = { el, b: el.firstChild, txt: '', on: null, rich: null, tt: 0 }; tags.set(e.id, t); } return t; }
   function updateTags(a, now) {
-    const seen = new Set();
+    const seen = new Set(), D = W.discs(S, a);
     for (const e of S.ents) { if (e.st !== 'live' && e.st !== 'spawn') continue; seen.add(e.id); const t = tagFor(e);
       const x = lerp(e.px, e.x, a), z = lerp(e.pz, e.z, a), p = W.project(x, e.r * 2.18 + (e.st === 'spawn' ? 99 : 0), z), dist = Math.hypot(cam.position.x - x, cam.position.y, cam.position.z - z);
       const on = p.on && (state !== 'play' || dist < 75 || e === me); if (on !== t.on) { t.el.style.display = on ? '' : 'none'; t.on = on; } if (!on) continue;
       const sc = cl(26 / dist, .55, 1.15) * (e === me ? 1.1 : 1); t.el.style.transform = `translate3d(${p.x.toFixed(1)}px,${p.y.toFixed(1)}px,0) translate(-50%,-100%) scale(${sc.toFixed(3)})`;
+      const op = (1 - W.cover(p.x, p.y, Math.hypot(cam.position.x - x, cam.position.y - e.r * .94, cam.position.z - z), e.id, D)).toFixed(2); if (op !== t.op) { t.el.style.opacity = op; t.op = op; }
       if (now - t.tt > 120) { t.tt = now; const s = money(value(e)); if (s !== t.txt) { t.b.textContent = s; t.txt = s; } const rich = value(e) >= CASH_MIN; if (rich !== t.rich) { t.el.classList.toggle('rich', rich); t.rich = rich; } } }
     for (const [id, t] of tags) if (!seen.has(id)) { t.el.remove(); tags.delete(id); }
   }

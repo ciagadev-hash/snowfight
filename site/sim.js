@@ -147,7 +147,7 @@ export function createSim(o = {}) {
     for (const p of S.piles) if (p.on && Math.hypot(p.x, p.z) > S.FR - .9) { emit('melt', { x: p.x, z: p.z, s: p.s }); placePile(p, 1 + R() * 2); }
   };
   S.run = (until) => { while (S.t + STEP <= until + 1e-9) S.step(); };
-  S.alpha = (time) => clamp((time - (S.t - STEP)) / STEP, 0, 1);
+  S.alpha = (time) => clamp((time - S.t) / STEP, 0, 1);   // render one step behind: blend from the previous step (px) to the latest (x)
   S.rank = (e) => 1 + S.ents.filter((o) => o !== e && o.st === 'live' && o.r > e.r).length;
   S.alive = () => S.ents.filter((o) => o.st === 'live' || o.st === 'spawn').length;
   return S;
