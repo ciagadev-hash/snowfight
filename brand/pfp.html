@@ -1,0 +1,29 @@
+<!doctype html><html><head><meta charset="utf-8">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>
+/* SnowPump pfp: the 3D snowball mascot on a blue sunburst. ?col=%23ff4f9e&face=grin  render: python -I tools/shot.py "brand/pfp.html" brand/out/pfp.png 1000 1000 */
+html,body{margin:0;width:100vw;height:100vh;overflow:hidden}
+body{background:radial-gradient(circle at 50% 46%,#8fe0ff 0,#3aa8ff 34%,#1d6fe0 72%,#123f9e 100%)}
+#burst{position:absolute;inset:-20%;background:repeating-conic-gradient(from 0deg at 50% 46%,rgba(255,255,255,.16) 0 7deg,rgba(255,255,255,0) 7deg 15deg);-webkit-mask:radial-gradient(circle at 50% 46%,#000 0,#000 40%,transparent 80%);mask:radial-gradient(circle at 50% 46%,#000 0,#000 40%,transparent 80%)}
+#dots{position:absolute;inset:0}
+#cv{position:absolute;inset:0;width:100%;height:100%}
+</style></head><body><div id="burst"></div><svg id="dots" viewBox="0 0 100 100" preserveAspectRatio="none"></svg><canvas id="cv"></canvas>
+<script type="module">
+import { createSim } from '../site/sim.js';
+import { createWorld } from '../site/world.js';
+const q = new URLSearchParams(location.search), col = q.get('col') || '#ff4f9e';
+// snow dots in the background
+let sd = 4, d = ''; const r = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
+for (let i = 0; i < 70; i++) { const x = r() * 100, y = r() * 100, s = .35 + r() * 1.3; d += `<circle cx="${x}" cy="${y}" r="${s}" fill="#fff" opacity="${.35 + r() * .55}"/>`; } document.getElementById('dots').innerHTML = d;
+const cv = document.getElementById('cv'), W = createWorld(cv, { film: true, alpha: true, faceCam: 1, faceMax: 0 }); W.R.setClearColor(0x000000, 0);
+W.env.forEach((m) => { if (m) m.visible = false; });
+W.setSize(innerWidth, innerHeight, 1);
+const S = createSim({ seed: 5, auto: false, piles: 0 }), H = S.spawn({ name: 'you', col, x: 0, z: 0, r: 1, instant: true }); H.expr = q.get('face') || 'grin';
+W.cam.fov = 34; W.cam.position.set(.25, 1.3, 4.7); W.cam.lookAt(0, 1.16, 0); W.cam.updateMatrixWorld();
+// a frozen snow burst around the ball
+for (let k = 0; k < 90; k++) W.update(S, 1, 1 / 60);
+W.puff(0, .9, -1.6, 70, 9, .16, 7);
+for (let k = 0; k < 10; k++) W.update(S, 1, 1 / 60);
+W.render();
+document.body.dataset.ready = '1';
+</script></body></html>

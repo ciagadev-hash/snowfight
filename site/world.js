@@ -41,7 +41,7 @@ function snowify(m, glitter = 1) {
 function canvasTex(w, h, draw, repeat) { const c = document.createElement('canvas'); c.width = w; c.height = h; draw(c.getContext('2d'), w, h); const t = new THREE.CanvasTexture(c); if (repeat) { t.wrapS = t.wrapT = THREE.RepeatWrapping; t.repeat.set(...repeat); } t.anisotropy = 4; return t; }
 
 export function createWorld(canvas, o = {}) {
-  const R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: false, powerPreference: 'high-performance', preserveDrawingBuffer: !!o.film });
+  const R = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: !!o.alpha, powerPreference: 'high-performance', preserveDrawingBuffer: !!o.film });
   R.outputColorSpace = THREE.SRGBColorSpace; R.toneMapping = THREE.NeutralToneMapping; R.toneMappingExposure = 1.04;
   const scene = new THREE.Scene(), cam = new THREE.PerspectiveCamera(40, 1, .3, 900);
   const W = { R, scene, cam, time: 0, faceCam: o.faceCam ?? .25, faceMax: o.faceMax ?? 1.05, rigs: new Map(), FR: 30, next: 30, sun: new THREE.Vector3(-.45, .78, .42).normalize() };
@@ -172,7 +172,7 @@ export function createWorld(canvas, o = {}) {
   const pomM = snowify(new THREE.MeshStandardMaterial({ color: 0xffffff, vertexColors: true, roughness: 1 }), .4);
 
   // ---- character geometry (unit radius, centre at the origin)
-  const bodyG = lumpy(new THREE.IcosahedronGeometry(1, o.lowPoly ? 8 : 12), .05, 2.3, 5.2);
+  const bodyG = lumpy(new THREE.IcosahedronGeometry(1, o.lowPoly ? 8 : 12), .035, 2.3, 5.2);
   const eyeG = new THREE.SphereGeometry(.15, 22, 16); eyeG.scale(1, 1.38, .52);
   const shineG = mergeGeometries([new THREE.SphereGeometry(.052, 12, 8).translate(.05, .085, .07), new THREE.SphereGeometry(.024, 8, 6).translate(-.045, -.07, .07)]);
   const blushG = new THREE.CircleGeometry(.12, 20);
@@ -261,12 +261,12 @@ export function createWorld(canvas, o = {}) {
   // ---- character rig template: one Object3D tree reused to pose every snowball
   const root = new THREE.Object3D(), body = new THREE.Object3D(), head = new THREE.Object3D(), hat = new THREE.Object3D(); root.add(body, head); head.rotation.order = 'YXZ'; head.add(hat); hat.rotation.z = -.13; hat.position.y = -.02;
   const node = (parent, name, x = 0, y = 0, z = 0) => { const n = new THREE.Object3D(); n.position.set(x, y, z); n.userData.part = name; parent.add(n); return n; };
-  const eyes = [-1, 1].map((s) => { const e = node(head, 'eye', s * .3, .13, .925); e.rotation.y = s * .3; e.rotation.x = -.12; return e; });
+  const eyes = [-1, 1].map((s) => { const e = node(head, 'eye', s * .3, .13, .95); e.rotation.y = s * .3; e.rotation.x = -.12; return e; });
   const shines = eyes.map((e) => node(e, 'shine'));
-  const blush = [-1, 1].map((s) => { const b = node(head, 'blush', s * .5, -.1, .862); b.lookAt(s * 2.6, -.5, 4.4); return b; });
-  const smile = node(head, 'smile', 0, -.1, .985), oh = node(head, 'oh', 0, -.19, .96), grin = node(head, 'grin', 0, -.08, .99);
+  const blush = [-1, 1].map((s) => { const b = node(head, 'blush', s * .5, -.1, .885); b.lookAt(s * 2.6, -.5, 4.4); return b; });
+  const smile = node(head, 'smile', 0, -.1, 1.01), oh = node(head, 'oh', 0, -.19, .99), grin = node(head, 'grin', 0, -.07, 1.025);
   smile.rotation.x = .1; oh.rotation.x = .2; grin.rotation.x = .08;
-  const brows = [-1, 1].map((s) => node(head, 'brow', s * .3, .4, .9)), arcs = [-1, 1].map((s) => node(head, 'arc', s * .3, .1, .945));
+  const brows = [-1, 1].map((s) => node(head, 'brow', s * .3, .4, .93)), arcs = [-1, 1].map((s) => node(head, 'arc', s * .3, .1, .975));
   const cap = node(hat, 'cap'), band = node(hat, 'band'), pom = node(hat, 'pom', 0, 1.13, 0);
   const put = (n, mat) => { const P = parts[n.userData.part]; P.m.setMatrixAt(P.i, n.matrixWorld); if (mat) P.m.setColorAt(P.i, mat); P.i++; };
   const putM = (name, m, col) => { const P = parts[name]; P.m.setMatrixAt(P.i, m); if (col) P.m.setColorAt(P.i, col); P.i++; return P.i - 1; };
@@ -323,18 +323,18 @@ export function createWorld(canvas, o = {}) {
       const edge = W.FR - Math.hypot(x, z) - r * .55, teeter = e.st === 'live' && edge < 0;
       if (teeter) g.wob += dt * 22;
       // expression
-      const expr = e.st === 'fall' ? 'scared' : g.hurt > 0 ? 'hurt' : g.happy > 0 || e.st === 'cashed' ? 'happy' : (g.angry > 0 || e.dashT > 0) ? 'angry' : teeter ? 'scared' : e.cash > 0 ? 'happy' : 'normal';
+      const expr = e.expr || (e.st === 'fall' ? 'scared' : g.hurt > 0 ? 'hurt' : g.happy > 0 || e.st === 'cashed' ? 'happy' : (g.angry > 0 || e.dashT > 0) ? 'angry' : teeter ? 'scared' : e.cash > 0 ? 'happy' : 'normal');
       const s1 = 1 + g.sq * .55, s2 = 1 - g.sq;
       root.position.set(x, y + (e.st === 'live' ? Math.abs(Math.sin(W.time * 9 + e.id)) * Math.min(.08, sp * .006) * r : 0), z); root.scale.set(scale * s1, scale * s2, scale * s1); root.rotation.set(0, 0, 0);
       body.quaternion.copy(g.q);
       head.rotation.y = g.yaw; head.rotation.x = Math.min(.22, sp * .02) + tip + (teeter ? Math.sin(g.wob) * .12 : 0) - Math.min(.5, g.air * .25);
       // face pieces per expression
       const wide = expr === 'scared' ? 1.18 : 1, sqz = expr === 'angry' ? .78 : 1;
-      eyes.forEach((n) => { n.scale.set(wide, g.blink * wide * sqz, wide); n.visible = expr !== 'happy' && expr !== 'hurt'; });
-      shines.forEach((n) => { n.visible = g.blink > .6; });
+      eyes.forEach((n) => { n.scale.set(wide, (e.expr ? 1 : g.blink) * wide * sqz, wide); n.visible = expr !== 'happy' && expr !== 'hurt'; });
+      shines.forEach((n) => { n.visible = e.expr || g.blink > .6; });
       arcs.forEach((n, i) => { n.visible = expr === 'happy' || expr === 'hurt'; n.rotation.z = expr === 'hurt' ? (i ? 1 : -1) * Math.PI / 2 : 0; n.position.y = expr === 'hurt' ? .12 : .1; });
       brows.forEach((n, i) => { n.visible = expr === 'angry' || expr === 'scared'; n.rotation.z = (i ? 1 : -1) * (expr === 'angry' ? .42 : -.38); n.position.y = expr === 'angry' ? .37 : .45; });
-      smile.visible = expr === 'normal'; oh.visible = expr === 'scared' || expr === 'hurt'; grin.visible = expr === 'happy' || expr === 'angry';
+      smile.visible = expr === 'normal'; oh.visible = expr === 'scared' || expr === 'hurt'; grin.visible = expr === 'happy' || expr === 'angry' || expr === 'grin';
       pom.position.y = 1.13 + g.sq * -.15; pom.rotation.z = Math.sin(W.time * 4 + e.id) * .04 * Math.min(1, sp * .1);
       root.updateMatrixWorld(true);
       putM('body', body.matrixWorld);
@@ -357,6 +357,7 @@ export function createWorld(canvas, o = {}) {
   };
   // start a fresh scene (the film cuts between independent shots)
   W.reset = () => { W.rigs.clear(); for (const P of [snowP, chunkP, confP, ringP]) { P.a.length = 0; P.update(0); } rip.forEach((r) => r.set(0, 0, -99, 0)); W.time = 0; sd = 1; lastFR = W.FR; chunkAcc = 0; };
+  W.env = [sky, sea, floe, piles, W.berg, W.flakes, ...scene.children.filter((c) => c.isMesh && c.material && c.material.map && c.renderOrder === -9)];
   W.setSize = (w, h, dpr) => { R.setPixelRatio(dpr); R.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); W.w = w; W.h = h; };
   W.render = () => { U.uCam.value = cam.position; R.render(scene, cam); };
   const pv = new THREE.Vector3();
