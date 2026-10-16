@@ -1,6 +1,6 @@
 # SnowPump
 
-A snowball .io brawl on a melting ice floe (the project was called Snowfight before; the owner renamed it SnowPump). Everyone plays in one arena, shoves each other into the sea, scoops snow to grow, and cashes out. The prize pot is paid by the coin's ($SNOWPVP) pump.fun creator fees. Site: snowballpvp.fun · X: @SnowPumpPvP. Login is Solana wallet connect only.
+A snowball .io brawl on a melting ice floe (the project was called Snowfight before; the owner renamed it SnowPump). Everyone plays in one arena, shoves each other into the sea, scoops snow to grow, and cashes out. The prize pot is paid by the coin's ($SNOWPVP) pump.fun creator fees. Site: snowpumppvp.fun · X: @SnowPumpPvP. Login is Solana wallet connect only.
 
 ## For the next Claude (read this first)
 
@@ -53,6 +53,6 @@ python -I video/render.py --vertical --gpu           # 9:16, 1080x1920 -> video/
 
 - Real multiplayer server (e.g. Cloudflare Durable Objects + websockets, running `site/sim.js` server-side). Today everyone plays a local arena with labelled bots.
 - Real payouts: creator fees → treasury → cash-out transaction. A knocked-off ball's leftover 40% should go back to the pot.
-- The $SNOWPVP contract address: put it in `site/config.json` (`ca`), then `python -I tools/build.py`. X (@SnowPumpPvP), Discord and the domain (snowballpvp.fun, in the meta tags and the film's end card) are set.
+- The $SNOWPVP contract address: put it in `site/config.json` (`ca`), then `python -I tools/build.py`. X (@SnowPumpPvP), Discord and the domain (snowpumppvp.fun, in the meta tags and the film's end card) are set.
 - The leaderboard's data: the payout server should write `{ earners, biggest, kos }` to the KV key `leaderboard`. No made-up entries: the owner's buyers would read them as real earnings.
 - Brand images (`site/pfp.png`, `site/og.png`, `site/banner.png`) still show the old characters; re-render them with the new look and the SnowPump name.

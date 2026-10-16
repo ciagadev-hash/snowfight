@@ -58,7 +58,7 @@
 - A logó és a $SNOW lap az új SVG hógolyó-avatart használja a régi pfp helyett.
 
 ## Domain, X, ticker, film-javítás (2026-10-16 este)
-- **Domain:** snowballpvp.fun (og:url, abszolút og:image és twitter:image, canonical; a film zárókártyáján is ott van). **X:** https://x.com/SnowPumpPvP (`site/config.json` → Community lap, kezdőlap, footer, a megosztás gomb `via=SnowPumpPvP`, `twitter:site`). **Ticker: $SNOWPVP** (oldal, film, szövegek). A CA-t a felhasználó küldi.
+- **Domain:** snowpumppvp.fun (og:url, abszolút og:image és twitter:image, canonical; a film zárókártyáján is ott van). **X:** https://x.com/SnowPumpPvP (`site/config.json` → Community lap, kezdőlap, footer, a megosztás gomb `via=SnowPumpPvP`, `twitter:site`). **Ticker: $SNOWPVP** (oldal, film, szövegek). A CA-t a felhasználó küldi.
 - **Akadozás a filmben** (a felhasználó szerint az első lelökésnél laggy volt): a `S.alpha` mindig 1 volt, így a golyók csak egész szimulációs lépésekben mozdultak, lassításban rángatva. Javítva (a renderelés egy lépéssel lemarad és interpolál, ez a játékban is simább mozgást ad). A kemény kimerevítések helyett sima sebesség-rámpák (`ramp()` a `video/shots.js`-ben), és a zuhanás, a spawn és a kamera is interpolált időt használ.
 - **Textúrahiba:** a göröngyös hó-test gurulás közben átbökött a szemen, a szájon, a pirosságon és a sapkán (darabos, villódzó arcok). A `faceSafe` shader a test anyagán az arc és a sapka alatt sima gömbre simítja a havat (példányonkénti `aFace`/`aUp` irány).
 - **Címkék:** a takart golyók címkéi elhalványulnak (`W.discs` + `W.cover`), nem úsznak rá az előttük lévő golyó arcára; leesésnél és a hatótáv szélén is elhalványulnak; a grow jelenetben a saját címke nem ütközik a HUD-dal.
