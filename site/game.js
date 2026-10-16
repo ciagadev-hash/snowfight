@@ -79,7 +79,7 @@ export function createArena(canvas, tagsEl, opts = {}) {
       case 'cashstart': if (mine) emit('cashstart'); break;
       case 'cashstop': if (mine) emit('cashstop'); break;
       case 'cashbreak': if (mine) { emit('cashbreak'); sfx.bump(6); } break;
-      case 'cashout': if (mine) { sfx.cashout(); state = 'over'; emit('cashout', { v: ev.v, kills: me.kills }); } else { emit('feed', { cash: true, name: e.name, v: ev.v, vcol: e.col }); respawn.push(S.t + 1.5 + S.R() * 2); } break;
+      case 'cashout': if (mine) { sfx.cashout(); state = 'over'; emit('cashout', { v: ev.v, kills: me.kills, best: me.best }); } else { emit('feed', { cash: true, name: e.name, v: ev.v, vcol: e.col }); respawn.push(S.t + 1.5 + S.R() * 2); } break;
     }
   }
 

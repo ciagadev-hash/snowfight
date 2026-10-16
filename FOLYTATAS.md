@@ -50,3 +50,9 @@
 ## Következik
 - Brand képek újra (pfp, OG, banner) az új kinézettel és a SnowPump névvel.
 - Multiplayer szerver, kifizetések, CA (lásd fent).
+
+## Több oldalas weboldal (2026-10-16 este)
+- A felhasználó kérte, hogy ne egy lapos legyen: új lapok hash-routinggal: `#/leaderboard` (Top earners, Biggest cash outs, Most knockouts, dobogó, és a saját "warm-up" futások a gépen), `#/how` (irányítás, mechanikák, GYIK), `#/snow` (CA, Buy on pump.fun, Chart, a pot működése), `#/community` (X és Discord; Telegram nem kell, a felhasználó kérte). Mobilon hamburger menü.
+- A leaderboard nem kap kitalált nyerteseket: a `/api/leaderboard`-ról olvas (KV `leaderboard`), üresen "Season 1 starts at launch" állapot látszik.
+- A linkek és a CA a `site/config.json`-ban vannak, a build beleégeti.
+- A logó és a $SNOW lap az új SVG hógolyó-avatart használja a régi pfp helyett.

@@ -25,7 +25,9 @@ One deterministic engine runs the game, the hero backdrop and the showcase film.
 | `site/world.js` | three.js renderer: sky, shader sea (foam, ripples), cracking floe, icebergs, the instanced snowball characters (expressions, blinking, squash, hops), blob shadows, particles. About 25 draw calls. |
 | `site/game.js` | The playable arena: input (mouse, WASD, touch stick), smooth camera, interpolation, hit-stop, adaptive resolution, tags, minimap, HUD events. |
 | `site/sfx.js` | Game sounds, synthesized with WebAudio. |
-| `site/index.dev.html`, `site/app.js` | The site: hero with the live arena, how to play, the pot, $SNOW, wallet connect, HUD, cash out. |
+| `site/index.dev.html`, `site/app.js` | The site, hash-routed pages: home (live arena hero), `#/leaderboard`, `#/how` (guide + FAQ), `#/snow` (the pot, CA, buy/chart), `#/community` (X, Discord). Wallet connect, HUD, cash out, snowball SVG avatars. |
+| `site/config.json` | CA and links (X, Discord, pump.fun) baked in at build time. Empty links show "Link drops at launch". |
+| `deploy/_worker.js` | Cloudflare worker: `/api/leaderboard` reads KV key `leaderboard` (the payout server writes it). Until then the board shows an honest Season 1 empty state. |
 | `tools/build.py` | Builds `dist/index.html` (one file; modules inlined as data: URL modules) and `snowpump-site.zip` for Cloudflare Pages. `python -I tools/build.py [CA]` |
 | `video/film.html` | The 30 s showcase film (`renderAt(t)`, `?ar=916` for the vertical cut). |
 | `video/shots.js` | The film's shots as small sim scenarios (real shoves, knockouts and splashes), timed to a 128 BPM track. |
@@ -51,5 +53,6 @@ python -I video/render.py --vertical --gpu           # 9:16, 1080x1920 -> video/
 
 - Real multiplayer server (e.g. Cloudflare Durable Objects + websockets, running `site/sim.js` server-side). Today everyone plays a local arena with labelled bots.
 - Real payouts: creator fees → treasury → cash-out transaction. A knocked-off ball's leftover 40% should go back to the pot.
-- The $SNOW contract address (build with `python -I tools/build.py <CA>`).
+- The $SNOW contract address and the X / Discord links: put them in `site/config.json`, then `python -I tools/build.py`.
+- The leaderboard's data: the payout server should write `{ earners, biggest, kos }` to the KV key `leaderboard`. No made-up entries: the owner's buyers would read them as real earnings.
 - Brand images (`site/pfp.png`, `site/og.png`, `site/banner.png`) still show the old characters; re-render them with the new look and the SnowPump name.

@@ -31,9 +31,9 @@ a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;border:0;
 .glass{background:var(--glass);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);color:#fff;border-radius:18px;box-shadow:inset 0 0 0 2px rgba(255,255,255,.14),0 10px 26px rgba(14,31,82,.25)}
 /* header */
 header{position:absolute;top:0;left:0;right:0;z-index:30}header .w{display:flex;align-items:center;gap:20px;height:92px}
-.lg{display:flex;align-items:center;gap:12px;font-size:30px}.lg img{width:50px;height:50px;border-radius:50%;box-shadow:0 0 0 4px #fff,0 0 0 7px var(--ink),0 8px 18px rgba(14,31,82,.3)}
-nav{margin-left:auto;display:flex;gap:4px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px;border-radius:18px;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}
-nav a{padding:8px 16px;border-radius:12px;font:900 16px Nunito}nav a:hover{background:#e4f3ff}
+.lg{display:flex;align-items:center;gap:10px;font-size:30px}.lgav{width:52px;height:52px;transform:rotate(-8deg)}
+#nav{margin-left:auto;display:flex;gap:4px;background:rgba(255,255,255,.82);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px;border-radius:18px;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}
+#nav a{padding:8px 15px;border-radius:12px;font:900 16px Nunito}#nav a:hover{background:#e4f3ff}#nav a.on{background:var(--ink);color:#fff}
 /* hero: the live arena */
 .hero{position:relative;height:100vh;height:100svh;min-height:640px;overflow:hidden}
 #arena{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
@@ -67,13 +67,59 @@ section.s{padding:110px 0 20px}
 .fr{display:flex;align-items:center;gap:14px;background:#f1f8ff;border-radius:18px;padding:12px 16px;font-weight:900;color:var(--ink)}
 .fr i{font-style:normal;width:42px;height:42px;border-radius:14px;display:grid;place-items:center;flex:none;font-size:22px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.13),0 0 0 3px var(--ink)}
 .meter{padding:30px;text-align:center}
-.meter img{width:190px;height:190px;border-radius:50%;box-shadow:0 0 0 6px #fff,0 0 0 10px var(--ink);margin:6px 0 18px}
 .meter .gt{font-size:60px}.meter small{display:block;color:var(--text);font-weight:900;margin:4px 0 16px}
 .bar{height:24px;border-radius:99px;background:#e6f2fd;overflow:hidden;box-shadow:0 0 0 3px var(--ink)}.bar i{display:block;height:100%;width:62%;border-radius:99px;background:linear-gradient(180deg,var(--g1),var(--g2));box-shadow:inset 0 -4px 0 rgba(0,0,0,.12),inset 0 3px 0 rgba(255,255,255,.4);animation:grow 4s ease-in-out infinite alternate}
 @keyframes grow{from{width:18%}to{width:100%}}
-.coin{margin:80px auto 0;max-width:800px;padding:24px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
-.coin img{width:66px;height:66px;border-radius:50%;box-shadow:0 0 0 3px var(--ink)}.coin .gt{font-size:34px}.coin code{font:900 15px Nunito;background:#eef6ff;padding:12px 14px;border-radius:14px;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis;color:var(--ink)}
-footer{text-align:center;color:var(--text);font-weight:800;padding:80px 20px 50px;font-size:15px}
+/* pages */
+.page[hidden]{display:none}
+body.sub header{position:sticky;top:0;background:rgba(226,242,255,.88);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:0 3px 0 rgba(21,43,107,.08)}body.sub header .w{height:80px}
+.burger{display:none;width:48px;height:48px;border-radius:16px;background:#fff;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS);place-items:center;align-content:center;gap:5px;flex:none}.burger i{display:block;width:22px;height:3px;border-radius:2px;background:var(--ink)}
+.ph{padding:64px 0 36px;text-align:center}.ph .gt{font-size:clamp(54px,8vw,106px);transform:rotate(-2deg)}.ph p{font-size:19px;color:var(--text);margin-top:10px}
+.more{text-align:center;margin-top:36px}.more.l{text-align:left;margin-top:22px}
+.av{width:64px;height:64px;display:inline-block;flex:none}.av svg{width:100%;height:100%;display:block;overflow:visible}.av.big{width:180px;height:180px;margin:0 auto 12px;display:block}
+.meter .gt{display:block}
+/* leaderboard */
+.lbp{padding-bottom:10px}
+.tabs{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-bottom:46px}
+.tabs button{height:50px;padding:0 22px;border-radius:16px;font:900 16px Nunito;background:#fff;color:var(--ink);box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}.tabs button.on{background:var(--ink);color:#fff}
+.podium{display:grid;grid-template-columns:1fr 1.15fr 1fr;gap:22px;align-items:end;max-width:860px;margin:0 auto 34px}
+.pod{text-align:center;padding:30px 14px 20px;position:relative;min-width:0}.pod .av{width:92px;height:92px}.pod.p1{padding-top:36px;transform:translateY(-16px)}.pod.p1 .av{width:122px;height:122px}
+.pod .rk{position:absolute;top:-24px;left:50%;transform:translateX(-50%);width:50px;height:50px;border-radius:50%;display:grid;place-items:center;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15),0 0 0 3px var(--ink),0 4px 0 3px var(--inkS)}.pod .rk .gt{font-size:26px}
+.pod h4{font:700 22px DynaPuff;color:var(--ink);margin-top:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pod small{display:block;font:900 13px Nunito;color:var(--text)}.pod>.gt{font-size:32px;margin-top:6px}
+.pod.ghost h4{color:#8aa0c6}.pod.ghost>.gt::before{background-image:linear-gradient(180deg,#e9f1fb,#c9d8ee)}
+.table{max-width:860px;margin:0 auto 34px;padding:8px 0}
+.tr{display:grid;grid-template-columns:56px 1fr 170px;align-items:center;gap:10px;padding:11px 24px;font-weight:900;color:var(--ink)}.tr.th{font:900 12px Nunito;letter-spacing:.1em;color:var(--text)}
+#lbRows .tr{border-top:2px solid #eef5fd}.tr .pl{display:flex;align-items:center;gap:12px;min-width:0}.tr .pl .av{width:42px;height:42px}.tr .pl span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.tr .pl small{color:var(--text);font-weight:800}
+.tr>b{font:700 21px DynaPuff;color:#14b85e;text-align:right}.tr>em{font:700 19px DynaPuff;font-style:normal;color:var(--text)}.tr>span:last-child{text-align:right}
+.empty{text-align:center;padding:34px 24px 30px}.empty h3{font:700 30px DynaPuff;color:var(--ink);margin:10px 0 6px}.empty p{color:var(--text);margin-bottom:20px}.empty .avs{justify-content:center}
+.mine{max-width:860px;margin:0 auto;padding:26px}.mh{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:16px}.mh h3{font:700 28px DynaPuff;color:var(--ink)}.mh small{font:900 13px Nunito;color:var(--text)}
+.stats4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:14px}.stats4 div{background:#f1f8ff;border-radius:18px;padding:14px 10px;text-align:center}.stats4 b{display:block;font:700 26px DynaPuff;color:var(--ink)}.stats4 small{font:900 11px Nunito;letter-spacing:.08em;color:var(--text)}
+.runs{display:flex;flex-direction:column;gap:8px}.run{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:14px;background:#f7fbff;font-weight:900;color:var(--ink)}.run i{font:900 11px Nunito;font-style:normal;letter-spacing:.08em;padding:4px 9px;border-radius:8px;color:#fff;background:#ff3f93}.run i.c{background:#16c266}.run span{flex:1}.run small{color:var(--text);font-weight:800}.runs p{color:var(--text);text-align:center;padding:8px}
+/* how to play */
+.ctrls{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-bottom:36px}.ctl{padding:26px}.ctl h3,.mc2 h3,.worth h3,.coinc h3,.sc h3,.share h3,.join h3{font-family:DynaPuff;font-weight:700;color:var(--ink)}
+.ctl h3{font-size:26px;margin-bottom:14px}.ctl ul{list-style:none;display:flex;flex-direction:column;gap:14px}.ctl li{display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:900;color:var(--text)}
+.keys{display:flex;align-items:center;gap:7px;flex-wrap:wrap}.keys em{font-style:normal;color:var(--text);font-size:13px}
+kbd{font:900 14px Nunito;background:#eaf5ff;color:var(--ink);border-radius:9px;padding:4px 10px;box-shadow:0 0 0 2px var(--ink),0 3px 0 2px var(--inkS)}.st kbd{padding:1px 7px}
+.mech{display:grid;grid-template-columns:repeat(3,1fr);gap:28px;margin-bottom:36px}.mc2{padding:24px}.mc2 .ic{width:80px;height:80px;border-radius:24px;display:grid;place-items:center;margin-bottom:14px;box-shadow:inset 0 -5px 0 rgba(0,0,0,.14),0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}.mc2 .ic .av{width:60px;height:60px}.mc2 h3{font-size:25px;margin-bottom:6px}.mc2 p{color:var(--text)}
+.worth{padding:28px;margin-bottom:64px}.worth h3{font-size:30px;margin-bottom:8px}.worth p{color:var(--text);font-size:18px}.worth b{color:var(--ink)}
+.sh.small{margin-bottom:26px}.sh.small .gt{font-size:60px}
+.faq{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:16px}.faq details{background:#fff;border-radius:20px;box-shadow:0 0 0 3px var(--ink),0 5px 0 3px var(--inkS);padding:0 22px}
+.faq summary{cursor:pointer;list-style:none;font:700 20px DynaPuff;color:var(--ink);padding:18px 0;display:flex;justify-content:space-between;align-items:center;gap:12px}.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:700 30px/1 DynaPuff;color:var(--p2);transition:transform .2s}.faq details[open] summary::after{transform:rotate(45deg)}.faq p{color:var(--text);padding:0 0 18px}
+/* $SNOW */
+.snowp{max-width:980px}.coinc{display:flex;gap:28px;align-items:center;padding:28px;margin-bottom:28px}.coinav{width:156px;height:156px;border-radius:50%;flex:none;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,#7fd0ff,#2f8dff);box-shadow:inset 0 -8px 0 rgba(0,0,0,.15),0 0 0 6px #fff,0 0 0 10px var(--ink)}.coinav .av{width:116px;height:116px}
+.ci{flex:1;min-width:0}.ci h3{font-size:32px;margin-bottom:14px}.caRow{display:flex;gap:12px;align-items:center;margin-bottom:18px}.caRow code{flex:1;min-width:0;font:900 15px Nunito;background:#eef6ff;padding:13px 14px;border-radius:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.facts{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-bottom:28px}.facts .card{padding:18px 12px;text-align:center}.facts small{display:block;font:900 12px Nunito;letter-spacing:.1em;color:var(--text)}.facts b{display:block;font:700 21px DynaPuff;color:var(--ink);margin-top:4px}
+.risk{text-align:center;color:var(--text);margin-top:28px;font-size:15px}
+/* socials */
+.socrow{display:flex;gap:14px;flex-wrap:wrap}.soc svg{width:22px;height:22px;flex:none}
+.socgrid{display:grid;grid-template-columns:1fr 1fr;gap:28px;max-width:860px;margin:0 auto 34px}
+.sc{display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 24px 28px;gap:12px}.sc .lo{width:86px;height:86px;border-radius:26px;display:grid;place-items:center;color:#fff;box-shadow:inset 0 -5px 0 rgba(0,0,0,.2),0 0 0 3px var(--ink),0 5px 0 3px var(--inkS)}.sc .lo svg{width:44px;height:44px}.sc h3{font-size:30px}.sc p{color:var(--text);margin-bottom:6px}
+.share,.join{display:flex;align-items:center;gap:22px;padding:24px 28px;max-width:960px;margin:0 auto}.share h3,.join h3{font-size:28px}.share p,.join p{color:var(--text)}.share>div:nth-child(2),.join>div:nth-child(2){flex:1}
+.avs{display:flex}.avs .av{width:66px;height:66px}.avs .av+.av{margin-left:-16px}
+/* footer */
+footer{padding:80px 0 44px;color:var(--text);font-weight:800;font-size:15px}footer .fl{display:flex;align-items:center;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:14px}footer .lg{font-size:26px}
+.fnav{display:flex;gap:6px;flex-wrap:wrap}.fnav a{font:900 15px Nunito;color:var(--ink);padding:6px 10px;border-radius:10px}.fnav a:hover{background:#e4f3ff}
 /* in-game HUD */
 .hud{position:fixed;inset:0;z-index:40;pointer-events:none;display:none;font-family:Nunito}.hud.on{display:block}
 .vig{position:absolute;inset:0;box-shadow:inset 0 0 160px 40px rgba(255,63,147,.55);opacity:0;transition:opacity .2s}
@@ -122,41 +168,113 @@ footer{text-align:center;color:var(--text);font-weight:800;padding:80px 20px 50p
 .nm{width:100%;height:58px;border-radius:18px;border:0;background:#f1f8ff;font:700 22px DynaPuff;color:var(--ink);text-align:center;outline:none;margin-bottom:16px;box-shadow:inset 0 0 0 3px var(--ink)}
 .toast{position:fixed;left:50%;top:96px;transform:translate(-50%,-20px);background:var(--ink);color:#fff;padding:12px 22px;border-radius:999px;font:900 16px Nunito;opacity:0;transition:.25s;z-index:80;pointer-events:none;box-shadow:0 4px 0 var(--inkS)}.toast.on{opacity:1;transform:translate(-50%,0)}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
-@media (max-width:980px){.steps{grid-template-columns:1fr 1fr}.money{grid-template-columns:1fr}nav{display:none}.pot{display:none}}
-@media (max-width:640px){.steps{grid-template-columns:1fr}.lg{font-size:24px}.lg img{width:40px;height:40px}header .w{height:76px}
+@media (max-width:980px){.steps{grid-template-columns:1fr 1fr}.money{grid-template-columns:1fr}.pot{display:none}
+  #nav{display:none;position:absolute;top:calc(100% - 4px);left:16px;right:16px;flex-direction:column;margin:0;padding:10px;border-radius:22px;background:#fff}#nav a{padding:14px 16px;font-size:18px}body.navon #nav{display:flex}.burger{display:grid}header .w{position:relative}
+  .mech{grid-template-columns:1fr 1fr}.ctrls{grid-template-columns:1fr}.facts{grid-template-columns:1fr 1fr}.stats4{grid-template-columns:1fr 1fr}.podium{gap:12px}}
+@media (max-width:640px){.mech,.socgrid{grid-template-columns:1fr}.coinc,.share,.join{flex-direction:column;text-align:center}.caRow{flex-direction:column;align-items:stretch}.tr{grid-template-columns:36px 1fr 104px;padding:10px 14px}.tr>b{font-size:17px}.pod{padding:26px 6px 14px}.pod .av{width:58px;height:58px}.pod.p1 .av{width:74px;height:74px}.pod h4{font-size:15px}.pod>.gt{font-size:20px}.pod small{font-size:11px}.stats4 b{font-size:21px}.mh{flex-direction:column}#wBtn{padding:0 12px;font-size:15px}.socrow{justify-content:center}
+  .steps{grid-template-columns:1fr}.lg{font-size:24px}.lgav{width:42px;height:42px}header .w{height:76px}
   .lb{width:170px;padding:9px 10px}.lb li{font-size:13px}.lb li:nth-child(n+4){display:none}#map{width:104px;height:104px}.feed{top:186px}.feed .kf{font-size:12px}
   .hv .gt{font-size:40px}.banner{font-size:26px;top:96px}.hint{display:none}.joy{display:block}
   .hb{left:auto;right:18px;transform:none;flex-direction:column-reverse;align-items:flex-end;bottom:20px;gap:20px}.cash{min-width:0;width:172px;height:64px;padding:0 10px}.cash span{font-size:16px}.rb{width:86px;height:86px}.rb svg{width:110px;height:110px}
   .hl{top:auto;bottom:auto;left:auto;right:16px;top:186px;display:none}}
 </style></head><body>
-<header><div class="w"><a class="lg" href="#top"><img src="__PFP__" alt=""><span class="gt" data-t="SnowPump">SnowPump</span></a>
-<nav><a href="#how">How to play</a><a href="#money">The pot</a><a href="#coin">$SNOW</a></nav>
-<button class="btn wh sm" id="wBtn">Connect wallet</button></div></header>
+<header id="hdr"><div class="w"><a class="lg" href="#/"><span class="av lgav" data-av="#ff4f9e" data-face="happy"></span><span class="gt" data-t="SnowPump">SnowPump</span></a>
+<nav id="nav"><a href="#/" data-r="home">Play</a><a href="#/leaderboard" data-r="leaderboard">Leaderboard</a><a href="#/how" data-r="how">How to play</a><a href="#/snow" data-r="snow">$SNOW</a><a href="#/community" data-r="community">Community</a></nav>
+<button class="btn wh sm" id="wBtn">Connect wallet</button><button class="burger" id="burger" aria-label="Menu"><i></i><i></i><i></i></button></div></header>
 
+<main class="page" data-page="home">
 <section class="hero" id="top"><canvas id="arena"></canvas><div id="tags"></div>
 <div class="pot"><small>PRIZE POT</small><span class="gt g" data-t="100%">100%</span><em>of creator fees</em></div>
 <div class="hc"><h1 class="sr">SnowPump. Push. Grow. Cash out.</h1>
 <div class="gt logo" data-t="SnowPump" aria-hidden="true">SnowPump</div><br>
 <div class="gt tag" aria-hidden="true" data-t="Push. Grow.">Push. Grow.</div> <div class="gt g tag" aria-hidden="true" data-t="Cash out!">Cash out!</div>
 <p>A snowball brawl on a melting ice floe. Every ball has a price, and the pot is paid by creator fees.</p>
-<div class="row"><button class="btn" id="play">Play now</button><a class="btn wh" href="#how">How to play</a></div></div></section>
+<div class="row"><button class="btn playBtn" id="play">Play now</button><a class="btn wh" href="#/how">How to play</a></div></div></section>
 
-<section class="s" id="how"><div class="w"><div class="sh"><span class="gt" data-t="How to play">How to play</span><p>Free to play. Connect a wallet and roll in.</p></div>
+<section class="s"><div class="w"><div class="sh"><span class="gt" data-t="How it works">How it works</span><p>Free to play. Connect a wallet and roll in.</p></div>
 <div class="steps">
 <div class="st card"><div class="n" style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></div><h3>Roll</h3><p>Steer with your mouse, <kbd>WASD</kbd> or your thumb. Snow piles make you bigger.</p></div>
 <div class="st card"><div class="n" style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></div><h3>Shove</h3><p>Click or hit <kbd>Space</kbd> to dash. Knock someone off the floe and you keep most of their snow.</p></div>
 <div class="st card"><div class="n" style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></div><h3>Watch the ice</h3><p>The floe cracks and shrinks every round. The pink line shows where it breaks.</p></div>
 <div class="st card"><div class="n" style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></div><h3>Cash out</h3><p>Big enough? Hold <kbd>E</kbd> for 3 seconds and stand still. Get bumped and it resets.</p></div>
-</div></div></section>
+</div><div class="more"><a class="btn wh sm" href="#/how">Full guide</a></div></div></section>
 
-<section class="s" id="money"><div class="w"><div class="money">
+<section class="s"><div class="w"><div class="sh"><span class="gt" data-t="Top earners">Top earners</span><p>The biggest cash outs on the floe.</p></div>
+<div class="podium" id="homePodium"></div><div class="more"><a class="btn wh sm" href="#/leaderboard">Open the leaderboard</a></div></div></section>
+
+<section class="s"><div class="w"><div class="money">
 <div class="mc card"><h3>Your snowball is worth real money.</h3><p>Creator fees from $SNOW fill the prize pot. The pot is spread over all the snow in play, so every ball has a live dollar value that grows as you do.</p>
-<div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Trades of $SNOW pay creator fees</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>Fees fill the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>Your share = your snow ÷ all snow</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and it lands in your wallet</div></div></div>
-<div class="meter card"><img src="__PFP__" alt=""><br><span class="gt g" data-t="$48.20">$48.20</span><small>a big snowball, live</small><div class="bar"><i></i></div><small style="margin:12px 0 0">Cash out unlocks at $<span id="cmin">8</span></small></div>
+<div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Trades of $SNOW pay creator fees</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>Fees fill the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>Your share = your snow ÷ all snow</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and it lands in your wallet</div></div>
+<div class="more l"><a class="btn wh sm" href="#/snow">More about $SNOW</a></div></div>
+<div class="meter card"><div class="av big" data-av="#ff4f9e"></div><span class="gt g" data-t="$48.20">$48.20</span><small>a big snowball, live</small><div class="bar"><i></i></div><small style="margin:12px 0 0">Cash out unlocks at $<span id="cmin">8</span></small></div>
 </div></div></section>
 
-<section class="s" id="coin" style="padding-bottom:0"><div class="w"><div class="coin card"><img src="__PFP__" alt=""><span class="gt b" data-t="$SNOW">$SNOW</span><code id="ca">CA: launching on pump.fun</code><button class="btn sm" id="caB">Copy</button></div></div></section>
-<footer>SnowPump · Launching on pump.fun · Memecoins are risky. Nothing here is financial advice.</footer>
+<section class="s"><div class="w"><div class="join card"><div class="avs"><div class="av" data-av="#2ee07e"></div><div class="av" data-av="#ff4f9e"></div><div class="av" data-av="#3aa8ff"></div></div>
+<div><h3>Join the floe</h3><p>Launch news, the CA and the best shoves of the day.</p></div><div class="socrow" data-socials="x,discord"></div></div></div></section>
+</main>
+
+<main class="page" data-page="leaderboard" hidden>
+<section class="ph"><div class="w"><span class="gt" data-t="Leaderboard">Leaderboard</span><p>Season 1 · the biggest cash outs on the floe</p></div></section>
+<section class="w lbp">
+<div class="tabs" id="lbTabs"><button class="on" data-lb="earners">Top earners</button><button data-lb="biggest">Biggest cash outs</button><button data-lb="kos">Most knockouts</button></div>
+<div class="podium" id="podium"></div>
+<div class="card table" id="lbTable"><div class="tr th"><span>#</span><span>Player</span><span id="lbCol">Cashed out</span></div><div id="lbRows"></div></div>
+<div class="card mine"><div class="mh"><h3>Your warm-up runs</h3><small>On this device</small></div>
+<div class="stats4" id="mineStats"></div><div class="runs" id="mineRuns"></div></div>
+</section>
+</main>
+
+<main class="page" data-page="how" hidden>
+<section class="ph"><div class="w"><span class="gt" data-t="How to play">How to play</span><p>Roll, shove, grow and cash out before the ice gets you.</p></div></section>
+<section class="w guide">
+<div class="ctrls">
+<div class="card ctl"><h3>On a computer</h3><ul><li><span class="keys"><kbd>Mouse</kbd><em>or</em><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></span>Roll</li><li><span class="keys"><kbd>Click</kbd><em>or</em><kbd>Space</kbd></span>Shove (dash)</li><li><span class="keys"><kbd>Hold E</kbd></span>Cash out</li></ul></div>
+<div class="card ctl"><h3>On a phone</h3><ul><li><span class="keys"><kbd>Left stick</kbd></span>Roll</li><li><span class="keys"><kbd>SHOVE</kbd></span>Dash into someone</li><li><span class="keys"><kbd>Hold CASH OUT</kbd></span>Cash out</li></ul></div>
+</div>
+<div class="mech">
+<div class="card mc2"><div class="ic" style="background:linear-gradient(var(--b1),var(--b2))"><div class="av" data-av="#3aa8ff"></div></div><h3>Grow</h3><p>Roll over snow piles to pack on snow. More snow means a bigger ball, a higher price and harder shoves.</p></div>
+<div class="card mc2"><div class="ic" style="background:linear-gradient(var(--g1),var(--g2))"><div class="av" data-av="#2ee07e" data-face="angry"></div></div><h3>Shove</h3><p>A dash launches you forward and sends whoever you hit flying. It recharges in about a second. Bigger balls hit harder.</p></div>
+<div class="card mc2"><div class="ic" style="background:linear-gradient(var(--p1),var(--p2))"><div class="av" data-av="#ff4f9e" data-face="happy"></div></div><h3>Knock them off</h3><p>Push a ball into the sea within a few seconds of hitting it and 60% of its snow becomes yours.</p></div>
+<div class="card mc2"><div class="ic" style="background:linear-gradient(#b89bff,#8a5cff)"><div class="av" data-av="#9a63ff" data-face="scared"></div></div><h3>The ice</h3><p>Every round the floe cracks and shrinks, then refreezes. The pink dashed line shows where it breaks next.</p></div>
+<div class="card mc2"><div class="ic" style="background:linear-gradient(#7fe0ff,#16b8e8)"><div class="av" data-av="#16d3c4"></div></div><h3>Spawn shield</h3><p>You roll in with a few seconds of shield. Shoves bounce off it. Dashing drops it early.</p></div>
+<div class="card mc2"><div class="ic" style="background:linear-gradient(var(--gb1),var(--gb2))"><div class="av" data-av="#ff8f3a" data-face="happy"></div></div><h3>Cash out</h3><p>From $<span class="cminT">8</span>, hold cash out for 3 seconds and stand still. Any bump resets it. Done and the money is yours.</p></div>
+</div>
+<div class="card worth"><h3>What is my snowball worth?</h3><p>The prize pot is spread over all the snow in play. Your price is your share of it, live: <b>your snow ÷ all snow × the pot</b>. Grow, or take someone else's snow, and the number goes up.</p></div>
+<div class="sh small"><span class="gt" data-t="FAQ">FAQ</span></div>
+<div class="faq">
+<details><summary>Is it free to play?</summary><p>Yes. You only need a Solana wallet (Phantom, Solflare or Backpack) to sign in.</p></details>
+<details><summary>Does connecting cost anything?</summary><p>No. Connecting shares your public address only. SnowPump never asks you to sign a payment to play.</p></details>
+<details><summary>When do payouts start?</summary><p>When $SNOW launches. Until then every round is a warm-up, and your best runs are saved on your device.</p></details>
+<details><summary>What happens if I fall in?</summary><p>You lose your snowball. If someone shoved you, they keep 60% of your snow and the rest goes back to the pot.</p></details>
+<details><summary>Why did my cash out reset?</summary><p>Any bump while you hold resets it. Find a quiet spot, ideally away from bigger balls.</p></details>
+<details><summary>Who else is on the floe?</summary><p>Right now you roll with practice bots, marked BOT. Live multiplayer opens with the launch.</p></details>
+<details><summary>Can I play on my phone?</summary><p>Yes. Use the stick to roll and the buttons to shove and cash out.</p></details>
+</div>
+<div class="more"><button class="btn playBtn">Play now</button></div>
+</section>
+</main>
+
+<main class="page" data-page="snow" hidden>
+<section class="ph"><div class="w"><span class="gt b" data-t="$SNOW">$SNOW</span><p>The coin that fills the prize pot.</p></div></section>
+<section class="w snowp">
+<div class="card coinc"><div class="coinav"><div class="av" data-av="#ff4f9e" data-face="happy"></div></div><div class="ci"><h3>$SNOW on pump.fun</h3><div class="caRow"><code class="caT">CA: launching on pump.fun</code><button class="btn sm caB">Copy</button></div>
+<div class="socrow" data-socials="pumpfun,dex"></div></div></div>
+<div class="facts"><div class="card"><small>CHAIN</small><b>Solana</b></div><div class="card"><small>LAUNCH</small><b>pump.fun</b></div><div class="card"><small>CREATOR FEES</small><b>100% to the pot</b></div><div class="card"><small>CASH OUT FROM</small><b>$<span class="cminT">8</span></b></div></div>
+<div class="card mc"><h3>How the pot works</h3><div class="flow"><div class="fr"><i style="background:linear-gradient(var(--b1),var(--b2))"><span class="gt" data-t="1">1</span></i>Every trade of $SNOW pays a creator fee</div><div class="fr"><i style="background:linear-gradient(var(--g1),var(--g2))"><span class="gt" data-t="2">2</span></i>The fees fill the prize pot</div><div class="fr"><i style="background:linear-gradient(#b89bff,#8a5cff)"><span class="gt" data-t="3">3</span></i>The pot is spread over all the snow in play</div><div class="fr"><i style="background:linear-gradient(var(--p1),var(--p2))"><span class="gt" data-t="4">4</span></i>Cash out and your share lands in your wallet</div><div class="fr"><i style="background:linear-gradient(#7fe0ff,#16b8e8)"><span class="gt" data-t="5">5</span></i>A knocked-off ball's leftover snow goes back to the pot</div></div></div>
+<p class="risk">Memecoins are risky and can lose all their value. Nothing here is financial advice.</p>
+</section>
+</main>
+
+<main class="page" data-page="community" hidden>
+<section class="ph"><div class="w"><span class="gt" data-t="Community">Community</span><p>Launch news, the CA, and the best shoves of the day.</p></div></section>
+<section class="w comm">
+<div class="socgrid" data-socials="x,discord" data-big="1"></div>
+<div class="card share"><div class="avs"><div class="av" data-av="#ff4f9e" data-face="happy"></div><div class="av" data-av="#3aa8ff"></div></div><div><h3>Show off your best shove</h3><p id="shareTxt">Post your cash outs and knockouts with #SnowPump.</p></div><a class="btn" id="shareBtn" target="_blank" rel="noopener">Post on X</a></div>
+</section>
+</main>
+
+<footer><div class="w"><div class="fl"><a href="#/" class="lg"><span class="gt" data-t="SnowPump">SnowPump</span></a><div class="fnav"><a href="#/leaderboard">Leaderboard</a><a href="#/how">How to play</a><a href="#/snow">$SNOW</a><a href="#/community">Community</a></div></div>
+<p>SnowPump · Launching on pump.fun · Memecoins are risky. Nothing here is financial advice.</p></div></footer>
 
 <div class="hud" id="hud"><div class="vig" id="vig"></div>
 <div class="hv"><small>YOUR SNOWBALL</small><span class="gt g" id="hV" data-t="$1.60">$1.60</span></div>

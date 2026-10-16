@@ -1,5 +1,6 @@
-// Cloudflare Pages (advanced mode, dashboard drag-and-drop works): serves the Snowfight site and its small API.
-//   GET  /api/feed -> coins launched on Snowfight (KV binding FEED, key "feed"); empty list until the first launch
+// Cloudflare Pages (advanced mode, dashboard drag-and-drop works): serves the SnowPump site and its small API.
+//   GET  /api/feed -> coins launched on SnowPump (KV binding FEED, key "feed"); empty list until the first launch
+//   GET  /api/leaderboard -> season leaderboard (KV key "leaderboard"); empty until payouts are live
 //   POST /api/rpc  -> Solana mainnet RPC relay for the few calls a launch needs (mainnet-beta answers 403 to browser origins)
 //   POST /api/ipfs -> pump.fun's IPFS upload (browsers can't call it: no CORS)
 const J = (o, s = 200) => new Response(JSON.stringify(o), { status: s, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });
@@ -8,6 +9,8 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url), p = url.pathname;
     if (p === '/api/feed') return J(env.FEED ? (await env.FEED.get('feed', 'json')) || [] : []);
+    // season leaderboard, written by the payout server: { earners: [{ name, wallet, col, total }], biggest: [{ name, wallet, col, v }], kos: [{ name, wallet, col, kos }] }
+    if (p === '/api/leaderboard') return J(env.FEED ? (await env.FEED.get('leaderboard', 'json')) || {} : {});
     if (p === '/api/rpc') {
       if (request.method !== 'POST') return J({ error: 'POST only' }, 405);
       let body; try { body = await request.json(); } catch (_) { return J({ error: 'JSON expected' }, 400); }

@@ -1,5 +1,5 @@
 # Build the release: dist/index.html (one self-contained file) + og.png + _worker.js, and snowpump-site.zip for Cloudflare Pages.
-#   python -I tools/build.py [CA]
+#   python -I tools/build.py [CA]        links (X, Discord, pump.fun) and the CA live in site/config.json
 # The site's ES modules (sim, world, sfx, game) are inlined as data: URL modules behind the import map, so each keeps its own scope.
 import base64, io, pathlib, re, shutil, sys, zipfile, json
 from PIL import Image
@@ -13,7 +13,8 @@ h = h.replace('__PFP__', uri(SITE / 'pfp.png', 400)).replace('__ICON__', uri(SIT
 m = re.search(r'<script type="importmap">(.*?)</script>', h, re.S); imap = json.loads(m.group(1))
 for name in MODULES: imap['imports'][f'snowpump/{name}'] = 'data:text/javascript;base64,' + base64.b64encode(local((SITE / f'{name}.js').read_text(encoding='utf8')).encode()).decode()
 h = h.replace(m.group(0), '<script type="importmap">' + json.dumps(imap, separators=(',', ':')) + '</script>')
-cfg = {'ca': sys.argv[1] if len(sys.argv) > 1 else '', 'live': False}
+cfg = dict(json.loads((SITE / 'config.json').read_text(encoding='utf8')), live=False)   # ca, x, discord, pumpfun links
+if len(sys.argv) > 1: cfg['ca'] = sys.argv[1]
 app = local((SITE / 'app.js').read_text(encoding='utf8'))
 h = h.replace('<script type="module" src="app.js"></script>', f'<script>window.SNOWPUMP={json.dumps(cfg)}</script>\n<script type="module">\n{app}\n</script>')
 (DIST / 'index.html').write_text(h, encoding='utf8', newline='\n')
