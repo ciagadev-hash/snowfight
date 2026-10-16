@@ -1,0 +1,122 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Snowfight · Push. Grow. Cash out.</title>
+<meta name="description" content="A snowball brawl on a melting ice floe. Push others off, scoop snow, grow your ball and cash it out. The pot is paid by creator fees.">
+<meta property="og:title" content="Snowfight"><meta property="og:description" content="Push. Grow. Cash out."><meta property="og:image" content="og.png"><meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="__ICON__">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"}}</script>
+<style>
+:root{--ink:#0d2b45;--ink2:#3d5a75;--sky:#b9dcff;--ice:#eaf5ff;--red:#ff4d5e;--mint:#2fd3a0;--sun:#ffc233;--blue:#3d6bff;--card:#ffffff}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font:500 17px/1.45 Fredoka,system-ui,sans-serif;color:var(--ink);background:linear-gradient(#cfe7ff,#eef7ff 40%,#fff6ef);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit;text-decoration:none}button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
+.w{max-width:1200px;margin:0 auto;padding:0 24px}
+/* bubbly buttons: glossy, chunky, pressed bottom edge */
+.bb{position:relative;display:inline-flex;align-items:center;justify-content:center;gap:10px;height:56px;padding:0 28px;border-radius:999px;font:700 20px Fredoka;color:#fff;background:linear-gradient(#ff7280,#ff3d50);box-shadow:inset 0 -5px 0 rgba(0,0,0,.18),inset 0 3px 0 rgba(255,255,255,.45),0 10px 24px rgba(255,61,80,.35);transition:transform .12s}
+.bb:after{content:"";position:absolute;left:18%;right:18%;top:7px;height:12px;border-radius:99px;background:rgba(255,255,255,.35)}
+.bb:hover{transform:translateY(-2px)}.bb:active{transform:translateY(2px);box-shadow:inset 0 -2px 0 rgba(0,0,0,.18),0 4px 10px rgba(255,61,80,.3)}
+.bb.w2{color:var(--ink);background:linear-gradient(#ffffff,#e4f1ff);box-shadow:inset 0 -5px 0 rgba(13,43,69,.12),inset 0 3px 0 #fff,0 10px 24px rgba(13,43,69,.14)}.bb.w2:after{background:rgba(255,255,255,.8)}
+.bb.mint{background:linear-gradient(#5be6b9,#1fbf8c);box-shadow:inset 0 -5px 0 rgba(0,0,0,.16),inset 0 3px 0 rgba(255,255,255,.45),0 10px 24px rgba(31,191,140,.35)}
+.bb.sm{height:46px;font-size:17px;padding:0 20px}.bb[disabled]{filter:grayscale(.8);opacity:.6;pointer-events:none}
+.bb img{width:22px;height:22px;border-radius:6px}
+/* header */
+header{position:absolute;top:0;left:0;right:0;z-index:30}header .w{display:flex;align-items:center;gap:20px;height:84px}
+.lg{display:flex;align-items:center;gap:12px;font:700 30px/1 Fredoka;letter-spacing:-.01em;color:#fff;text-shadow:0 3px 0 rgba(13,43,69,.25),0 8px 20px rgba(13,43,69,.25)}.lg img{width:48px;height:48px;border-radius:50%;box-shadow:0 0 0 4px #fff,0 8px 20px rgba(13,43,69,.25)}
+nav{margin-left:auto;display:flex;gap:6px;background:rgba(255,255,255,.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);padding:6px;border-radius:999px;box-shadow:0 8px 24px rgba(13,43,69,.1)}
+nav a{padding:9px 16px;border-radius:999px;font-weight:600;font-size:16px}nav a:hover{background:#fff}
+/* hero = the live arena */
+.hero{position:relative;height:100vh;min-height:680px;overflow:hidden}
+#arena{position:absolute;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#tags{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.ptag{position:absolute;left:0;top:0;display:flex;flex-direction:column;align-items:center;gap:2px;will-change:transform}
+.ptag b{background:#fff;color:var(--ink);border-radius:999px;padding:3px 10px;font:700 15px Fredoka;box-shadow:0 4px 12px rgba(13,43,69,.2)}
+.ptag span{font:600 12px Fredoka;color:#fff;text-shadow:0 1px 3px rgba(13,43,69,.6)}.ptag i{font-style:normal;opacity:.75;font-size:10px;background:rgba(13,43,69,.35);padding:0 5px;border-radius:5px}
+.ptag.rich b{background:var(--sun)}.ptag.me b{background:var(--red);color:#fff;font-size:18px}
+.hc{position:absolute;left:0;right:0;bottom:7vh;text-align:center;z-index:5;pointer-events:none}
+.hc h1{font:700 clamp(54px,8.6vw,124px)/.9 Fredoka;letter-spacing:-.02em;color:#fff;text-shadow:0 5px 0 rgba(13,43,69,.22),0 16px 40px rgba(13,43,69,.3)}
+.hc h1 span{color:var(--sun)}
+.hc p{margin:18px auto 26px;max-width:600px;font-size:20px;font-weight:600;color:#fff;text-shadow:0 2px 10px rgba(13,43,69,.45)}
+.hc .row{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;pointer-events:auto}
+.pot{position:absolute;right:24px;top:100px;z-index:5;background:#fff;border-radius:26px;padding:16px 22px;box-shadow:inset 0 -5px 0 rgba(13,43,69,.08),0 16px 40px rgba(13,43,69,.18);text-align:right}
+.pot small{display:block;font-weight:600;color:var(--ink2);font-size:14px}.pot b{font:700 34px/1.1 Fredoka}.pot em{font-style:normal;font-size:13px;color:var(--ink2)}
+/* sections */
+section.s{padding:110px 0 30px}
+.sh{text-align:center;margin-bottom:46px}.sh h2{font:700 clamp(40px,5vw,64px)/1 Fredoka;letter-spacing:-.015em}.sh p{color:var(--ink2);font-size:19px;margin-top:12px}
+.steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px}
+.st{background:var(--card);border-radius:30px;padding:26px 24px 28px;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 18px 40px rgba(13,43,69,.1);position:relative;overflow:hidden}
+.st .n{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font:700 26px Fredoka;color:#fff;margin-bottom:16px;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15),inset 0 3px 0 rgba(255,255,255,.4)}
+.st h3{font:700 24px/1.1 Fredoka;margin-bottom:8px}.st p{color:var(--ink2);font-size:16.5px}
+.money{display:grid;grid-template-columns:1.1fr 1fr;gap:24px;align-items:center}
+.mc{background:linear-gradient(160deg,#ffffff,#eaf5ff);border-radius:36px;padding:34px;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 24px 60px rgba(13,43,69,.12)}
+.mc h3{font:700 36px/1.05 Fredoka;margin-bottom:14px}.mc p{color:var(--ink2);font-size:18px}
+.flow{display:flex;flex-direction:column;gap:12px;margin-top:20px}
+.fr{display:flex;align-items:center;gap:14px;background:#fff;border-radius:20px;padding:12px 16px;box-shadow:0 6px 16px rgba(13,43,69,.07);font-weight:600}
+.fr i{font-style:normal;width:40px;height:40px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:700;flex:none}
+.meter{background:#fff;border-radius:36px;padding:30px;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 24px 60px rgba(13,43,69,.12);text-align:center}
+.meter img{width:190px;height:190px;border-radius:50%;box-shadow:0 0 0 8px #eaf5ff;margin-bottom:16px}
+.meter b{display:block;font:700 54px/1 Fredoka;color:var(--red)}.meter small{display:block;color:var(--ink2);font-weight:600;margin:6px 0 18px}
+.bar{height:20px;border-radius:99px;background:#eaf2fb;overflow:hidden;box-shadow:inset 0 2px 4px rgba(13,43,69,.1)}.bar i{display:block;height:100%;width:62%;border-radius:99px;background:linear-gradient(90deg,#5be6b9,#2fd3a0);animation:grow 4s ease-in-out infinite alternate}
+@keyframes grow{from{width:18%}to{width:100%}}
+.bar+small{margin-top:8px}
+.coin{margin:70px auto 0;max-width:780px;background:#fff;border-radius:34px;padding:26px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;box-shadow:inset 0 -6px 0 rgba(13,43,69,.07),0 20px 50px rgba(13,43,69,.12)}
+.coin img{width:64px;height:64px;border-radius:50%}.coin h3{font:700 28px Fredoka}.coin code{font:600 15px Fredoka;background:#eef6ff;padding:10px 14px;border-radius:14px;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis}
+footer{text-align:center;color:var(--ink2);font-weight:500;padding:70px 20px 50px;font-size:15px}
+/* game HUD */
+.hud{position:fixed;inset:0;z-index:40;pointer-events:none;display:none}.hud.on{display:block}
+.hv{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:#fff;border-radius:26px;padding:10px 26px;text-align:center;box-shadow:inset 0 -5px 0 rgba(13,43,69,.08),0 14px 34px rgba(13,43,69,.2)}
+.hv small{display:block;font-weight:600;color:var(--ink2);font-size:13px}.hv b{font:700 40px/1 Fredoka}
+.hs{position:absolute;left:18px;top:18px;display:flex;flex-direction:column;gap:8px}.hs div{background:rgba(255,255,255,.92);border-radius:16px;padding:8px 14px;font-weight:600;font-size:15px;box-shadow:0 8px 20px rgba(13,43,69,.12)}
+.hq{position:absolute;right:18px;top:18px;pointer-events:auto}
+.hb{position:absolute;left:50%;bottom:26px;transform:translateX(-50%);display:flex;gap:14px;pointer-events:auto;align-items:center}
+.cash{position:relative;overflow:hidden}.cash .pr{position:absolute;left:0;top:0;bottom:0;width:0;background:rgba(255,255,255,.45)}
+.hint2{position:absolute;left:50%;bottom:100px;transform:translateX(-50%);font-weight:600;color:#fff;text-shadow:0 2px 8px rgba(13,43,69,.5);font-size:15px;white-space:nowrap}
+.pop{position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;background:rgba(13,43,69,.35);backdrop-filter:blur(4px);padding:20px}.pop.on{display:flex}
+.pc{background:#fff;border-radius:34px;padding:30px;width:100%;max-width:420px;text-align:center;box-shadow:inset 0 -6px 0 rgba(13,43,69,.08),0 40px 100px rgba(13,43,69,.3)}
+.pc h3{font:700 32px/1.05 Fredoka;margin-bottom:8px}.pc p{color:var(--ink2);margin-bottom:18px}.pc big{display:block;font:700 56px/1 Fredoka;color:var(--red);margin:6px 0 16px}
+.wl{display:flex;flex-direction:column;gap:10px;margin-bottom:6px}.wl button{display:flex;align-items:center;gap:12px;height:58px;padding:0 18px;border-radius:20px;background:#f2f8ff;font:600 18px Fredoka;box-shadow:inset 0 -4px 0 rgba(13,43,69,.08)}.wl button:hover{background:#e4f1ff}.wl img{width:32px;height:32px;border-radius:9px}
+.cols{display:flex;gap:10px;justify-content:center;margin:4px 0 18px}.cols button{width:40px;height:40px;border-radius:50%;box-shadow:inset 0 -4px 0 rgba(0,0,0,.15),inset 0 3px 0 rgba(255,255,255,.4)}.cols button.on{outline:4px solid var(--ink);outline-offset:2px}
+.nm{width:100%;height:54px;border-radius:18px;border:0;background:#f2f8ff;font:600 20px Fredoka;text-align:center;outline:none;margin-bottom:14px;box-shadow:inset 0 3px 6px rgba(13,43,69,.08)}
+.joy{position:absolute;left:28px;bottom:28px;width:130px;height:130px;border-radius:50%;background:rgba(255,255,255,.35);box-shadow:inset 0 0 0 3px rgba(255,255,255,.7);pointer-events:auto;display:none;touch-action:none}.joy i{position:absolute;left:50%;top:50%;width:56px;height:56px;margin:-28px;border-radius:50%;background:#fff;box-shadow:0 6px 14px rgba(13,43,69,.25)}
+.toast{position:fixed;left:50%;top:90px;transform:translate(-50%,-20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:999px;font-weight:600;opacity:0;transition:.25s;z-index:80;pointer-events:none}.toast.on{opacity:1;transform:translate(-50%,0)}
+@media (max-width:900px){.steps{grid-template-columns:1fr 1fr}.money{grid-template-columns:1fr}nav{display:none}.pot{top:auto;bottom:calc(7vh + 250px);right:50%;transform:translateX(50%)}}
+@media (max-width:560px){.steps{grid-template-columns:1fr}.lg{font-size:24px}.lg img{width:40px;height:40px}.hc p{font-size:17px}.hv b{font-size:30px}.joy{display:block}.hint2{display:none}.pot{display:none}}
+</style></head><body>
+<header><div class="w"><a class="lg" href="#top"><img src="__PFP__" alt="">Snowfight</a>
+<nav><a href="#how">How to play</a><a href="#money">The pot</a><a href="#coin">$SNOW</a></nav>
+<button class="bb w2 sm" id="wBtn">Connect wallet</button></div></header>
+
+<section class="hero" id="top"><canvas id="arena"></canvas><div id="tags"></div>
+<div class="pot"><small>Prize pot</small><b id="potV">100%</b><br><em>of creator fees</em></div>
+<div class="hc"><h1>Push. Grow.<br><span>Cash out.</span></h1>
+<p>A snowball brawl on a melting ice floe. Every ball has a price, and the pot is paid by creator fees.</p>
+<div class="row"><button class="bb" id="play">Play now</button><a class="bb w2" href="#how">How to play</a></div></div></section>
+
+<section class="s" id="how"><div class="w"><div class="sh"><h2>How to play</h2><p>Free to play. Connect a wallet and jump in.</p></div>
+<div class="steps">
+<div class="st"><div class="n" style="background:var(--blue)">1</div><h3>Roll</h3><p>Steer with your mouse or thumb. Snow piles make you bigger.</p></div>
+<div class="st"><div class="n" style="background:var(--mint)">2</div><h3>Push</h3><p>Hit Space to shove. Knock someone off the floe and you keep most of their snow.</p></div>
+<div class="st"><div class="n" style="background:var(--sun)">3</div><h3>Watch the ice</h3><p>The floe shrinks every round. Stay off the edge.</p></div>
+<div class="st"><div class="n" style="background:var(--red)">4</div><h3>Cash out</h3><p>Big enough? Hold Cash out for 3 seconds. Get bumped and it resets.</p></div>
+</div></div></section>
+
+<section class="s" id="money"><div class="w"><div class="money">
+<div class="mc"><h3>Your snowball is worth real money.</h3><p>Creator fees from $SNOW fill the prize pot. The pot is spread over all the snow in play, so every ball has a live dollar value that grows as you do.</p>
+<div class="flow"><div class="fr"><i style="background:var(--blue)">1</i>Trades of $SNOW pay creator fees</div><div class="fr"><i style="background:var(--mint)">2</i>Fees fill the prize pot</div><div class="fr"><i style="background:var(--sun)">3</i>Your share = your snow ÷ all snow</div><div class="fr"><i style="background:var(--red)">4</i>Cash out and it lands in your wallet</div></div></div>
+<div class="meter"><img src="__PFP__" alt=""><b>$48.20</b><small>a big snowball, live</small><div class="bar"><i></i></div><small>Cash out unlocks at $<span id="cmin">8</span></small></div>
+</div></div></section>
+
+<section class="s" id="coin" style="padding-bottom:0"><div class="w"><div class="coin"><img src="__PFP__" alt=""><h3>$SNOW</h3><code id="ca">CA: launching on pump.fun</code><button class="bb sm" id="caB">Copy</button></div></div></section>
+<footer>Snowfight · Launching on pump.fun · Memecoins are risky. Nothing here is financial advice.</footer>
+
+<div class="hud" id="hud"><div class="hv"><small>Your snowball</small><b id="hV">$0.00</b></div>
+<div class="hs"><div id="hR">Rank #1</div><div id="hK">Knockouts 0</div><div id="hF">Ice 100%</div></div>
+<div class="hq"><button class="bb w2 sm" id="quit">Leave</button></div>
+<div class="hint2" id="hint2">Mouse to steer · Space to shove · Hold E to cash out</div>
+<div class="hb"><button class="bb mint sm" id="boost">Shove</button><button class="bb sm cash" id="cash" disabled><span class="pr" id="cpr"></span><span id="cashT">Cash out at $8</span></button></div>
+<div class="joy" id="joy"><i id="joyK"></i></div></div>
+
+<div class="pop" id="pop"><div class="pc" id="popC"></div></div>
+<div class="toast" id="toast"></div>
+<script type="module" src="app.js"></script>
+</body></html>
