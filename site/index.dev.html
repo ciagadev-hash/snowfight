@@ -63,15 +63,11 @@ section.s{padding:110px 0 30px}
 .coin img{width:64px;height:64px;border-radius:50%}.coin h3{font:700 28px Fredoka}.coin code{font:600 15px Fredoka;background:#eef6ff;padding:10px 14px;border-radius:14px;flex:1;min-width:200px;overflow:hidden;text-overflow:ellipsis}
 footer{text-align:center;color:var(--ink2);font-weight:500;padding:70px 20px 50px;font-size:15px}
 
-/* bubbly display type: glossy gradient fill, thick navy outline, chunky drop */
-.bub,.hc h1,.sh h2,.st h3,.mc h3,.pot b,.meter b,.hv b,.pc h3,.pc big,.coin h3,.lg{font-family:Fredoka;font-weight:700;-webkit-text-stroke:.16em var(--ink);paint-order:stroke fill;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;background-image:linear-gradient(180deg,#ffffff 0%,#ffffff 45%,#cfe8ff 55%,#a9d6ff 100%);filter:drop-shadow(0 .07em 0 var(--ink)) drop-shadow(0 .16em .18em rgba(13,43,69,.3));letter-spacing:.01em;text-shadow:none}
-.hc h1{-webkit-text-stroke:.13em var(--ink);line-height:1.02}
-.hc h1 span,.pot b,.meter b,.pc big,.hv b{background-image:linear-gradient(180deg,#fff6b8 0%,#ffd84a 45%,#ffb31a 58%,#ff8a1a 100%);display:inline-block}
-.sh h2,.st h3,.mc h3,.pc h3,.coin h3{-webkit-text-stroke:.13em var(--ink)}
-.st h3{background-image:linear-gradient(180deg,#ffffff 45%,#d6ecff 55%,#b6dcff)}
-.lg{-webkit-text-stroke:.14em var(--ink);color:transparent}
-.hc h1 span:after{content:none}
-.bubhl{position:relative}
+/* bubbly display type: white fill, thick navy outline, chunky drop */
+.hc h1,.sh h2,.st h3,.mc h3,.pot b,.meter b,.hv b,.pc h3,.pc big,.coin h3,.lg{font-family:Fredoka;font-weight:700;color:#fff;text-shadow:0.065em 0.000em 0 var(--ink),0.060em 0.025em 0 var(--ink),0.046em 0.046em 0 var(--ink),0.025em 0.060em 0 var(--ink),0.000em 0.065em 0 var(--ink),-0.025em 0.060em 0 var(--ink),-0.046em 0.046em 0 var(--ink),-0.060em 0.025em 0 var(--ink),-0.065em 0.000em 0 var(--ink),-0.060em -0.025em 0 var(--ink),-0.046em -0.046em 0 var(--ink),-0.025em -0.060em 0 var(--ink),-0.000em -0.065em 0 var(--ink),0.025em -0.060em 0 var(--ink),0.046em -0.046em 0 var(--ink),0.060em -0.025em 0 var(--ink),0 0.095em 0 var(--ink),0 0.125em 0 var(--ink),0 0.155em 0 var(--ink),0 0.175em 0 var(--ink),0 .2em .25em rgba(13,43,69,.35);letter-spacing:.015em}
+.hc h1 span,.pot b,.meter b,.pc big,.hv b{color:#ffd23f}
+.st h3,.mc h3,.coin h3,.pc h3{letter-spacing:.02em}
+.lg{text-shadow:0.065em 0.000em 0 var(--ink),0.060em 0.025em 0 var(--ink),0.046em 0.046em 0 var(--ink),0.025em 0.060em 0 var(--ink),0.000em 0.065em 0 var(--ink),-0.025em 0.060em 0 var(--ink),-0.046em 0.046em 0 var(--ink),-0.060em 0.025em 0 var(--ink),-0.065em 0.000em 0 var(--ink),-0.060em -0.025em 0 var(--ink),-0.046em -0.046em 0 var(--ink),-0.025em -0.060em 0 var(--ink),-0.000em -0.065em 0 var(--ink),0.025em -0.060em 0 var(--ink),0.046em -0.046em 0 var(--ink),0.060em -0.025em 0 var(--ink),0 0.095em 0 var(--ink),0 0.125em 0 var(--ink),0 0.155em 0 var(--ink),0 0.175em 0 var(--ink),0 .2em .25em rgba(13,43,69,.35)}
 /* game HUD */
 .hud{position:fixed;inset:0;z-index:40;pointer-events:none;display:none}.hud.on{display:block}
 .hv{position:absolute;left:50%;top:18px;transform:translateX(-50%);background:#fff;border-radius:26px;padding:10px 26px;text-align:center;box-shadow:inset 0 -5px 0 rgba(13,43,69,.08),0 14px 34px rgba(13,43,69,.2)}
