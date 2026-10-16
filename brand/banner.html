@@ -7,6 +7,20 @@
 .tag{position:absolute;transform:translate(-50%,-100%);background:#fff;color:#0d2b45;border-radius:999px;padding:.32em .7em;font:800 1em/1 Sniglet,sans-serif;letter-spacing:-.01em;box-shadow:0 .25em .8em rgba(10,50,90,.25);white-space:nowrap}
 .tag.up{background:#0d2b45;color:#fff}.tag.out{background:#ff4d5e;color:#fff}
 .tag:after{content:"";position:absolute;left:50%;bottom:-.32em;margin-left:-.35em;border:.35em solid transparent;border-top-color:inherit;border-bottom:0}
+@font-face{font-family:DynaPuff;font-weight:700;src:url(../site/fonts/dynapuff.ttf)}@font-face{font-family:Nunito;font-weight:900;src:url(../site/fonts/nunito-900.ttf)}
+:root{--ink:#152b6b;--inkS:#0e1f52;--w1:#fff;--w2:#dff1ff;--g1:#5df29b;--g2:#1fcf6e;--b1:#5cc0ff;--b2:#2f8dff}
+.gt{position:relative;display:inline-block;font-family:DynaPuff;font-weight:700;color:var(--ink);-webkit-text-stroke:.16em var(--ink);line-height:1.08;padding:0 .05em;white-space:nowrap;z-index:0}
+.gt::before{content:attr(data-t);position:absolute;inset:0;padding:inherit;-webkit-text-stroke:0;color:transparent;background:linear-gradient(180deg,var(--w1),var(--w2));-webkit-background-clip:text;background-clip:text}
+.gt::after{content:attr(data-t);position:absolute;inset:0;padding:inherit;z-index:-1;color:var(--inkS);-webkit-text-stroke:.16em var(--inkS);transform:translateY(.075em)}
+.gt.g::before{background-image:linear-gradient(180deg,var(--g1),var(--g2))}.gt.b::before{background-image:linear-gradient(180deg,var(--b1),var(--b2))}
+#xb{position:absolute;inset:0;pointer-events:none}
+#xb .kick{position:absolute;left:452px;top:44px;display:inline-flex;align-items:center;gap:9px;padding:7px 16px 8px 9px;border-radius:999px;background:var(--ink);color:#fff;font:900 16px Nunito;letter-spacing:.08em;transform:rotate(-4deg);box-shadow:0 5px 0 var(--inkS),0 12px 22px rgba(14,31,82,.3)}
+#xb .kick i{width:24px;height:24px;border-radius:50%;background:linear-gradient(180deg,var(--g1),var(--g2));box-shadow:inset 0 -3px 0 rgba(0,0,0,.15)}
+#xb .title{position:absolute;left:436px;top:70px;transform:rotate(-4deg);transform-origin:0 50%}#xb .title .gt{font-size:122px}
+#xb .tl{position:absolute;left:470px;top:222px;transform:rotate(-2.5deg)}#xb .tl .gt{font-size:44px}
+#xb .cta{position:absolute;left:474px;top:312px;display:flex;gap:16px;align-items:center}
+#xb .btn{display:inline-flex;align-items:center;height:70px;padding:0 34px;border-radius:24px;font:700 33px DynaPuff;color:#fff;background:linear-gradient(180deg,#4ff09a,#16c266);box-shadow:inset 0 -6px 0 rgba(0,0,0,.14),inset 0 3px 0 rgba(255,255,255,.4),0 0 0 4.5px var(--ink),0 8px 0 4.5px var(--inkS),0 18px 28px rgba(14,31,82,.3);text-shadow:0 3px 0 var(--ink),2px 0 0 var(--ink),-2px 0 0 var(--ink),0 -2px 0 var(--ink),2px 2px 0 var(--ink),-2px 2px 0 var(--ink),2px -2px 0 var(--ink),-2px -2px 0 var(--ink),0 4px 0 var(--ink)}
+#xb .chip{display:inline-flex;align-items:center;gap:10px;height:58px;padding:0 20px 0 16px;border-radius:20px;background:#fff;font:900 23px Nunito;color:var(--ink);box-shadow:0 0 0 4px var(--ink),0 7px 0 4px var(--inkS),0 14px 22px rgba(14,31,82,.25)}#xb .chip svg{width:26px;height:26px}#xb .chip .gt{font-size:28px}
 </style></head><body><div id="R"><canvas id="cv"></canvas><div id="sunfx"></div></div>
 <script type="module">
 /* Snowfight brand renders: a sunny arctic ice floe, snowball players in knit beanies pushing each other off. ?a=banner (1500x500) | og | pfp */
@@ -16,7 +30,8 @@ import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
 import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js';
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
-const Q = new URLSearchParams(location.search), A = Q.get('a') || 'banner', [W, H] = { banner: [1500, 500], og: [1200, 630], pfp: [1000, 1000] }[A]; if (A === 'pfp') document.getElementById('sunfx').remove();
+const Q = new URLSearchParams(location.search), A = Q.get('a') || 'banner', [W, H] = { banner: [1500, 500], og: [1200, 630], pfp: [1000, 1000], xb: [1500, 500] }[A]; if (A === 'pfp' || A === 'xb') document.getElementById('sunfx').remove();
+const XB = A === 'xb', SX = 1255;   // xb: the pfp poster stretched to an X banner; the ball sits in the right third (screen x SX), type on the left
 document.getElementById('R').style.cssText = `width:${W}px;height:${H}px`;
 const HH = Q.get('hat') ? '#' + Q.get('hat') : null;   // ?hat=5cc888: the hero's beanie colour (pump.fun pill green); its neighbour swaps to red so the pair still contrasts
 let sd = 5; const rnd = () => (sd = (sd * 16807) % 2147483647) / 2147483647;
@@ -135,14 +150,16 @@ if (A === 'banner') {
   snowball(1.1, '#ffc233', [-7, 0, -2.4], .5, 0, 'smile', ['$9.40']); snowball(.95, '#3d6bff', [6.6, 0, -2.6], -.4, .1, 'smile', ['$6.10']); puff(1.4, .1, 2.2, 16, 1.6);
 } else {
   // pfp: an electric-blue sunburst, the ball charging at you through a burst of snow
-  { const c = document.createElement('canvas'); c.width = c.height = 1024; const x = c.getContext('2d'); const g = x.createRadialGradient(512, 470, 30, 512, 470, 720); g.addColorStop(0, '#e6fbff'); g.addColorStop(.4, '#9fdcff'); g.addColorStop(1, '#4fa6ff'); x.fillStyle = g; x.fillRect(0, 0, 1024, 1024);
-    x.translate(512, 470); for (let i = 0; i < 28; i++) { x.rotate(Math.PI * 2 / 28); x.fillStyle = i % 2 ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.08)'; x.beginPath(); x.moveTo(0, 0); x.lineTo(900, -70); x.lineTo(900, 70); x.fill(); }
+  { const cw = XB ? 3072 : 1024, bx = XB ? Math.round(cw * SX / W) : 512, c = document.createElement('canvas'); c.width = cw; c.height = 1024; const x = c.getContext('2d'); const g = x.createRadialGradient(bx, 470, 30, bx, 470, XB ? 1500 : 720); g.addColorStop(0, '#e6fbff'); g.addColorStop(.4, '#9fdcff'); g.addColorStop(1, '#4fa6ff'); x.fillStyle = g; x.fillRect(0, 0, cw, 1024);
+    x.translate(bx, 470); if (XB) x.scale(1 / 3, 1); for (let i = 0; i < 28; i++) { x.rotate(Math.PI * 2 / 28); x.fillStyle = i % 2 ? 'rgba(255,255,255,.22)' : 'rgba(255,255,255,.08)'; x.beginPath(); x.moveTo(0, 0); x.lineTo(XB ? 8000 : 900, XB ? -620 : -70); x.lineTo(XB ? 8000 : 900, XB ? 620 : 70); x.fill(); }
     const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; sc.background = t; sc.fog = null; }
   sc.remove(sc.children.find((o) => o.isMesh && o.geometry.type === 'PlaneGeometry'));
   sc.children.filter((o) => o.isMesh && o.material === iceM).forEach((o) => o.visible = false);
   sc.children.filter((o) => o.isMesh && (o.geometry.type === 'CircleGeometry' || o.geometry.type === 'CylinderGeometry')).forEach((o) => o.visible = false);
   const rc = new THREE.DirectionalLight(0x6ff3ff, 3.2); rc.position.set(8, 3, -4); const rp = new THREE.DirectionalLight(0xff6fd0, 2.6); rp.position.set(-8, -2, -3); sc.add(rc, rp);
   cam.position.set(0, .2, 11.6); cam.lookAt(0, .25, 0); R.toneMappingExposure = .78;
+  if (XB) { cam.position.set(0, .2, 13.6); cam.lookAt(0, .25, 0); cam.aspect = 2 * SX / H; cam.setViewOffset(2 * SX, H, 0, 0, W, H); cam.updateProjectionMatrix();   // smaller ball, lens shift puts it at x SX
+    for (let i = 0; i < 90; i++) { const m = new THREE.Mesh(new THREE.IcosahedronGeometry(.05 + rnd() * .18, 1), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .85, sheen: 1, sheenColor: new THREE.Color(0xbfe6ff) })); m.position.set(-4 - rnd() * 16, (rnd() - .5) * 8, -2 - rnd() * 6); sc.add(m); } }
   const b = snowball(2.25, HH || '#ff3d50', [0, -2.15, 0], -.32, .1, 'hype'); b.rotation.x = .12;
   const hat = b.children[2]; hat.rotation.z = -.06; hat.position.y = .06; hat.children[2].position.set(.12, 1.12, -.05);
   // snow burst behind and around
@@ -163,5 +180,9 @@ await document.fonts.ready; comp.render();
 const fs = A === 'banner' ? 19 : 22;
 for (const pl of players) { if (!pl.tag) continue; const v = new THREE.Vector3(); pl.g.getWorldPosition(v); v.y += pl.r * 2.05; v.project(cam);
   const d = document.createElement('div'); d.className = 'tag' + (pl.tag[1] ? ' ' + pl.tag[1] : ''); d.textContent = pl.tag[0]; d.style.left = (v.x * .5 + .5) * W + 'px'; d.style.top = Math.max(fs * 2.4, (-v.y * .5 + .5) * H) + 'px'; d.style.fontSize = Math.round(fs * (.75 + pl.r * .14)) + 'px'; document.getElementById('R').appendChild(d); }
+if (XB) { const o = document.createElement('div'); o.id = 'xb'; o.innerHTML = `<div class="kick"><i></i>$SNOWPVP · PLAY-TO-EARN PVP</div><div class="title"><span class="gt" data-t="SnowPump">SnowPump</span></div>
+  <div class="tl"><span class="gt" data-t="Push. Grow.">Push. Grow.</span> <span class="gt g" data-t="Cash out!">Cash out!</span></div>
+  <div class="cta"><span class="btn">PLAY FREE</span><span class="chip"><svg viewBox="0 0 24 24" fill="none" stroke="#2f8dff" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9.2"/><path d="M2.8 12h18.4M12 2.8c2.6 2.6 3.9 5.6 3.9 9.2s-1.3 6.6-3.9 9.2c-2.6-2.6-3.9-5.6-3.9-9.2s1.3-6.6 3.9-9.2z"/></svg>snowpumppvp.fun</span></div>`;
+  document.getElementById('R').appendChild(o); await document.fonts.load('700 80px DynaPuff'); await document.fonts.load('900 20px Nunito'); }
 requestAnimationFrame(() => { comp.render(); document.body.dataset.ready = '1'; });
 </script></body></html>
