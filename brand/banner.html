@@ -81,7 +81,7 @@ function snowball(r, hat, pos, yaw = 0, tilt = 0, face = 'smile', tag = null) {
   else if (face === 'hype') {
     const mo = new THREE.Mesh(new THREE.SphereGeometry(.2, 32, 24, 0, Math.PI * 2, Math.PI / 2, Math.PI / 2), new THREE.MeshPhysicalMaterial({ color: 0x3a0d1c, roughness: .3, side: THREE.DoubleSide })); mo.scale.set(1.25, 1.1, .5); mo.position.set(0, -.08, .95); F.add(mo);
     const tg = new THREE.Mesh(new THREE.SphereGeometry(.11, 24, 16), new THREE.MeshPhysicalMaterial({ color: 0xff6f91, roughness: .35, clearcoat: .6 })); tg.scale.set(1.2, .6, .5); tg.position.set(0, -.24, .99); F.add(tg);
-    for (const s of [-1, 1]) { const br = new THREE.Mesh(new THREE.CapsuleGeometry(.035, .2, 6, 12), eyeK); br.rotation.z = Math.PI / 2 + s * .4; br.position.set(s * .3, .34, .95); F.add(br);
+    for (const s of [-1, 1]) { const br = new THREE.Mesh(new THREE.CapsuleGeometry(.035, .2, 6, 12), eyeK); br.rotation.z = Math.PI / 2 + s * .4; br.position.set(s * .3, .31, .96); F.add(br);
       const st = new THREE.Mesh(new THREE.OctahedronGeometry(.07, 0), shine); st.scale.set(.5, 1.4, .3); st.position.set(s * .3 - .05, .2, 1.06); st.rotation.z = .3; F.add(st); const st2 = st.clone(); st2.rotation.z = .3 + Math.PI / 2; F.add(st2); }
   }
   else if (face === 'grit') { const m = new THREE.Mesh(new THREE.TorusGeometry(.13, .032, 12, 32, Math.PI), eyeK); m.rotation.z = Math.PI; m.position.set(0, -.08, .99); F.add(m); for (const s of [-1, 1]) { const br = new THREE.Mesh(new THREE.BoxGeometry(.22, .04, .04), eyeK); br.position.set(s * .3, .38, .93); br.rotation.z = -s * .35; F.add(br); } }
@@ -125,7 +125,7 @@ if (A === 'banner') {
   const rc = new THREE.DirectionalLight(0x6ff3ff, 3.2); rc.position.set(8, 3, -4); const rp = new THREE.DirectionalLight(0xff6fd0, 2.6); rp.position.set(-8, -2, -3); sc.add(rc, rp);
   cam.position.set(0, .2, 11.6); cam.lookAt(0, .25, 0); R.toneMappingExposure = .78;
   const b = snowball(2.25, '#ff3d50', [0, -2.15, 0], -.32, .1, 'hype'); b.rotation.x = .12;
-  const hat = b.children[2]; hat.rotation.z = -.2; hat.children[2].position.set(.12, 1.12, -.05);
+  const hat = b.children[2]; hat.rotation.z = -.06; hat.position.y = .06; hat.children[2].position.set(.12, 1.12, -.05);
   // snow burst behind and around
   for (let i = 0; i < 120; i++) { const a = rnd() * Math.PI * 2, d = 2.6 + rnd() * 3.4, m = new THREE.Mesh(new THREE.IcosahedronGeometry(.05 + rnd() * .2, 1), new THREE.MeshPhysicalMaterial({ color: 0xffffff, roughness: .85, sheen: 1, sheenColor: new THREE.Color(0xbfe4ff), emissive: 0xbfe8ff, emissiveIntensity: .05 }));
     m.position.set(Math.cos(a) * d, Math.sin(a) * d * .9 + .1, -1.5 - rnd() * 2.5 + (d > 4.5 ? 1.5 : 0)); sc.add(m); }
