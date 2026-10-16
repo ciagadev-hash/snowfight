@@ -8,10 +8,14 @@ def uri(path, size, fmt='WEBP', q=86):
 h = (SITE / 'index.dev.html').read_text(encoding='utf8')
 h = h.replace('__PFP__', uri(SITE / 'pfp.png', 400)).replace('__ICON__', uri(SITE / 'pfp.png', 64, 'PNG'))
 game = (SITE / 'game.js').read_text(encoding='utf8')
-app = (SITE / 'app.js').read_text(encoding='utf8').replace("import { createArena } from './game.js';\n", '')
+app = (SITE / 'app.js').read_text(encoding='utf8').replace("import { createArena } from './game.js';\n", '').replace("import { mountTitle } from './title3d.js';\n", '')
 game = game.replace('export function createArena', 'function createArena')
+# the 3D title shares the module scope with the game, so its duplicate three/RoomEnvironment imports go
+title = (SITE / 'title3d.js').read_text(encoding='utf8').replace('export async function mountTitle', 'async function mountTitle')
+title = title.replace("import * as THREE from 'three';\n", '').replace("import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';\n", '')
+font = 'data:font/ttf;base64,' + base64.b64encode((SITE / 'fonts' / 'fredoka.ttf').read_bytes()).decode()
 cfg = {'ca': sys.argv[1] if len(sys.argv) > 1 else '', 'live': False}
-h = h.replace('<script type="module" src="app.js"></script>', f'<script>window.SNOWFIGHT={json.dumps(cfg)}</script>\n<script type="module">\n' + game + '\n' + app + '\n</script>')
+h = h.replace('<script type="module" src="app.js"></script>', f'<script>window.SNOWFIGHT={json.dumps(cfg)};window.TITLE_FONT="{font}"</script>\n<script type="module">\n' + game + '\n' + title + '\n' + app + '\n</script>')
 (DIST / 'index.html').write_text(h, encoding='utf8', newline='\n')
 shutil.copy(SITE / 'og.png', DIST / 'og.png'); shutil.copy(ROOT / 'deploy' / '_worker.js', DIST / '_worker.js')
 with zipfile.ZipFile(ROOT / 'snowfight-site.zip', 'w', zipfile.ZIP_DEFLATED) as z:

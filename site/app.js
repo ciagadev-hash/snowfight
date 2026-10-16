@@ -1,11 +1,13 @@
 // Snowfight site: wallet connect, play flow, HUD, cash out.
 import { createArena } from './game.js';
+import { mountTitle } from './title3d.js';
 const $ = (id) => document.getElementById(id);
 const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 let tT = 0; const toast = (m) => { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tT); tT = setTimeout(() => t.classList.remove('on'), 2400); };
 const store = { get(k, d) { try { const v = localStorage.getItem('snowfight.' + k); return v ? JSON.parse(v) : d; } catch (_) { return d; } }, set(k, v) { try { localStorage.setItem('snowfight.' + k, JSON.stringify(v)); } catch (_) { } } };
 const CFG = window.SNOWFIGHT || {};   // { ca, live } set at build time
 
+mountTitle($('title3d'), ['Push. Grow.', 'Cash out.'], window.TITLE_FONT || 'fonts/fredoka.ttf').catch(() => { $('h1').classList.remove('sr'); $('title3d').remove(); });
 const arena = createArena($('arena'), $('tags'), { cashMin: 8 });
 $('cmin').textContent = arena.CASH_MIN;
 
